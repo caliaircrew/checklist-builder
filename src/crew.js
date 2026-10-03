@@ -10,6 +10,22 @@ const ACFT = ACFT_ROWS.map(r => ({seq:r[0], make:r[1], model:r[2], engine:r[3], 
 const BYSEQ = new Map(ACFT.map(a => [a.seq, a]));
 const CREW_TYPES = [["airplane_pilot","Airplane pilot"],["helicopter_pilot","Helicopter pilot"],["cfi","Flight instructor"],["flight_attendant","Flight attendant"],["ferry_pilot","Ferry / delivery pilot"],["mechanic","Mechanic (A&P / IA)"]];
 const TYPE_LABEL = Object.fromEntries(CREW_TYPES);
+/* Tap-to-choose profile options. Values are stored in crew_profiles.details (jsonb) so search can filter exactly.
+   Keep values stable; labels can change. */
+const OPT = {
+  role:[["pic","Captain / PIC"],["sic","First officer / SIC"],["either","Either seat"],["cfi","Flight instructor"],["fa","Flight attendant"],["mech","Mechanic"]],
+  cert:[["none","None / not a pilot"],["private","Private"],["commercial","Commercial"],["atp","ATP"]],
+  ratings:[["instrument","Instrument"],["multi","Multi-engine"],["sea","Seaplane"],["helicopter","Helicopter"],["cfi","CFI"],["cfii","CFII"],["mei","MEI"],["cfih","CFI-H"],["ap","A&P"],["ia","IA"]],
+  medical:[["first","First class"],["second","Second class"],["third","Third class"],["basicmed","BasicMed"],["na","Not required"]],
+  region:[["socal","Southern California"],["norcal","Northern California"],["pnw","Pacific Northwest"],["southwest","Southwest"],["mountain","Mountain"],["texas","Texas"],["midwest","Midwest"],["southeast","Southeast"],["florida","Florida"],["northeast","Northeast"],["hawaii","Hawaii"],["alaska","Alaska"],["intl","Outside the US"]],
+  status:[["now","Available now"],["notice","Available with notice"],["no","Not currently available"]],
+  looking:[["contract","Contract trips"],["fulltime","Full-time"],["parttime","Part-time"],["weekends","Weekends"],["shortnotice","Short notice (24 hours)"],["ferry","Ferry and delivery"],["instruction","Instruction"]],
+  travel:[["local","Local only"],["300nm","Within 300 nm"],["westcoast","West Coast"],["national","Nationwide"],["international","International"]],
+  experience:[["p91","Part 91"],["p135","Part 135 charter"],["p91k","Part 91K fractional"],["p121","Part 121 airline"],["corporate","Corporate flight department"],["intl","International / oceanic"],["mountain","Mountain flying"],["ems","Medevac / EMS"],["tours","Aerial tours"],["utility","Utility / external load"],["military","Military"]],
+  languages:[["en","English"],["es","Spanish"],["fr","French"],["pt","Portuguese"],["de","German"],["zh","Mandarin"],["other","Other"]]
+};
+const LBL = k => Object.fromEntries(OPT[k]);
+const lbl = (k, v) => LBL(k)[v] || "";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const app = $("app");
@@ -59,25 +75,34 @@ function drawAcct(){ const b = $("acctBtn"); if (!b) return; b.textContent = use
 const initials = n => (String(n || "").trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2) || "?").toUpperCase();
 const fmt = n => (n == null || n === "" || isNaN(n)) ? "" : Number(n).toLocaleString("en-US");
 function cardHTML(p, aircraft, mod, opts){
+  const d = p.details || {};
   const types = (p.crew_types || []).map(t => TYPE_LABEL[t]).filter(Boolean);
-  const meta = [p.certificate, p.headline].filter(Boolean).join(" · ");
+  const metaParts = [lbl("cert", d.cert) && d.cert !== "none" ? lbl("cert", d.cert) : p.certificate, lbl("role", d.role) || p.headline].filter(Boolean);
+  const base = [d.airport, lbl("region", d.region)].filter(Boolean).join(" · ") || p.home_base;
   const ac = (aircraft || []).map(a => ({...a, info:BYSEQ.get(a.acft_seq)})).filter(a => a.info).sort((x, y) => (y.hours || 0) - (x.hours || 0));
+  const chips = (k, arr) => (arr || []).map(v => lbl(k, v)).filter(Boolean).map(t => `<span class="badge">${esc(t)}</span>`).join("");
   const badges = [];
   if (mod && mod.verified_faa) badges.push(`<span class="badge ok">✓ FAA certificate verified</span>`);
   if ((aircraft || []).some(a => a.part135)) badges.push(`<span class="badge ok">✓ Part 135 current</span>`);
+  if (d.status === "now") badges.push(`<span class="badge ok">Available now</span>`);
   types.forEach(t => badges.push(`<span class="badge">${esc(t)}</span>`));
+  const block = (title, html) => html ? `<section><h3>${title}</h3><div class="chips2">${html}</div></section>` : "";
+  const availText = [lbl("status", d.status), d.travel ? "Will travel: " + lbl("travel", d.travel) : "", d.passport ? "Valid passport" : ""].filter(Boolean).join(" · ");
   return `<article class="pcard" aria-label="Crew profile">
     <div class="top"><div class="avatar" aria-hidden="true">${esc(initials(p.display_name))}</div>
       <div><h2>${esc(p.display_name) || '<span class="empty">Your name</span>'}</h2>
-      <div class="meta">${esc(meta) || '<span class="empty">Certificate · headline</span>'}</div>
-      <div class="meta">${p.home_base ? "Based at " + esc(p.home_base) : '<span class="empty">Home base</span>'}</div></div></div>
+      <div class="meta">${esc(metaParts.join(" · ")) || '<span class="empty">Certificate · role</span>'}</div>
+      <div class="meta">${base ? "Based in " + esc(base) : '<span class="empty">Home base</span>'}</div></div></div>
     ${badges.length ? `<div class="badges">${badges.join("")}</div>` : ""}
     <section><h3>Aircraft and time</h3>
       ${ac.length ? ac.map(a => `<div class="row"><span>${esc(a.info.name)}${a.type_rated ? " · type rated" : ""}${a.part135 ? " · 135 " + esc(a.part135) : ""}</span><b>${a.hours ? fmt(a.hours) + " hrs" : ""}</b></div>`).join("") : '<p class="empty">Add the aircraft you fly.</p>'}
       ${p.total_time ? `<div class="row"><span>Total time</span><b>${fmt(p.total_time)} hrs</b></div>` : ""}
     </section>
-    ${(p.availability || p.travel || p.experience) ? `<section><h3>Availability and experience</h3>${p.availability ? `<p>${esc(p.availability)}</p>` : ""}${p.travel ? `<p>${esc(p.travel)}</p>` : ""}${p.experience ? `<p>${esc(p.experience)}</p>` : ""}</section>` : ""}
-    ${p.bio ? `<section><h3>About</h3><p>${esc(p.bio)}</p></section>` : ""}
+    ${block("Ratings", chips("ratings", d.ratings) + (d.medical ? `<span class="badge">Medical: ${esc(lbl("medical", d.medical))}</span>` : ""))}
+    ${(availText || (d.looking || []).length) ? `<section><h3>Availability</h3>${availText ? `<p>${esc(availText)}</p>` : ""}${(d.looking || []).length ? `<div class="chips2" style="margin-top:8px">${chips("looking", d.looking)}</div>` : ""}</section>` : ""}
+    ${block("Experience", chips("experience", d.experience))}
+    ${block("Languages", chips("languages", d.languages))}
+    ${p.bio ? `<section><h3>More about me</h3><p>${esc(p.bio)}</p></section>` : ""}
     <div class="actions"><button class="btn primary" type="button" disabled title="Messaging opens soon" style="opacity:.6">Message (coming soon)</button></div>
     <div class="note">${opts && opts.preview ? "Preview: this is how owners and operators will see your profile." : "Profiles are advertisements. Verify licenses, medical and training before hiring."}</div>
   </article>`;
@@ -118,7 +143,8 @@ async function viewMe(){
     sb.from("crew_profiles").select("*").eq("user_id", uid).maybeSingle(),
     sb.from("crew_aircraft").select("*").eq("user_id", uid),
     sb.from("moderation").select("*").eq("user_id", uid).maybeSingle()]);
-  const P = Object.assign({display_name:"", crew_types:[], certificate:"", headline:"", home_base:"", travel:"", experience:"", bio:"", total_time:null, availability:"", published:false}, p0 || {});
+  const P = Object.assign({display_name:"", crew_types:[], certificate:"", headline:"", home_base:"", travel:"", experience:"", bio:"", total_time:null, availability:"", published:false, details:{}}, p0 || {});
+  P.details = Object.assign({role:"", cert:"", ratings:[], medical:"", region:"", airport:"", status:"", looking:[], travel:"", passport:false, experience:[], languages:[]}, P.details || {});
   let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, type_rated:!!a.type_rated, hours:a.hours, part135:a.part135 || ""}));
   let dirty = false;
   const statusOf = () => {
@@ -129,15 +155,22 @@ async function viewMe(){
     return ["warn", "Published: waiting for review"];
   };
   const field = (id, label, val, attrs) => `<div class="f"><label for="${id}">${label}</label><input id="${id}" value="${esc(val ?? "")}" ${attrs || ""}></div>`;
+  const D = P.details;
+  const sel = (id, k, label, val, first) => `<div class="f"><label for="${id}">${label}</label><select id="${id}"><option value="">${first || "Choose…"}</option>${OPT[k].map(([v, l]) => `<option value="${v}"${v === val ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`;
+  const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
   app.innerHTML = `
-  <div class="pagehead"><div><h1>My crew profile</h1><p>Signed in as ${esc(user.email || "")}</p></div>
+  <div class="pagehead"><div><h1>My crew profile</h1><p>Signed in as ${esc(user.email || "")}. Mostly taps: choose what fits, then Save.</p></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
   <div class="split" id="split">
    <div class="formcol">
     <section class="panel" aria-labelledby="h1a"><h2 id="h1a">About you</h2>
-      <div class="grid2">${field("dn","Name shown on your profile",P.display_name,'maxlength="80" placeholder="e.g. Jordan R." autocomplete="name"')}${field("ce","Certificate",P.certificate,'maxlength="80" placeholder="e.g. ATP, CFII"')}</div>
-      <div class="grid2">${field("hl","Headline",P.headline,'maxlength="120" placeholder="e.g. Contract captain"')}${field("hb","Home base",P.home_base,'maxlength="80" placeholder="e.g. Van Nuys (VNY)"')}</div>
+      <div class="grid2"><div class="f"><label for="dn">Name shown on your profile</label><input id="dn" value="${esc(P.display_name)}" maxlength="80" placeholder="e.g. Jordan R." autocomplete="name"></div>${sel("role", "role", "Role", D.role)}</div>
+      <div class="grid2">${sel("cert", "cert", "Certificate", D.cert)}${sel("med", "medical", "FAA medical", D.medical)}</div>
+      ${multi("rt", "ratings", "Ratings (tap all that apply)", D.ratings)}
       <div class="f"><span class="lbl" id="ctl">Crew type</span><div class="chips" role="group" aria-labelledby="ctl">${CREW_TYPES.map(([v, l]) => `<label><input type="checkbox" name="ct" value="${v}"${P.crew_types.includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>
+    </section>
+    <section class="panel" aria-labelledby="h1h"><h2 id="h1h">Home base</h2>
+      <div class="grid2">${sel("reg", "region", "Region", D.region)}<div class="f"><label for="apt">Airport (optional)</label><input id="apt" value="${esc(D.airport)}" maxlength="8" placeholder="e.g. VNY" autocapitalize="characters"></div></div>
     </section>
     <section class="panel" aria-labelledby="h1b"><h2 id="h1b">Aircraft and time</h2>
       <p class="hint">Add each aircraft you are current on. Owners search by exact type.</p>
@@ -145,13 +178,19 @@ async function viewMe(){
       <div><button class="btn secondary" id="brw" type="button" aria-expanded="false" aria-controls="acbrowse">Browse the list</button></div>
       <div id="acbrowse" class="browse" hidden></div>
       <div id="aclist"></div>
-      <div class="grid2">${field("tt","Total time (hours)",P.total_time ?? "",'inputmode="numeric" placeholder="e.g. 6800"')}</div>
+      <div class="grid2"><div class="f"><label for="tt">Total time (hours)</label><input id="tt" value="${P.total_time ?? ""}" inputmode="numeric" placeholder="e.g. 6800"></div></div>
     </section>
-    <section class="panel" aria-labelledby="h1c"><h2 id="h1c">Availability and experience</h2>
-      ${field("av","Availability",P.availability,'maxlength="200" placeholder="e.g. Most weekdays; Jun 3–7 and Jun 18–30"')}
-      ${field("tv","Travel",P.travel,'maxlength="120" placeholder="e.g. Will travel nationwide"')}
-      ${field("ex","Experience",P.experience,'maxlength="200" placeholder="e.g. Part 91 and 135, international"')}
-      <div class="f"><label for="bio">About you</label><textarea id="bio" maxlength="2000" placeholder="A few sentences owners should know.">${esc(P.bio)}</textarea><small>No phone numbers or email here. Owners will contact you through Cali Aircrew messaging.</small></div>
+    <section class="panel" aria-labelledby="h1c"><h2 id="h1c">Availability</h2>
+      <div class="grid2">${sel("stat", "status", "Status", D.status)}${sel("trv", "travel", "Will travel", D.travel)}</div>
+      ${multi("lk", "looking", "Looking for (tap all that apply)", D.looking)}
+      <label class="switch"><input type="checkbox" id="pp"${D.passport ? " checked" : ""}> I have a valid passport</label>
+    </section>
+    <section class="panel" aria-labelledby="h1e"><h2 id="h1e">Experience</h2>
+      ${multi("xp", "experience", "Tap all that apply", D.experience)}
+      ${multi("lg", "languages", "Languages (optional)", D.languages)}
+    </section>
+    <section class="panel" aria-labelledby="h1f"><h2 id="h1f">Anything else (optional)</h2>
+      <div class="f"><label for="bio">A few words owners should know</label><textarea id="bio" maxlength="2000" placeholder="Optional.">${esc(P.bio)}</textarea><small>No phone numbers or email here. Owners will contact you through Cali Aircrew messaging.</small></div>
     </section>
     <section class="panel" aria-labelledby="h1d"><h2 id="h1d">Publish</h2>
       <label class="switch"><input type="checkbox" id="pub"${P.published ? " checked" : ""}> Show my profile in the crew directory</label>
@@ -161,11 +200,20 @@ async function viewMe(){
    </div>
    <aside class="prevcol" aria-label="Live preview" id="prev"></aside>
   </div>`;
+  const checked = n => [...app.querySelectorAll(`input[name=${n}]:checked`)].map(i => i.value);
   const read = () => {
-    P.display_name = $("dn").value.trim(); P.certificate = $("ce").value.trim(); P.headline = $("hl").value.trim(); P.home_base = $("hb").value.trim();
-    P.crew_types = [...app.querySelectorAll('input[name=ct]:checked')].map(i => i.value);
+    P.display_name = $("dn").value.trim();
+    Object.assign(D, {role:$("role").value, cert:$("cert").value, medical:$("med").value, ratings:checked("rt"), region:$("reg").value, airport:$("apt").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8),
+      status:$("stat").value, travel:$("trv").value, looking:checked("lk"), passport:$("pp").checked, experience:checked("xp"), languages:checked("lg")});
+    P.crew_types = checked("ct");
     const tt = $("tt").value.replace(/[^\d]/g, ""); P.total_time = tt ? Math.min(100000, +tt) : null;
-    P.availability = $("av").value.trim(); P.travel = $("tv").value.trim(); P.experience = $("ex").value.trim(); P.bio = $("bio").value.trim(); P.published = $("pub").checked;
+    P.bio = $("bio").value.trim(); P.published = $("pub").checked;
+    // plain-text copies for older pages and simple display
+    P.certificate = [lbl("cert", D.cert), ...D.ratings.map(r => lbl("ratings", r))].filter(Boolean).join(", ").slice(0, 80);
+    P.headline = lbl("role", D.role); P.home_base = [D.airport, lbl("region", D.region)].filter(Boolean).join(" · ").slice(0, 80);
+    P.availability = [lbl("status", D.status), ...D.looking.map(v => lbl("looking", v))].filter(Boolean).join(", ").slice(0, 200);
+    P.travel = lbl("travel", D.travel); P.experience = D.experience.map(v => lbl("experience", v)).join(", ").slice(0, 200);
+    P.details = D;
   };
   const drawStatus = () => { const [k, t] = statusOf(); $("st").innerHTML = `<span class="status ${k}">${esc(t)}${dirty ? " · unsaved changes" : ""}</span>`; };
   const drawPrev = () => { read(); $("prev").innerHTML = cardHTML(P, AC, mod, {preview:true}); };
@@ -183,7 +231,7 @@ async function viewMe(){
     if (t.dataset.hr != null) { const v = t.value.replace(/[^\d]/g, ""); AC[+t.dataset.hr].hours = v ? Math.min(50000, +v) : null; }
     if (t.id !== "acq") changed();
   });
-  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.p135 != null) { AC[+t.dataset.p135].part135 = t.value; changed(); } else if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.name === "ct" || t.id === "pub") changed(); });
+  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.p135 != null) { AC[+t.dataset.p135].part135 = t.value; changed(); } else if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.tagName === "SELECT" || t.type === "checkbox") changed(); });
   $("aclist").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (!b) return; AC.splice(+b.dataset.rm, 1); drawAc(); if (!$("acbrowse").hidden) drawBrowse(); changed(); });
   /* browse: category -> manufacturer -> model tiles; tap to add or remove */
   const CATS = [["jet","Jets"],["turboprop","Turboprops"],["ptwin","Piston twins"],["psingle","Piston singles"],["heli","Helicopters"]];
@@ -232,8 +280,10 @@ async function viewMe(){
     const b = $("save"); b.disabled = true; b.textContent = "Saving…";
     try {
       if (await needMfa()) { b.disabled = false; b.textContent = "Save profile"; signIn(() => $("save").click()); return; }
-      const row = {user_id:uid, published:P.published, display_name:P.display_name, crew_types:P.crew_types, certificate:P.certificate, headline:P.headline, home_base:P.home_base, travel:P.travel, experience:P.experience, bio:P.bio, total_time:P.total_time, availability:P.availability};
-      const r1 = await sb.from("crew_profiles").upsert(row, {onConflict:"user_id"}); if (r1.error) throw r1.error;
+      const row = {user_id:uid, published:P.published, display_name:P.display_name, crew_types:P.crew_types, certificate:P.certificate, headline:P.headline, home_base:P.home_base, travel:P.travel, experience:P.experience, bio:P.bio, total_time:P.total_time, availability:P.availability, details:P.details};
+      let r1 = await sb.from("crew_profiles").upsert(row, {onConflict:"user_id"});
+      if (r1.error && /details/i.test(r1.error.message || "")) { const {details, ...plain} = row; r1 = await sb.from("crew_profiles").upsert(plain, {onConflict:"user_id"}); if (!r1.error) $("se").textContent = "Saved. Some choices will be kept once the Cali Aircrew setup step is finished."; }
+      if (r1.error) throw r1.error;
       const r2 = await sb.from("crew_aircraft").delete().eq("user_id", uid); if (r2.error) throw r2.error;
       if (AC.length) {
         let r3 = await sb.from("crew_aircraft").insert(AC.map(a => ({user_id:uid, acft_seq:a.acft_seq, type_rated:a.type_rated, hours:a.hours, part135:a.part135 || ""})));
