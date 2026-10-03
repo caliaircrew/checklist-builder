@@ -1,0 +1,21 @@
+# Pick list: TAKEOFF BRIEFING
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: TAKEOFF BRIEFING
+order: 15
+when: Before taking the runway      # shown under the section heading
+items:
+  - {item: Type of Takeoff, response: NORMAL / SHORT / SOFT}
+  - {item: Runway & Wind, response: CONFIRMED}
+  - {item: Takeoff Distance vs Runway, response: CHECKED}
+  - {item: Rotation Speed (VR), response: BRIEFED}
+  - {item: Climb Speeds (VX / VY), response: BRIEFED}
+  - {item: Best Glide Speed, response: BRIEFED}
+  - {item: V1 / VR / V2, response: BRIEFED, tags: [turbine]}
+  - {item: VMC / Blue Line (VYSE), response: BRIEFED, tags: [twin]}
+  - {item: Abort Plan, response: BRIEFED}
+  - {item: Engine Failure Below / Above Pattern Altitude, response: PLAN BRIEFED}
+  - {item: Engine Failure After V1 / VMC, response: PLAN BRIEFED, tags: [twin]}
+  - {item: Departure Heading & Altitude, response: BRIEFED}
+  - {item: Departure Procedure / Obstacles, response: BRIEFED}
+  - {item: Who Has the Controls, response: BRIEFED}
+  - {item: Departure, response: ANNOUNCED (CTAF)}

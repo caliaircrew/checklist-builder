@@ -1,0 +1,15 @@
+# Pick list: FINAL / STABILIZED APPROACH
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: FINAL / STABILIZED APPROACH
+order: 35
+when: Stable by 1,000 ft AGL (IMC) / 500 ft AGL (VMC)      # shown under the section heading
+items:
+  - {item: Landing Gear, response: 'DOWN, 3 GREEN', tags: [retract]}
+  - {item: Flaps, response: LANDING}
+  - {item: Airspeed, response: ON TARGET}
+  - {item: Sink Rate, response: STABLE}
+  - {item: Glidepath / Centerline, response: 'ON'}
+  - {note: 'NOT STABILIZED BY 1,000'' IMC / 500'' VMC → GO AROUND'}
+  - {item: Landing Clearance, response: RECEIVED}
+  - {item: Runway, response: CLEAR}
+  - {item: Autopilot, response: OFF BY MINIMUMS}

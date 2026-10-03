@@ -1,0 +1,27 @@
+# Pick list: AIRWORTHINESS / INSPECTIONS DUE
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: AIRWORTHINESS / INSPECTIONS DUE
+order: 1
+when: Before accepting the airplane — is it legal to fly?      # shown under the section heading
+items:
+  - {item: Airworthiness Certificate, response: ON BOARD / DISPLAYED}
+  - {item: Registration, response: ON BOARD / CURRENT}
+  - {item: Operating Limitations (POH/AFM), response: ON BOARD}
+  - {item: Weight & Balance Data, response: ON BOARD}
+  - {item: Annual Inspection, response: WITHIN 12 CALENDAR MONTHS}
+  - {item: 100-Hour Inspection (hire / instruction), response: WITHIN 100 HRS}
+  - {item: Tach Time to Next Inspection, response: CHECKED}
+  - {item: Oil Change / Maintenance Time Remaining, response: CHECKED}
+  - {item: Airworthiness Directives (ADs), response: COMPLIED WITH}
+  - {item: VOR Check (IFR), response: WITHIN 30 DAYS}
+  - {item: Altimeter / Static System (IFR), response: WITHIN 24 CALENDAR MONTHS}
+  - {item: Transponder Inspection, response: WITHIN 24 CALENDAR MONTHS}
+  - {item: ELT Inspection, response: WITHIN 12 CALENDAR MONTHS}
+  - {item: ELT Battery, response: WITHIN REPLACEMENT DATE}
+  - {item: Pitot-Static / Transponder Logbook Entries, response: VERIFIED}
+  - {item: Inoperative Equipment, response: PLACARDED / DEFERRED PER 91.213}
+  - {item: MEL / Deferred Items, response: REVIEWED, tags: [turbine]}
+  - {item: Squawk Sheet / Open Discrepancies, response: REVIEWED}
+  - {item: Aircraft Logbooks / Tech Log, response: CHECKED}
+  - {item: Fuel Card / Aircraft Keys, response: ON BOARD}
+  - {note: EXPIRED INSPECTION OR UNRESOLVED SQUAWK → DO NOT FLY}

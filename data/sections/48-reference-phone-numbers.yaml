@@ -1,0 +1,14 @@
+# Pick list: REFERENCE – PHONE NUMBERS
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: REFERENCE – PHONE NUMBERS
+order: 48
+when: Fill in      # shown under the section heading
+plain: true          # reference block: no line numbers
+items:
+  - {item: Dispatch / Operations, response: ____}
+  - {item: Maintenance, response: ____}
+  - {item: Instructor, response: ____}
+  - {item: FBO / Fuel, response: ____}
+  - {item: Flight Service, response: 1-800-WX-BRIEF}
+  - {item: Airport / Police, response: ____}
+  - {item: Emergency, response: '911'}

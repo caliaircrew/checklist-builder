@@ -1,0 +1,10 @@
+# Pick list: CLEARING TURNS
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: CLEARING TURNS
+order: 27
+when: Before every maneuver      # shown under the section heading
+items:
+  - {item: Clearing Turns, response: TWO 90° OR ONE 180°}
+  - {item: Traffic, response: CLEAR ALL QUADRANTS}
+  - {item: Below / Behind, response: CHECKED}
+  - {item: Entry Heading, response: ROLLED OUT ON REFERENCE}

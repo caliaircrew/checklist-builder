@@ -1,0 +1,38 @@
+# Pick list: WALKAROUND – COCKPIT
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: WALKAROUND – COCKPIT
+order: 3
+when: Start of the preflight inspection      # shown under the section heading
+items:
+  - {item: 'Tie-downs, Pitot Cover & Chocks', response: REMOVED}
+  - {item: Control Lock, response: REMOVED}
+  - {item: Documents (ARROW), response: ON BOARD}
+  - {item: Parking Brake, response: SET}
+  - {item: All Switches, response: 'OFF'}
+  - {item: Mixture, response: IDLE CUTOFF, tags: [piston]}
+  - {item: Magnetos, response: 'OFF', tags: [piston]}
+  - {item: Throttle(s), response: CUTOFF / IDLE}
+  - {item: Battery Master, response: 'ON'}
+  - {item: Fuel Quantity, response: CHECKED}
+  - {item: Fuel Imbalance, response: CHECKED}
+  - {item: Panel Lighting, response: VERIFY OPERATION}
+  - {item: Exterior Lights, response: ON / VERIFY OPERATION}
+  - {item: Pitot Heat, response: ON / CHECK WARM (BRIEFLY)}
+  - {note: PITOT HEAD CAN BE VERY HOT — LIMIT TEST TIME PER POH}
+  - {item: Stall Warning, response: CHECKED}
+  - {item: Annunciators / CAS, response: CHECKED}
+  - {item: Flaps, response: EXTEND FOR INSPECTION}
+  - {item: Landing Gear Handle, response: DOWN, tags: [retract]}
+  - {item: Lights / Pitot Heat, response: 'OFF'}
+  - {item: Battery Master, response: 'OFF'}
+  - {item: Primary Flight Controls, response: PROPER OPERATION}
+  - {item: Trim(s), response: NEUTRAL / CHECKED}
+  - {item: Alternate Static Source, response: CHECKED}
+  - {item: Pitot & Static System, response: DRAIN (IF EQUIPPED)}
+  - {item: Fire Extinguisher, response: CHECKED / SECURED}
+  - {item: Rudder Pedal Extensions (if req'd), response: INSTALLED / SECURE}
+  - {item: Windows, response: CHECKED / CLEAN}
+  - {item: Baggage, response: SECURE}
+  - {item: Seats / Belts, response: CHECKED}
+  - {item: Emergency Equipment / Egress, response: ON BOARD / CHECKED}
+  - {item: Oxygen Masks, response: CHECKED, tags: [press]}

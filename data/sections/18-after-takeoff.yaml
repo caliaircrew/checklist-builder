@@ -1,0 +1,25 @@
+# Pick list: AFTER TAKEOFF
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: AFTER TAKEOFF
+order: 18
+when: Positive rate of climb      # shown under the section heading
+default_section: all      # included in an aircraft's standard default checklist: all | turbine | jet | press | retract | twin
+items:
+  - {item: Positive Rate, response: GEAR UP, tags: [retract], default: true}
+  - {item: Landing Gear, response: 'UP, LIGHTS OUT', tags: [retract]}
+  - {item: Flaps, response: UP, default: true}
+  - {item: Yaw Damper, response: ENGAGE, tags: [turbine], default: true}
+  - {item: Climb Power, response: SET, default: true}
+  - {item: Throttles, response: CLIMB DETENT, tags: [jet]}
+  - {item: Propeller, response: CLIMB RPM, tags: [piston, turboprop], default: true}
+  - {item: Mixture, response: AS REQUIRED, tags: [piston], default: true}
+  - {item: Fuel Pump, response: OFF / AS REQUIRED, tags: [piston], default: true}
+  - {item: Cowl Flaps, response: AS REQUIRED, tags: [piston]}
+  - {item: Ignition, response: NORM / OFF, tags: [turbine], default: true}
+  - {item: Engine Sync, response: 'ON', tags: [twin]}
+  - {item: Landing Lights, response: AS REQUIRED, default: true}
+  - {item: Pressurization, response: CHECKED, tags: [press], default: true}
+  - {item: Anti-Ice / De-Ice, response: AS REQUIRED}
+  - {item: Autopilot, response: AS REQUIRED}
+  - {item: Engine Instruments, response: CHECKED, default: true}
+  - {item: Passenger Safety Switch, response: SEAT BELT / OFF, tags: [turbine]}

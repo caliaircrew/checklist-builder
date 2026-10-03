@@ -1,0 +1,23 @@
+# Pick list: WALKAROUND – FUSELAGE / EMPENNAGE
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: WALKAROUND – FUSELAGE / EMPENNAGE
+order: 7
+items:
+  - {item: Antennas, response: CHECKED / SECURE}
+  - {item: Static Ports, response: CLEAR}
+  - {item: Fuselage Skin, response: NO DAMAGE}
+  - {item: Empennage, response: CLEAR OF ICE / FROST / SNOW}
+  - {item: Stabilator / Elevator & Trim Tab, response: NO DAMAGE / INTERFERENCE}
+  - {item: Rudder, response: NO DAMAGE / INTERFERENCE}
+  - {item: Control Cables / Hinges (visible), response: SECURE}
+  - {item: Static Wicks, response: CHECKED / SECURE}
+  - {item: Tail Tie-down, response: REMOVED}
+  - {item: Beacon / Strobe / Position Lights, response: CHECKED}
+  - {item: ELT Access Plate, response: SECURE}
+  - {item: External Power Door, response: SECURE}
+  - {item: Baggage Door, response: CLOSED & LOCKED}
+  - {item: Inspection Panels, response: SECURE}
+  - {item: Tail Skid / Tail Wheel, response: CHECKED}
+  - {item: APU Inlet / Exhaust, response: CLEAR, tags: [jet]}
+  - {item: Emergency Exit, response: CLOSED, tags: [turbine]}
+  - {item: Walk Around Aircraft, response: NOTE GENERAL CONDITION}

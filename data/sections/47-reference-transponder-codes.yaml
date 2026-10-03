@@ -1,0 +1,10 @@
+# Pick list: REFERENCE – TRANSPONDER CODES
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: REFERENCE – TRANSPONDER CODES
+order: 47
+plain: true          # reference block: no line numbers
+items:
+  - {item: VFR, response: '1200'}
+  - {item: Hijack, response: '7500'}
+  - {item: Lost Communications, response: '7600'}
+  - {item: Emergency, response: '7700'}

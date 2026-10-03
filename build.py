@@ -17,6 +17,10 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.2.0  2026-10-03  Steve  Section 'when' line and 'plain' (un-numbered
+                            reference block) fields; unique whole-number
+                            'order' check. Emits LIB_WHEN / LIB_PLAIN.
+                            Builds app 1.09.
   2.1.0  2026-10-03  Steve  Pick-list defaults: section 'default_section' and
                             item 'default: true' become each aircraft's
                             standard default checklist (LIB_DEFAULTS). Builds
@@ -39,7 +43,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.1.0"
+SCRIPT_VERSION = "2.2.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -102,7 +106,7 @@ def build_app(app):
 
 # ---------------------------------------------------------------- sections
 def build_sections():
-    secs, titles, n_items, defaults = [], set(), 0, {}
+    secs, titles, n_items, defaults, whens, plains, orders = [], set(), 0, {}, {}, [], set()
     for path in files("data/sections/*.yaml"):
         rel = os.path.relpath(path, ROOT)
         d = load(rel)
@@ -110,6 +114,17 @@ def build_sections():
         t = str(d["title"])
         need(t not in titles, f"{rel}: duplicate section title {t}")
         titles.add(t)
+        o = d.get("order")
+        need(isinstance(o, int), f"{rel}: order must be a whole number")
+        need(o not in orders, f"{rel}: order {o} is used by another section")
+        orders.add(o)
+        w = d.get("when")
+        if w is not None:
+            need(isinstance(w, str) and w.strip() and "\n" not in w, f"{rel}: when must be one line of text")
+            whens[t] = w.strip()
+        need(d.get("plain", False) in (True, False), f"{rel}: plain must be true or false")
+        if d.get("plain"):
+            plains.append(t)
         ds = d.get("default_section")
         if ds is not None:
             need(ds in ("all", "turbine", "jet", "press", "retract", "twin"),
@@ -134,7 +149,9 @@ def build_sections():
     secs.sort(key=lambda x: x[0])
     need(secs, "data/sections: no pick lists found")
     lib = ("const LIB_RAW={\n" + ",\n".join(f'"{t}":`' + "\n".join(l) + "`" for _, t, l in secs) + "};\n"
-           + "const LIB_DEFAULTS=" + json.dumps(defaults, ensure_ascii=False, separators=(",", ":")) + ";\n")
+           + "const LIB_DEFAULTS=" + json.dumps(defaults, ensure_ascii=False, separators=(",", ":")) + ";\n"
+           + "const LIB_WHEN=" + json.dumps(whens, ensure_ascii=False, separators=(",", ":")) + ";\n"
+           + "const LIB_PLAIN=" + json.dumps(plains, ensure_ascii=False, separators=(",", ":")) + ";\n")
     m = load("data/section-matching.yaml")
     pairs = []
     for i, p in enumerate(m["matching"], 1):

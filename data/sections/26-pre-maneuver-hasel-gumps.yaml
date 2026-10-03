@@ -1,0 +1,19 @@
+# Pick list: PRE-MANEUVER (HASEL / GUMPS)
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: PRE-MANEUVER (HASEL / GUMPS)
+order: 26
+when: Before every practice maneuver      # shown under the section heading
+items:
+  - {item: Height, response: 'ADEQUATE — RECOVERY ABOVE 1,500 AGL'}
+  - {item: Area, response: CLEAR — NOT OVER CONGESTED AREAS}
+  - {item: Security, response: BELTS TIGHT / LOOSE ITEMS STOWED}
+  - {item: Engine, response: 'MIXTURE, FUEL PUMP, CARB HEAT SET'}
+  - {item: Lookout, response: CLEARING TURNS COMPLETE}
+  - {item: Gas, response: ADEQUATE / FULLEST TANK}
+  - {item: Undercarriage, response: SET FOR MANEUVER, tags: [retract]}
+  - {item: Mixture(s), response: FULL RICH, tags: [piston]}
+  - {item: Props, response: AS REQUIRED FOR MANEUVER, tags: [piston, turboprop]}
+  - {item: Switches, response: LIGHTS & FUEL PUMPS ON}
+  - {item: Emergency Landing Field, response: LOCATED}
+  - {item: Entry Altitude & Heading, response: SET / BUGGED}
+  - {item: Practice Area / CTAF, response: ANNOUNCED}

@@ -1,0 +1,31 @@
+# Pick list: WALKAROUND – RIGHT WING
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: WALKAROUND – RIGHT WING
+order: 4
+items:
+  - {item: Surface Condition, response: CLEAR OF ICE / FROST / SNOW}
+  - {item: Flap & Hinges, response: NO DAMAGE / INTERFERENCE}
+  - {item: Aileron & Hinges, response: NO DAMAGE / INTERFERENCE}
+  - {item: Static Wicks, response: CHECKED / SECURE}
+  - {item: Wingtip & Lights, response: CHECKED}
+  - {item: Leading Edge, response: CHECKED}
+  - {item: Deice Boots, response: CHECKED, tags: [turbine]}
+  - {item: Stall Warning Vane, response: CHECKED}
+  - {item: Fuel Tank Sump, response: 'DRAIN — CHECK WATER, SEDIMENT, GRADE'}
+  - {item: Fuel Quantity (visual), response: CHECKED}
+  - {item: Fuel Cap, response: SECURE}
+  - {item: Fuel Tank Vent, response: CLEAR}
+  - {item: Tie-down, response: REMOVED}
+  - {item: Main Gear Strut, response: PROPER INFLATION}
+  - {item: Tire, response: CHECKED}
+  - {item: Brake Block / Disc / Lines, response: CHECKED}
+  - {item: Gear Doors / Actuator, response: CHECKED, tags: [retract]}
+  - {item: Fresh Air Inlet, response: CLEAR}
+  - {item: Pitot / Static Head, response: CLEAR / COVER OFF}
+  - {item: OAT Probe, response: CHECKED}
+  - {item: Engine Nacelle / Cowling, response: SECURE, tags: [twin]}
+  - {item: Engine Oil, response: CHECKED, tags: [twin]}
+  - {item: Propeller & Spinner, response: CHECKED, tags: [twin]}
+  - {item: Engine Inlet / Exhaust, response: CLEAR, tags: [jet]}
+  - {item: Fan Blades, response: CHECKED, tags: [jet]}
+  - {item: Thrust Reverser, response: STOWED / CHECKED, tags: [jet]}

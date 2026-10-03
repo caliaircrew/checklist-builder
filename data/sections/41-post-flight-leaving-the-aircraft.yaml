@@ -1,0 +1,22 @@
+# Pick list: POST-FLIGHT / LEAVING THE AIRCRAFT
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: POST-FLIGHT / LEAVING THE AIRCRAFT
+order: 41
+when: After shutdown, before walking away      # shown under the section heading
+items:
+  - {item: Flight Plan, response: CLOSED}
+  - {item: Hobbs / Tach / Billing Time, response: RECORDED}
+  - {item: Squawks / Discrepancies, response: REPORTED}
+  - {item: Maintenance Placard, response: PLACED (IF MX REQUIRED)}
+  - {item: Personal Items / Trash, response: REMOVED}
+  - {item: Sun Visor / Shades, response: INSTALLED}
+  - {item: Control Lock, response: INSTALLED}
+  - {item: Pitot Cover, response: INSTALLED}
+  - {item: Tie-downs, response: SECURED (3 POINTS)}
+  - {item: Chocks, response: IN PLACE}
+  - {item: Doors, response: LOCKED}
+  - {item: Keys, response: RETURNED}
+  - {item: Fuel Receipt / Card, response: TURNED IN}
+  - {item: Safety Report, response: FILED (IF NEEDED)}
+  - {item: Pilot Logbook, response: ENTRY MADE}
+  - {item: Walk Around, response: NOTE GENERAL CONDITION}

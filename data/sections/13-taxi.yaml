@@ -1,0 +1,23 @@
+# Pick list: TAXI
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: TAXI
+order: 13
+when: On first movement      # shown under the section heading
+default_section: all      # included in an aircraft's standard default checklist: all | turbine | jet | press | retract | twin
+items:
+  - {item: Parking Brake, response: RELEASED, default: true}
+  - {item: Taxi Clearance / Route, response: RECEIVED & CONFIRMED}
+  - {item: Brakes, response: CHECKED, default: true}
+  - {item: Steering, response: CHECKED, default: true}
+  - {item: Flight Instruments, response: CHECKED, default: true}
+  - {item: Heading Indicator, response: CHECKED}
+  - {item: Turn Coordinator, response: CHECKED}
+  - {item: Attitude Indicator, response: STEADY}
+  - {item: Compass, response: SWINGING FREELY}
+  - {item: Anti-Skid, response: ON / CHECKED, tags: [jet]}
+  - {item: Rudder Bias, response: CHECKED, tags: [jet]}
+  - {note: RUDDER BIAS FAIL → NO DISPATCH, tags: [jet]}
+  - {item: Thrust Reversers, response: CHECKED / STOWED, tags: [jet]}
+  - {item: Taxi Light, response: 'ON'}
+  - {item: Hot Spots, response: BRIEFED}
+  - {item: Weather Radar, response: AS REQUIRED, tags: [turbine]}

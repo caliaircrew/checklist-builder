@@ -1,0 +1,18 @@
+# Pick list: IN-RANGE (BEFORE DESCENT)
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: IN-RANGE (BEFORE DESCENT)
+order: 29
+when: Before top of descent (cross-country) or before returning to the airport (local)      # shown under the section heading
+items:
+  - {item: AWOS / ATIS, response: RECEIVED}
+  - {item: Altimeters, response: SET / VERIFY BOTH}
+  - {item: Com / Nav Radios & Avionics, response: CHECKED & SET}
+  - {item: Arrival / Approach, response: LOADED & BRIEFED}
+  - {item: Seat Belts, response: FASTENED & SECURE}
+  - {item: Passengers, response: BRIEFED}
+  - {item: Mixture, response: RICH / AS REQUIRED, tags: [piston]}
+  - {item: Fuel Pump, response: 'ON', tags: [piston]}
+  - {item: Fuel Selector, response: FULLEST TANK, tags: [piston]}
+  - {item: Landing Lights, response: 'ON'}
+  - {item: Pressurization, response: LANDING ELEV SET, tags: [press]}
+  - {item: Fuel Remaining, response: CHECKED}

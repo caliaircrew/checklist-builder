@@ -1,0 +1,15 @@
+# Pick list: APPROACH
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: APPROACH
+order: 33
+items:
+  - {item: Approach Clearance, response: RECEIVED}
+  - {item: Nav Source / CDI, response: SET}
+  - {item: Minimums, response: SET}
+  - {item: Altimeters, response: SET / CROSS-CHECKED}
+  - {item: Approach Speeds, response: SET}
+  - {item: Flaps, response: APPROACH}
+  - {item: Passenger Safety Switch, response: 'ON', tags: [turbine]}
+  - {item: Fuel Pump, response: 'ON', tags: [piston]}
+  - {item: Landing Lights, response: 'ON'}
+  - {item: Missed Approach, response: BRIEFED}

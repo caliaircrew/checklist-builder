@@ -1,0 +1,24 @@
+# Pick list: RUNWAY LINE UP
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: RUNWAY LINE UP
+order: 17
+when: Holding short / lining up      # shown under the section heading
+default_section: all      # included in an aircraft's standard default checklist: all | turbine | jet | press | retract | twin
+items:
+  - {item: Final & Runway, response: CLEAR, default: true}
+  - {item: Runway, response: 'VERIFIED, HDG AGREES', default: true}
+  - {item: Takeoff Clearance, response: RECEIVED, default: true}
+  - {item: Landing Lights, response: 'ON', default: true}
+  - {item: Strobes, response: 'ON', default: true}
+  - {item: Exterior Lights, response: ALL ON}
+  - {item: Transponder, response: ALT, default: true}
+  - {item: Ignition, response: 'ON', tags: [turbine], default: true}
+  - {item: Pitot / Static Heat, response: 'ON', default: true}
+  - {item: Fuel Pump, response: 'ON', tags: [piston], default: true}
+  - {item: Mixture, response: FULL RICH, tags: [piston], default: true}
+  - {item: Engine Sync, response: 'OFF', tags: [twin]}
+  - {item: Passenger Safety Switch, response: 'ON', tags: [turbine], default: true}
+  - {item: Parking Brake, response: RELEASED}
+  - {item: Annunciator Panel, response: CHECKED / CLEAR, default: true}
+  - {item: Heading Indicator, response: ALIGNED}
+  - {item: Time, response: NOTED}

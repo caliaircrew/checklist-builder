@@ -1,0 +1,18 @@
+# Pick list: MANEUVER SETUP
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: MANEUVER SETUP
+order: 28
+when: Setup only — fly the maneuver per the ACS and your instructor      # shown under the section heading
+items:
+  - {item: Slow Flight, response: ALTITUDE / AIRSPEED / CONFIG PER ACS}
+  - {item: Power-Off Stall, response: LANDING CONFIG / RECOVERY BRIEFED}
+  - {item: Power-On Stall, response: TAKEOFF CONFIG / RECOVERY BRIEFED}
+  - {item: Steep Turns, response: ENTRY SPEED ≤ VA / REFERENCE SET}
+  - {item: Ground Reference, response: WIND / REFERENCE POINT SELECTED}
+  - {item: Emergency Descent, response: CONFIG & SPEED BRIEFED}
+  - {item: Simulated Engine Failure, response: FIELD SELECTED / RECOVERY ALTITUDE BRIEFED}
+  - {item: Engine-Out (Twin), response: ZERO-THRUST SETTING BRIEFED, tags: [twin]}
+  - {item: VMC Demonstration, response: ENTRY ALTITUDE / RECOVERY BRIEFED, tags: [twin]}
+  - {item: Unusual Attitudes, response: HOOD / VIEW LIMITER READY}
+  - {item: Recovery Altitude, response: BRIEFED}
+  - {item: Positive Exchange of Controls, response: BRIEFED}

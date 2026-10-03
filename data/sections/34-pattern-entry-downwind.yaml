@@ -1,0 +1,19 @@
+# Pick list: PATTERN ENTRY / DOWNWIND
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: PATTERN ENTRY / DOWNWIND
+order: 34
+when: Before pattern entry; GUMPS again on each downwind      # shown under the section heading
+items:
+  - {item: Type of Landing, response: NORMAL / SHORT / SOFT}
+  - {item: Wind / Runway in Use, response: CONFIRMED}
+  - {item: Pattern Altitude, response: ESTABLISHED}
+  - {item: Gas, response: FULLEST TANK / PUMP ON}
+  - {item: Undercarriage, response: DOWN — 3 GREEN, tags: [retract]}
+  - {item: Mixture, response: RICH, tags: [piston]}
+  - {item: Props, response: HIGH RPM, tags: [piston, turboprop]}
+  - {item: Switches / Seatbelts, response: ON / FASTENED}
+  - {item: Flaps, response: SET (WITHIN VFE)}
+  - {item: Initial Approach Speed, response: SET}
+  - {item: Final Approach Speed, response: PLANNED}
+  - {item: Autopilot, response: DISCONNECT BY MINIMUMS}
+  - {item: Position, response: ANNOUNCED (CTAF)}

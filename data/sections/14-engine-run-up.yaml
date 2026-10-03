@@ -1,0 +1,30 @@
+# Pick list: ENGINE RUN-UP
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: ENGINE RUN-UP
+order: 14
+when: Run-up area, nose into the wind      # shown under the section heading
+items:
+  - {item: Parking Brake, response: SET}
+  - {item: Seats / Belts / Doors, response: SECURE}
+  - {item: Mixture, response: RICH / SET FOR ELEVATION, tags: [piston]}
+  - {item: Throttle, response: RUN-UP RPM PER POH, tags: [piston]}
+  - {item: Magnetos, response: CHECK L & R, tags: [piston]}
+  - {note: MAG DROP AND DIFFERENCE LIMITS PER POH, tags: [piston]}
+  - {item: Carburetor Heat, response: CHECKED, tags: [piston]}
+  - {item: Alternate Air, response: CHECK FOR RPM DROP, tags: [piston]}
+  - {item: Propeller, response: CYCLE, tags: [piston]}
+  - {item: Propeller Feather, response: CHECKED (EACH ENGINE), tags: [twin, piston]}
+  - {item: Propeller Feather / Overspeed Governor, response: CHECKED, tags: [turboprop]}
+  - {item: Suction / Vacuum, response: CHECKED, tags: [piston]}
+  - {item: Oil Temperature / Pressure, response: CHECKED}
+  - {item: Ammeter / Volts, response: CHECKED}
+  - {item: Fuel Pump, response: OFF — VERIFY ENGINE OPERATION, tags: [piston]}
+  - {item: Fuel Crossfeed, response: CHECKED (>30 SEC), tags: [twin]}
+  - {item: Throttle, response: 'IDLE CHECK, THEN 1000 RPM', tags: [piston]}
+  - {item: Electric Trim, response: TEST}
+  - {item: Autopilot, response: ENGAGE / VERIFY OVERPOWER}
+  - {item: Autopilot Disconnect, response: PRESS / VERIFY DISENGAGES & ALERT}
+  - {item: Trim, response: SET FOR TAKEOFF}
+  - {item: Flight Controls, response: FREE & CORRECT}
+  - {item: Flight Instruments, response: CHECKED}
+  - {note: ROUGH RUNNING OR HIGH MAG DROP → RETURN TO RAMP / SEE POH, tags: [piston]}

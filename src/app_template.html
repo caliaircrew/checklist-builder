@@ -35,6 +35,10 @@ input[type=text]:focus{outline:2px solid var(--accent);outline-offset:0;border-c
 .row{display:grid;grid-template-columns:34px 46px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
 .row .n{font-size:14px;color:var(--muted);text-align:right}
+.whenrow{display:flex;gap:10px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line)}
+.whenrow input[type=text]{font-style:italic;font-size:15px;padding:7px 10px}
+.plainck{font-size:13px;color:var(--muted);white-space:nowrap;display:flex;gap:6px;align-items:center}
+.plainck input{width:18px;height:18px;accent-color:var(--accent)}
 .row.ff{background:color-mix(in srgb,var(--accent) 10%,transparent);border-radius:6px}
 .row.ff .n::after{content:"";}
 .row .resp{text-transform:uppercase;font-weight:600}
@@ -79,6 +83,8 @@ body.dragmode{user-select:none;-webkit-user-select:none}
 .col{flex:1;min-width:0}
 .cs{border:1px solid #000;margin-bottom:13px}
 .cs .bar{background:#000;color:#fff;font-weight:700;text-align:center;padding:3px 4px}
+.cs .when{font-style:italic;font-size:.85em;text-align:center;padding:2px 4px;border-bottom:1px solid #bfbfbf;color:#333}
+.cs.plain .r .a .num{display:none}
 .cs .r{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #bfbfbf;min-height:1.9em;align-items:center}
 .cs .bar + .r{border-top:0}
 .cs .r .a{display:flex;align-items:baseline;padding:3px 0 3px 5px;overflow:hidden;white-space:nowrap}
@@ -342,6 +348,7 @@ function renderEditor(focus){
     }).join("");
     return `<div class="sec" data-s="${si}">
       <div class="sechead"><input type="text" data-title value="${esc(s.title)}" placeholder="SECTION NAME" autocapitalize="characters"><button class="icon" data-smove="-1" title="Move up">↑</button><button class="icon" data-smove="1" title="Move down">↓</button><button class="icon" data-sdel title="Delete section">🗑</button></div>
+      <div class="whenrow"><input type="text" data-when value="${esc(s.when||"")}" placeholder="When (optional), e.g. Between 500 and 1,500 ft AGL"><label class="plainck"><input type="checkbox" data-plain${s.plain?" checked":""}> No line numbers</label></div>
       <div class="rows">${rows||'<p class="help" style="padding:6px">No lines yet.</p>'}</div>
       <div class="adds"><button class="btn small primary" data-pick>📋 Pick items from list</button><button class="btn small" data-add="item">＋ My own line</button><button class="btn small" data-add="note">＋ Caution note</button><button class="btn small" data-add="divider">＋ Sub-heading</button></div></div>`;
   }).join("");
@@ -352,13 +359,15 @@ sections.addEventListener("input",e=>{
   const t=e.target; const sec=t.closest(".sec"); if(!sec) return;
   const s=S.sections[+sec.dataset.s];
   if(t.hasAttribute("data-title")){s.title=t.value.toUpperCase();changed();return}
+  if(t.hasAttribute("data-when")){s.when=t.value;changed();return}
+  if(t.hasAttribute("data-plain")) return;
   const row=t.closest(".row"); if(!row||t.hasAttribute("data-pos")) return;
   const r=s.rows[+row.dataset.r]; const f=t.dataset.f;
   r[f]=(f==="resp"||f==="text")?t.value.toUpperCase():t.value; changed();
 });
 sections.addEventListener("keydown",e=>{
   if(e.key!=="Enter") return; const t=e.target; if(t.tagName!=="INPUT") return; e.preventDefault();
-  if(t.hasAttribute("data-pos")){t.blur();return}
+  if(t.hasAttribute("data-pos")||t.hasAttribute("data-when")){t.blur();return}
   const row=t.closest(".row"); const sec=t.closest(".sec");
   if(t.hasAttribute("data-title")){const first=sec.querySelector(".row input"); if(first) first.focus(); else addRow(+sec.dataset.s,"item",-1); return}
   if(t.dataset.f==="item"){row.querySelector('[data-f="resp"]').focus();return}
@@ -412,7 +421,7 @@ $("addSec").onclick=()=>newSection("");
 $("chips").onclick=e=>{const c=e.target.closest("[data-chip]"); if(c) newSection(c.dataset.chip)};
 function newSection(title){
   const fromList=title&&libFor(title);
-  S.sections.push({id:uid(),title:title.toUpperCase(),rows:fromList?[]:[I("","",false)]});
+  S.sections.push({id:uid(),title:title.toUpperCase(),rows:fromList?[]:[I("","",false)],when:(fromList&&LIB_WHEN[fromList])||"",plain:!!(fromList&&LIB_PLAIN.includes(fromList))});
   const si=S.sections.length-1;
   renderEditor(fromList?null:(title?`.row[data-s="${si}"][data-r="0"] input`:`.sec[data-s="${si}"] [data-title]`)); changed();
   document.querySelector(`.sec[data-s="${si}"]`).scrollIntoView({block:"start"});
@@ -421,7 +430,9 @@ function newSection(title){
 /* ---------- reorder: type a number ---------- */
 sections.addEventListener("focusin",e=>{if(e.target.hasAttribute&&e.target.hasAttribute("data-pos")) setTimeout(()=>e.target.select(),0)});
 sections.addEventListener("change",e=>{
-  const t=e.target; if(!t.hasAttribute("data-pos")) return;
+  const t=e.target;
+  if(t.hasAttribute("data-plain")){S.sections[+t.closest(".sec").dataset.s].plain=t.checked; changed(); return}
+  if(!t.hasAttribute("data-pos")) return;
   const row=t.closest(".row"); const si=+row.dataset.s, ri=+row.dataset.r; const rows=S.sections[si].rows;
   const itemIdx=rows.map((r,i)=>r.type==="item"?i:-1).filter(i=>i>=0);
   let want=parseInt(t.value,10); const cur=itemIdx.indexOf(ri)+1;
@@ -506,7 +517,7 @@ const norm=s=>(s||"").trim().toUpperCase();
 const profOf=a=>({engine:a.engine,twin:a.twin,retract:a.retract,press:a.press});
 function genericDefault(a){const p=profOf(a);
   const inc=r=>r==="all"||(r==="turbine"&&p.engine!=="piston")||(r==="jet"&&p.engine==="jet")||(r==="press"&&p.press)||(r==="retract"&&p.retract)||(r==="twin"&&p.twin);
-  return LIB_KEYS.filter(k=>LIB_DEFAULTS[k]&&inc(LIB_DEFAULTS[k])).map(k=>({id:uid(),title:k,rows:LIB[k].filter(e=>e.def&&fitsP(e,p)).map(e=>e.note?{id:uid(),type:"note",text:e.item}:I(e.item,e.resp,false))})).filter(s=>s.rows.length);}
+  return LIB_KEYS.filter(k=>LIB_DEFAULTS[k]&&inc(LIB_DEFAULTS[k])).map(k=>({id:uid(),title:k,when:LIB_WHEN[k]||"",plain:LIB_PLAIN.includes(k),rows:LIB[k].filter(e=>e.def&&fitsP(e,p)).map(e=>e.note?{id:uid(),type:"note",text:e.item}:I(e.item,e.resp,false))})).filter(s=>s.rows.length);}
 function defaultFor(a){const mk=modelFor(a);
   if(mk) return {kind:"model",label:"⭐ suggested "+MODELS[mk].name+" checklist",sections:MODELS[mk].sections.map(s=>({id:uid(),title:s.title,rows:s.rows.map(r=>r.type==="item"?I(r.item,r.resp,r.ff):{id:uid(),type:r.type,text:r.text})}))};
   const p=profOf(a), kind=(p.twin?"twin ":"single-engine ")+(p.engine==="piston"?"piston":p.engine)+(p.retract?", retractable gear":"")+(p.press?", pressurized":"");
@@ -582,9 +593,9 @@ function secHTML(s,fs){
     if(r.type==="divider") return `<div class="div">${esc(r.text)||"&nbsp;"}</div>`;
     n++;
     const ff=r.ff?` ff${!(rows[i-1]&&rows[i-1].ff)?" ffs":""}${!(rows[i+1]&&rows[i+1].ff)?" ffe":""}`:"";
-    return `<div class="r${ff}"><div class="a"><span class="num">${n}.</span><span class="txt">${esc(r.item)}</span><span class="dots"></span></div><div class="b">${esc(r.resp)}</div></div>`;
+    return `<div class="r${ff}"><div class="a"><span class="num">${s.plain?"":n+"."}</span><span class="txt">${esc(r.item)}</span><span class="dots"></span></div><div class="b">${esc(r.resp)}</div></div>`;
   }).join("");
-  return `<div class="cs" style="font-size:${fs}px"><div class="bar" style="font-size:${fs+1}px">${esc(s.title)||"&nbsp;"}</div>${body}</div>`;
+  return `<div class="cs${s.plain?" plain":""}" style="font-size:${fs}px"><div class="bar" style="font-size:${fs+1}px">${esc(s.title)||"&nbsp;"}</div>${s.when?`<div class="when">${esc(s.when)}</div>`:""}${body}</div>`;
 }
 function renderPreview(){
   const large=size==="large", fs=large?21.3:12, colW=large?720:345.6, colH=1056-77-60-6;
@@ -614,6 +625,7 @@ function buildDoc(large){
   const body=[];
   S.sections.forEach((s,i)=>{
     const rows=[new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"SectionBar",text:s.title||" "})],W,{span:2,fill:"000000",borders:{top:none,left:none,right:none,bottom:none}})]})];
+    if(s.when) rows.push(new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"WhenLine",text:s.when})],W,{span:2,borders:{top:none,left:out,right:out,bottom:thin}})]}));
     s.rows.forEach((r,idx)=>{
       const end=idx===s.rows.length-1;
       if(r.type==="note"){rows.push(new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"CautionNote",text:r.text||" "})],W,{span:2,fill:"D9D9D9",borders:{top:none,bottom:end?out:thin,left:out,right:out}})]}));return}
@@ -621,7 +633,7 @@ function buildDoc(large){
       const prevFF=s.rows[idx-1]&&s.rows[idx-1].type==="item"&&s.rows[idx-1].ff, nextFF=s.rows[idx+1]&&s.rows[idx+1].type==="item"&&s.rows[idx+1].ff;
       const top=r.ff&&!prevFF?heavy:none; const bottom=r.ff&&!nextFF?heavy:(end?out:thin);
       rows.push(new TableRow({cantSplit:true,children:[
-        cell([new Paragraph({style:"ChecklistItem",numbering:{reference:"ck",level:0,instance:i+1},children:[new TextRun(r.item||""),new TextRun("\t")]})],HALF,{borders:{top,bottom,left:r.ff?heavy:out,right:none}}),
+        cell([new Paragraph({style:"ChecklistItem",numbering:s.plain?undefined:{reference:"ck",level:0,instance:i+1},children:[new TextRun(r.item||""),new TextRun("\t")]})],HALF,{borders:{top,bottom,left:r.ff?heavy:out,right:none}}),
         cell([new Paragraph({style:"Response",text:r.resp||""})],HALF,{borders:{top,bottom,left:none,right:r.ff?heavy:out}})]}));
     });
     body.push(new Table({layout:d.TableLayoutType.FIXED,width:{size:W,type:WidthType.DXA},columnWidths:[HALF,HALF],rows}));
@@ -633,7 +645,8 @@ function buildDoc(large){
       {id:"ChecklistItem",name:"Checklist Item",basedOn:"Normal",quickFormat:true,paragraph:{keepNext:true,spacing:{before:0,after:0},tabStops:[{type:TabStopType.RIGHT,position:HALF-160,leader:LeaderType.DOT}]}},
       {id:"Response",name:"Response",basedOn:"Normal",quickFormat:true,run:{bold:true},paragraph:{keepNext:true,spacing:{before:0,after:0}}},
       {id:"CautionNote",name:"Caution Note",basedOn:"Normal",quickFormat:true,run:{bold:true,italics:true,size:FS-1},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:0,after:0}}},
-      {id:"PhaseDivider",name:"Phase Divider",basedOn:"Normal",quickFormat:true,run:{bold:true},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:80,after:0}}}]},
+      {id:"PhaseDivider",name:"Phase Divider",basedOn:"Normal",quickFormat:true,run:{bold:true},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:80,after:0}}},
+      {id:"WhenLine",name:"When Line",basedOn:"Normal",quickFormat:true,run:{italics:true,size:FS-2,color:"333333"},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:0,after:0}}}]},
     numbering:{config:[{reference:"ck",levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:large?560:340,hanging:large?560:340}}}}]}]},
     sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1150,bottom:900,left:720,right:720,header:400,footer:400}},column:large?{count:1}:{count:2,space:432,equalWidth:true}},
       headers:{default:new Header({children:[

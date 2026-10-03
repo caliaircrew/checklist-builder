@@ -1,0 +1,26 @@
+# Pick list: WALKAROUND – NOSE / ENGINE
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: WALKAROUND – NOSE / ENGINE
+order: 5
+items:
+  - {item: General Condition, response: CHECKED}
+  - {item: Windshield, response: CLEAN / NO DAMAGE}
+  - {item: Cowling, response: SECURE}
+  - {item: Oil, response: CHECK LEVEL}
+  - {item: Dipstick / Oil Filler Door, response: SEATED & SECURE}
+  - {item: Engine Compartment (as visible), response: NO LEAKS / LOOSE ITEMS}
+  - {item: Propeller & Spinner, response: CHECKED — NICKS / SECURITY, tags: [piston, turboprop]}
+  - {item: Air Inlets, response: CLEAR}
+  - {item: Alternator / Belt, response: CHECKED, tags: [piston]}
+  - {item: Exhaust Stacks, response: SECURE, tags: [piston, turboprop]}
+  - {item: Fuel Strainer / Gascolator, response: DRAIN, tags: [piston]}
+  - {item: Vent Fan Inlet, response: CLEAR}
+  - {item: Landing / Taxi Lights, response: CHECKED}
+  - {item: Nose Gear Strut, response: PROPER INFLATION}
+  - {item: Nose Tire, response: CHECKED}
+  - {item: Torque Link / Shimmy Damper, response: CHECKED}
+  - {item: Tow Bar, response: REMOVED}
+  - {item: Nose Chock, response: REMOVED}
+  - {item: Nose Baggage Door, response: LOCKED, tags: [turbine]}
+  - {item: Radome, response: CHECKED, tags: [turbine]}
+  - {item: Angle of Attack / Pitot Probes, response: CLEAR / COVERS OFF, tags: [turbine]}

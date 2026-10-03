@@ -1,0 +1,27 @@
+# Pick list: REFERENCE – V-SPEEDS
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: REFERENCE – V-SPEEDS
+order: 45
+when: Fill in from your POH — reference only      # shown under the section heading
+plain: true          # reference block: no line numbers
+items:
+  - {item: 'VS0 (stall, landing config)', response: ____ KIAS}
+  - {item: 'VS1 (stall, clean)', response: ____ KIAS}
+  - {item: VR (rotation), response: ____ KIAS}
+  - {item: VX (best angle), response: ____ KIAS}
+  - {item: VY (best rate), response: ____ KIAS}
+  - {item: Best Glide, response: ____ KIAS}
+  - {item: Cruise Climb, response: ____ KIAS}
+  - {item: VFE (max flap extended), response: ____ KIAS}
+  - {item: VA (maneuvering), response: ____ KIAS}
+  - {item: VNO (max structural cruise), response: ____ KIAS}
+  - {item: VNE (never exceed), response: ____ KIAS}
+  - {item: VLE / VLO (gear), response: ____ KIAS, tags: [retract]}
+  - {item: VMC (red line), response: ____ KIAS, tags: [twin]}
+  - {item: VYSE (blue line), response: ____ KIAS, tags: [twin]}
+  - {item: VXSE, response: ____ KIAS, tags: [twin]}
+  - {item: VSSE (safe single-engine), response: ____ KIAS, tags: [twin]}
+  - {item: V1 / VR / V2, response: PER TAKEOFF DATA, tags: [turbine]}
+  - {item: VMO / MMO, response: ____ KIAS / M ____, tags: [turbine]}
+  - {item: VREF, response: PER LANDING DATA, tags: [turbine]}
+  - {item: Max Demonstrated Crosswind, response: ____ KTS}

@@ -1,0 +1,16 @@
+# Pick list: CRUISE CHECK (PERIODIC)
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: CRUISE CHECK (PERIODIC)
+order: 25
+when: Every 30–60 minutes in cruise      # shown under the section heading
+items:
+  - {item: Fuel Remaining vs Plan, response: CHECKED}
+  - {item: Fuel Balance, response: CHECKED}
+  - {item: Engine Instruments, response: CHECKED}
+  - {item: Amps / Volts, response: CHECKED}
+  - {item: Pressurization, response: CHECKED, tags: [press]}
+  - {item: Oxygen, response: CHECKED}
+  - {item: Destination / Alternate Weather, response: CHECKED}
+  - {item: Position / Next Fix, response: CONFIRMED}
+  - {item: Ice Accumulation, response: CHECKED}
+  - {item: Time, response: NOTED}

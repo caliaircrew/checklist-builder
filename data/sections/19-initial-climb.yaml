@@ -1,0 +1,17 @@
+# Pick list: INITIAL CLIMB
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: INITIAL CLIMB
+order: 19
+when: Between 500 and 1,500 ft AGL      # shown under the section heading
+items:
+  - {item: Flaps, response: UP}
+  - {item: Climb Power, response: SET}
+  - {item: Trim, response: SET}
+  - {item: Fuel Pump, response: 'OFF', tags: [piston]}
+  - {item: Landing Lights, response: OFF / AS REQUIRED}
+  - {item: Mixture, response: AS REQUIRED, tags: [piston]}
+  - {item: Cowl Flaps, response: AS REQUIRED, tags: [piston]}
+  - {item: Engine Instruments, response: CHECKED}
+  - {item: Yaw Damper, response: 'ON', tags: [turbine]}
+  - {item: Autopilot, response: AS REQUIRED}
+  - {item: Traffic Scan, response: CONTINUOUS}

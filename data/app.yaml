@@ -1,12 +1,19 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.08'
+app_version: '1.09'
 show_drafts: true
 docx:
   version: 9.6.1
   sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
 changelog:
+  - version: '1.09'
+    notes:
+      - "20 new pick lists drawn from university and flight-school checklists (OU, Embry-Riddle, ATP, Middle Georgia State, Dubuque, Cirrus training): Airworthiness / Inspections Due; a five-zone Walkaround (Cockpit, Right Wing, Nose/Engine, Left Wing, Fuselage/Empennage); Pre-Taxi / Avionics Setup; Engine Run-Up; Takeoff Briefing; Initial Climb; Pre-Maneuver (HASEL/GUMPS); Clearing Turns; Maneuver Setup; In-Range; Pattern Entry / Downwind; Post-Flight / Leaving the Aircraft"
+      - "Reference blocks for the printed card: V-speeds, frequencies, transponder codes and phone numbers (fill in your own values; printed without line numbers)"
+      - "New 'when' line under each section heading, e.g. Initial Climb — Between 500 and 1,500 ft AGL; edit it in each section and it prints under the black bar"
+      - "More items in existing lists: maintenance time remaining, Hobbs/billing time, type of takeoff and landing, takeoff/landing time, speeds briefing, positive exchange of controls, S.A.F.E.T.Y. passenger briefing, twin second-engine start, and more"
+      - "Pick lists now run in flight order, 48 in all"
   - version: '1.08'
     notes:
       - "Every aircraft now has a default checklist: the ⭐ suggested model checklist where one exists, otherwise a standard checklist built from the general lists for that aircraft's engine type, gear, pressurization and number of engines"

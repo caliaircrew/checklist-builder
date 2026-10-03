@@ -1,0 +1,27 @@
+# Pick list: PRE-TAXI / AVIONICS SETUP
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: PRE-TAXI / AVIONICS SETUP
+order: 11
+when: After engine start, before moving      # shown under the section heading
+items:
+  - {item: CAS / Annunciator Messages, response: CONSIDER ANY ILLUMINATED}
+  - {item: PFD / MFD, response: NO RED X'S / FLAGS}
+  - {item: Standby Flight Instrument, response: ON / NO RED X'S}
+  - {item: Navigation Databases, response: CURRENT}
+  - {item: MFD Database Page, response: ACKNOWLEDGED}
+  - {item: Fuel Totalizer / Fuel Calc, response: SET / SYNCED}
+  - {item: Tach / Hobbs Time, response: VERIFIED}
+  - {item: Flight Plan, response: BUILD & ACTIVATE}
+  - {item: Autopilot Preflight Self-Test, response: COMPLETE}
+  - {item: Com / Nav Radios & Avionics, response: CHECKED & SET}
+  - {item: AWOS / ATIS, response: RECEIVED}
+  - {item: Clearance / Taxi Instructions, response: RECEIVED & READ BACK}
+  - {item: Altimeters, response: SET / VERIFY BOTH}
+  - {item: Heading Bug / Course, response: SET}
+  - {item: Altitude Preselect, response: SET}
+  - {item: Flight Director, response: SET}
+  - {item: Transponder, response: CODE & ALT}
+  - {item: Lights, response: AS REQUIRED}
+  - {item: Heater / Defroster / Ventilation, response: AS DESIRED}
+  - {item: Electronic Flight Bag, response: CHARTS LOADED / SET}
+  - {item: Pre-Taxi Briefing, response: COMPLETE}
