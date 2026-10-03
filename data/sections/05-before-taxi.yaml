@@ -2,23 +2,24 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 title: BEFORE TAXI
 order: 5
+default_section: all      # included in an aircraft's standard default checklist: all | turbine | jet | press | retract | twin
 items:
-  - {item: ATIS / Clearance, response: RECEIVED}
-  - {item: FMS / GPS Route, response: LOADED / VERIFIED}
+  - {item: ATIS / Clearance, response: RECEIVED, default: true}
+  - {item: FMS / GPS Route, response: LOADED / VERIFIED, default: true}
   - {item: Flight Director, response: SET}
-  - {item: Altimeters, response: SET / CROSS-CHECKED}
-  - {item: Heading Bug / Course, response: SET}
-  - {item: V-Speeds / Bugs, response: SET}
-  - {item: Takeoff N1 / Torque, response: SET, tags: [turbine]}
-  - {item: Transponder, response: CODE SET}
+  - {item: Altimeters, response: SET / CROSS-CHECKED, default: true}
+  - {item: Heading Bug / Course, response: SET, default: true}
+  - {item: V-Speeds / Bugs, response: SET, default: true}
+  - {item: Takeoff N1 / Torque, response: SET, tags: [turbine], default: true}
+  - {item: Transponder, response: CODE SET, default: true}
   - {item: TCAS, response: TA/RA, tags: [turbine]}
-  - {item: Flaps, response: SET FOR TAKEOFF}
-  - {item: Trims, response: SET}
+  - {item: Flaps, response: SET FOR TAKEOFF, default: true}
+  - {item: Trims, response: SET, default: true}
   - {item: Speedbrakes, response: TESTED / RETRACTED, tags: [jet]}
-  - {item: Flight Controls, response: FREE & CORRECT}
-  - {item: Engine Anti-Ice, response: AS REQUIRED, tags: [turbine]}
+  - {item: Flight Controls, response: FREE & CORRECT, default: true}
+  - {item: Engine Anti-Ice, response: AS REQUIRED, tags: [turbine], default: true}
   - {item: DC Amps / Volts, response: CHECKED}
   - {item: Engine Instruments, response: NO FLAGS}
   - {item: Lavatory Door, response: LATCHED OPEN, tags: [jet]}
-  - {item: Taxi Lights, response: 'ON'}
-  - {item: Taxi Brief, response: COMPLETE}
+  - {item: Taxi Lights, response: 'ON', default: true}
+  - {item: Taxi Brief, response: COMPLETE, default: true}

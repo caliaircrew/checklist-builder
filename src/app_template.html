@@ -140,6 +140,12 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 .pi.nt .it{font-style:italic;font-weight:700}
 .pi.on{background:color-mix(in srgb,var(--accent) 9%,transparent)}
 .pk-own{padding:10px 16px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.ownsave{grid-column:1/-1;font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.ownsave input{width:20px;height:20px;accent-color:var(--accent)}
+.myh{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:10px 8px 4px}
+.myh small{font-weight:400;text-transform:none;letter-spacing:0}
+.pi.my .it::before{content:"★ ";color:#c99a00}
+.myx{min-width:34px;height:34px;font-size:14px}
 .pk-own input{font-size:16px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-width:0}
 .pk-foot{padding:10px 16px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;border-top:1px solid var(--line)}
 .pk-foot .cnt{font-size:14px;color:var(--muted)}
@@ -195,6 +201,7 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
         <button class="btn small" id="openJson">Open checklist file</button>
         <button class="btn small" id="example">Load example</button>
         <button class="btn small" id="blank" style="color:var(--danger)">Start blank</button>
+        <button class="btn small" id="resetDef" hidden>↺ Reset to aircraft default</button>
         <input type="file" id="fileIn" accept=".json,application/json" hidden>
       </div>
       <p class="help">Your work is kept on this device automatically. "Save checklist file" lets you reopen it later or on another device.</p>
@@ -263,7 +270,7 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 (function(){
 /* Item library. Line format: Item|RESPONSE|tags   tags: piston turboprop jet turbine(=turboprop+jet) twin retract press   note: prefix = caution note */
 {{LIB_RAW}}
-const LIB={}; for(const k in LIB_RAW){ LIB[k]=LIB_RAW[k].split("\n").map(l=>{const [a,b,t]=l.split("|"); const note=a.startsWith("note:"); return {item:note?a.slice(5):a, resp:b||"", tags:(t||"").split(/\s+/).filter(Boolean), note}}) }
+const LIB={}; for(const k in LIB_RAW){ LIB[k]=LIB_RAW[k].split("\n").map(l=>{const p=l.split("|"); const note=p[0].startsWith("note:"); const tg=((note?p[1]:p[2])||"").split(/\s+/).filter(Boolean); return {item:note?p[0].slice(5):p[0], resp:note?"":(p[1]||""), tags:tg.filter(x=>x!=="default"), note, def:tg.includes("default")}}) }
 const LIB_KEYS=Object.keys(LIB);
 function libFor(title){const t=(title||"").toUpperCase();
   const map={{SECTION_MATCH}};
@@ -289,6 +296,8 @@ const uid=()=>Math.random().toString(36).slice(2,9);
 const nice=k=>k.split(" ").map((w,i)=>/^(RVSM|ATIS|VREF|FL\d+)$/.test(w)?w:(i?w.toLowerCase():w.charAt(0)+w.slice(1).toLowerCase())).join(" ");
 const COMMON=LIB_KEYS.map(nice);
 const I=(item,resp,ff)=>({id:uid(),type:"item",item,resp,ff:!!ff});
+const sigOf=secs=>JSON.stringify(secs.map(s=>[s.title,s.rows.map(r=>[r.type,r.item||r.text||"",r.resp||"",!!r.ff])]));
+const edited=()=>S.sections.length>0&&sigOf(S.sections)!==S.baseSig;
 const EXAMPLE=()=>({operator:"",aircraft:"",revision:"",sections:[
  {id:uid(),title:"PREFLIGHT",rows:[I("Exterior Inspection","COMPLETE"),I("Documents (ARROW)","ON BOARD"),I("Weight & Balance","COMPUTED"),I("Fuel Quantity","CHECKED"),I("Parking Brake","SET"),I("Circuit Breakers","IN"),I("Battery Switch","ON"),I("Avionics","OFF"),I("Warning Systems Test","CHECKED",1),I("Stall Warning","TEST",1)]},
  {id:uid(),title:"BEFORE START",rows:[I("Passenger Briefing","COMPLETE"),I("Seats / Belts","SECURE"),I("Doors / Windows","CLOSED & LOCKED"),I("Fuel Selector","BOTH / ON"),I("Beacon","ON"),I("ATIS / Clearance","RECEIVED")]},
@@ -304,10 +313,17 @@ const EXAMPLE=()=>({operator:"",aircraft:"",revision:"",sections:[
  {id:uid(),title:"SHUTDOWN",rows:[I("Parking Brake","SET"),I("Avionics","OFF"),I("Engine","CUTOFF"),I("Battery / Magnetos","OFF")]}]});
 let S, size="std";
 try{const raw=localStorage.getItem(KEY); S=raw?JSON.parse(raw):null}catch(e){S=null}
-if(!S||!Array.isArray(S.sections)) S=EXAMPLE();
+if(!S||!Array.isArray(S.sections)){S=EXAMPLE(); S.baseSig=sigOf(S.sections);}
 if(!S.version) S.version="1.0";
 if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true};
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+/* ---------- My items: personal pick-list lines, kept only on this device ---------- */
+const MYKEY="acb-myitems-v1"; let MY; try{MY=JSON.parse(localStorage.getItem(MYKEY)||"{}")||{}}catch(e){MY={}}
+const mysave=()=>{try{localStorage.setItem(MYKEY,JSON.stringify(MY))}catch(e){}};
+const myKeyFor=title=>libFor(title)||String(title||"").trim().toUpperCase();
+const myHas=(k,e)=>(MY[k]||[]).findIndex(x=>!!x.note===!!e.note&&String(x.item).trim().toUpperCase()===String(e.item).trim().toUpperCase());
+function myAdd(k,e){if(!e.item||!String(e.item).trim()||myHas(k,e)>=0) return false; (MY[k]=MY[k]||[]).push({item:String(e.item).trim(),resp:e.note?"":String(e.resp||"").toUpperCase(),note:!!e.note}); mysave(); return true}
+function myDel(k,i){(MY[k]||[]).splice(i,1); if(MY[k]&&!MY[k].length) delete MY[k]; mysave()}
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $=id=>document.getElementById(id);
 
@@ -364,12 +380,14 @@ function addRow(si,type,after){
   S.sections[si].rows.splice(after+1,0,r);
   renderEditor(`.row[data-s="${si}"][data-r="${after+1}"] input`); changed();
 }
-let menuEl=null;
-function closeMenu(){if(menuEl){menuEl.remove();menuEl=null}}
+let menuEl=null, menuOff=null;
+function closeMenu(){if(menuEl){menuEl.remove();menuEl=null} if(menuOff){document.removeEventListener("click",menuOff);menuOff=null}}
 function openMenu(btn,si,ri){
   closeMenu(); const r=S.sections[si].rows[ri];
   const opts=[];
   if(r.type==="item") opts.push(["ff",r.ff?"☐ Not a first-flight item":"☑ First flight of day (boxed)"]);
+  const myE={item:r.type==="note"?r.text:r.item,resp:r.resp,note:r.type==="note"};
+  if(r.type!=="divider"&&myE.item) opts.push(["my",myHas(myKeyFor(S.sections[si].title),myE)>=0?"☆ Remove from My items":"★ Save to My items"]);
   opts.push(["up","↑ Move up"],["down","↓ Move down"],["ins","＋ Insert line below"],["del","🗑 Delete this line"]);
   menuEl=document.createElement("div"); menuEl.className="menu";
   menuEl.innerHTML=opts.map(([k,l])=>`<button data-k="${k}" class="${k==="del"?"del":""}">${l}</button>`).join("");
@@ -380,13 +398,15 @@ function openMenu(btn,si,ri){
   menuEl.addEventListener("click",ev=>{
     const k=ev.target.closest("button")?.dataset.k; if(!k) return; const rows=S.sections[si].rows; let fi=ri;
     if(k==="ff") r.ff=!r.ff;
+    if(k==="my"){const mk=myKeyFor(S.sections[si].title), at=myHas(mk,myE); if(at>=0) myDel(mk,at); else myAdd(mk,myE); closeMenu(); status(""); return}
     if(k==="up"&&ri>0){[rows[ri-1],rows[ri]]=[rows[ri],rows[ri-1]];fi=ri-1}
     if(k==="down"&&ri<rows.length-1){[rows[ri+1],rows[ri]]=[rows[ri],rows[ri+1]];fi=ri+1}
     if(k==="ins"){closeMenu();addRow(si,"item",ri);return}
     if(k==="del"){rows.splice(ri,1);fi=-1}
     closeMenu(); renderEditor(fi>=0?`.row[data-s="${si}"][data-r="${fi}"] input`:null); changed();
   });
-  setTimeout(()=>document.addEventListener("click",function h(ev){if(menuEl&&!menuEl.contains(ev.target)){closeMenu();document.removeEventListener("click",h)}}),0);
+  menuOff=ev=>{if(menuEl&&!menuEl.contains(ev.target)&&!ev.target.closest("[data-menu]")) closeMenu()};
+  const off=menuOff; setTimeout(()=>{if(menuOff===off) document.addEventListener("click",off)},0);
 }
 $("addSec").onclick=()=>newSection("");
 $("chips").onclick=e=>{const c=e.target.closest("[data-chip]"); if(c) newSection(c.dataset.chip)};
@@ -453,12 +473,10 @@ $("newRev").onclick=()=>{S.version=bump(S.version); const d=new Date(); S.revisi
 const tagsOf=a=>[a.engine==="piston"?"Piston":a.engine==="turboprop"?"Turboprop":"Jet",a.twin?"Twin":"Single",a.retract?"Retractable gear":"Fixed gear",a.press?"Pressurized":"Unpressurized"];
 function drawSel(){
   const a=S.acftId!=null?ACFT[S.acftId]:null;
-  $("aSel").innerHTML=a?`<div class="asel"><span>✓ <b>${esc(acftName(a))}</b> · ${esc(a.years)} · ${tagsOf(a).join(" · ")}<br><small style="color:var(--muted)">Pick lists now show only items for this kind of aircraft.</small></span><button class="btn small x" id="aClr">Change</button>${modelFor(a)?`<div class="sugg" style="width:100%"><span>⭐ <b>Suggested checklist available</b> for the ${esc(MODELS[modelFor(a)].name)} (${MODELS[modelFor(a)].sections.length} sections).</span><button class="btn small primary" id="aLoad">Load suggested checklist</button><div class="disc"><b>${esc(statusText(MODELS[modelFor(a)]))}</b> Suggestions only — not FAA-approved and not the manufacturer's checklist. ${esc(MODELS[modelFor(a)].src)} Verify every item against your AFM/POH before use.</div></div>`:""}</div>`:"";
+  $("aSel").innerHTML=a?`<div class="asel"><span>✓ <b>${esc(acftName(a))}</b> · ${esc(a.years)} · ${tagsOf(a).join(" · ")}<br><small style="color:var(--muted)">Pick lists now show only items for this kind of aircraft.</small></span><button class="btn small x" id="aClr">Change</button><div class="sugg" style="width:100%"><span>${modelFor(a)?`⭐ <b>Suggested ${esc(MODELS[modelFor(a)].name)} checklist</b> is this aircraft's default (${MODELS[modelFor(a)].sections.length} sections).`:`Default: <b>${esc(defaultFor(a).label)}</b>, built from the general lists.`}</span><button class="btn small primary" id="aLoad">↺ Reset to ${esc(acftName(a))} default</button>${modelFor(a)?`<div class="disc"><b>${esc(statusText(MODELS[modelFor(a)]))}</b> Suggestions only — not FAA-approved and not the manufacturer's checklist. ${esc(MODELS[modelFor(a)].src)} Verify every item against your AFM/POH before use.</div>`:`<div class="disc"><b>Not yet specific to this model's POH.</b> These are the common items for this type of aircraft. Check each line against your POH, change any wording, and use the pick lists to add what is missing. Suggestions only — not FAA-approved.</div>`}</div></div>`:"";
   $("aFind").hidden=!!a;
-  if(a&&modelFor(a)) $("aLoad").onclick=()=>{const m=MODELS[modelFor(a)];
-    if(S.sections.length&&!confirm(`Replace your current sections with the suggested ${m.name} checklist? (Save a checklist file first if you want to keep what you have.)`)) return;
-    S.sections=m.sections.map(s=>({id:uid(),title:s.title,rows:s.rows.map(r=>r.type==="item"?I(r.item,r.resp,r.ff):{id:uid(),type:r.type,text:r.text})}));
-    renderEditor(); changed(); status(""); document.querySelector('.sec')?.scrollIntoView({block:"start"});};
+  if(a) $("aLoad").onclick=()=>resetDefault(a);
+  $("resetDef").hidden=!a;
   if(a) $("aClr").onclick=()=>{S.acftId=null;S.profile={engine:"any",twin:true,retract:true,press:true};changed();drawSel();$("aQ").focus()};
 }
 function searchAcft(q){
@@ -470,11 +488,14 @@ $("aQ").addEventListener("input",()=>{const r=searchAcft($("aQ").value), box=$("
   box.hidden=!box.innerHTML;});
 $("aRes").addEventListener("click",e=>{const b=e.target.closest("[data-a]"); if(!b) return; const a=ACFT[+b.dataset.a];
   S.acftId=a.id; S.profile={engine:a.engine,twin:a.twin,retract:a.retract,press:a.press}; S.aircraft=acftName(a); loadHeader();
-  $("aQ").value=""; $("aRes").hidden=true; changed(); drawSel();});
+  $("aQ").value=""; $("aRes").hidden=true; changed(); drawSel();
+  loadDefault(a,true);});
 document.addEventListener("click",e=>{if(!e.target.closest("#aFind")) $("aRes").hidden=true});
+$("resetDef").onclick=()=>{if(S.acftId!=null) resetDefault(ACFT[S.acftId])};
 /* ---------- picker ---------- */
 const ENG={piston:["piston"],turboprop:["turboprop","turbine"],jet:["jet","turbine"]};
-function fits(e){const p=S.profile;
+function fits(e){return fitsP(e,S.profile)}
+function fitsP(e,p){
   const eng=e.tags.filter(t=>["piston","turboprop","jet","turbine"].includes(t));
   if(p.engine!=="any"&&eng.length&&!eng.some(t=>ENG[p.engine].includes(t))) return false;
   if(e.tags.includes("twin")&&!p.twin) return false;
@@ -482,6 +503,18 @@ function fits(e){const p=S.profile;
   if(e.tags.includes("press")&&!p.press) return false;
   return true}
 const norm=s=>(s||"").trim().toUpperCase();
+const profOf=a=>({engine:a.engine,twin:a.twin,retract:a.retract,press:a.press});
+function genericDefault(a){const p=profOf(a);
+  const inc=r=>r==="all"||(r==="turbine"&&p.engine!=="piston")||(r==="jet"&&p.engine==="jet")||(r==="press"&&p.press)||(r==="retract"&&p.retract)||(r==="twin"&&p.twin);
+  return LIB_KEYS.filter(k=>LIB_DEFAULTS[k]&&inc(LIB_DEFAULTS[k])).map(k=>({id:uid(),title:k,rows:LIB[k].filter(e=>e.def&&fitsP(e,p)).map(e=>e.note?{id:uid(),type:"note",text:e.item}:I(e.item,e.resp,false))})).filter(s=>s.rows.length);}
+function defaultFor(a){const mk=modelFor(a);
+  if(mk) return {kind:"model",label:"⭐ suggested "+MODELS[mk].name+" checklist",sections:MODELS[mk].sections.map(s=>({id:uid(),title:s.title,rows:s.rows.map(r=>r.type==="item"?I(r.item,r.resp,r.ff):{id:uid(),type:r.type,text:r.text})}))};
+  const p=profOf(a), kind=(p.twin?"twin ":"single-engine ")+(p.engine==="piston"?"piston":p.engine)+(p.retract?", retractable gear":"")+(p.press?", pressurized":"");
+  return {kind:"generic",label:"standard checklist for a "+kind+" aircraft",sections:genericDefault(a)};}
+function resetDefault(a){const d=defaultFor(a); if(confirm(`Reset every section to the ${acftName(a)} default?\n\nLines you added or changed will be removed and replaced with the ${d.label}.`)) loadDefault(a,false);}
+function loadDefault(a,ask){const d=defaultFor(a);
+  if(ask&&edited()&&!confirm(`Load the default for the ${acftName(a)}?\n\nThis replaces all your current sections with the ${d.label}. (Save a checklist file first if you want to keep what you have.)`)) return false;
+  S.sections=d.sections; S.basedOn={acftId:a.id,kind:d.kind}; S.baseSig=sigOf(S.sections); renderEditor(); changed(); status(""); document.querySelector('.sec')?.scrollIntoView({block:"start"}); return true;}
 function findRow(sec,e){return sec.rows.findIndex(r=>e.note?(r.type==="note"&&norm(r.text)===norm(e.item)):(r.type==="item"&&norm(r.item)===norm(e.item)))}
 function modelLists(){const mk=S.acftId!=null?modelFor(ACFT[S.acftId]):null; if(!mk) return [];
   return MODELS[mk].sections.map((s,i)=>({key:"M:"+mk+":"+i,label:"⭐ "+MODELS[mk].name+" – "+nice(s.title),title:s.title,
@@ -497,7 +530,7 @@ function openPicker(si){
     <div class="prof">${S.acftId!=null?`Set for <b style="color:var(--ink)">${esc(acftName(ACFT[S.acftId]))}</b> — `:""}Show items for: <button class="tg" data-eng="any">Any aircraft</button><button class="tg" data-eng="piston">Piston</button><button class="tg" data-eng="turboprop">Turboprop</button><button class="tg" data-eng="jet">Jet</button>
      <span style="width:100%;height:0"></span>Has: <button class="tg" data-f="twin">Two engines</button><button class="tg" data-f="retract">Retractable gear</button><button class="tg" data-f="press">Pressurized</button></div></div>
    <div class="disc" id="pkDisc" style="padding:6px 16px 0;margin:0"></div><div class="pk-list" id="pkList"></div>
-   <div class="pk-own"><input id="ownI" placeholder="My own item"><input id="ownR" placeholder="RESPONSE" autocapitalize="characters"><button class="btn small" id="ownAdd">＋ Add</button></div>
+   <div class="pk-own"><input id="ownI" placeholder="My own item"><input id="ownR" placeholder="RESPONSE" autocapitalize="characters"><button class="btn small" id="ownAdd">＋ Add</button><label class="ownsave"><input type="checkbox" id="ownSave" checked> Also save to ★ My items, so it is in this list next time (only on this device)</label></div>
    <div class="pk-foot"><span class="cnt" id="pkCnt"></span><button class="btn primary" id="pkDone">Done</button></div></div>`;
   document.body.appendChild(ov); document.body.style.overflow="hidden";
   const lst=ov.querySelector("#pkList");
@@ -508,20 +541,23 @@ function openPicker(si){
     const isM=key.startsWith("M:"); ov.querySelector(".prof").style.display=isM?"none":"";
     ov.querySelector("#pkDisc").textContent=isM?"⭐ Suggested items for this model — not FAA-approved. Verify against your AFM/POH. ★ = first flight of the day.":"";
     const items=getList(key).map((e,i)=>({e,i})).filter(({e})=>fits(e)&&(!q||(e.item+" "+e.resp).toUpperCase().includes(q.toUpperCase())));
-    lst.innerHTML=items.length?items.map(({e,i})=>{const on=findRow(sec,e)>=0;return `<label class="pi${on?" on":""}${e.note?" nt":""}"><input type="checkbox" data-i="${i}"${on?" checked":""}><span class="it">${e.note?"⚠ ":""}${e.ff?"★ ":""}${esc(e.item)}</span><span class="rs">${e.note?"caution note":esc(e.resp)}</span></label>`}).join(""):'<div class="pk-empty">Nothing matches. Try another list or turn on more aircraft options.</div>';
+    const mk=myKeyFor(sec.title), mine=(MY[mk]||[]).map((e,i)=>({e,i})).filter(({e})=>!q||(e.item+" "+e.resp).toUpperCase().includes(q.toUpperCase()));
+    const myHtml=mine.length?`<div class="myh">★ My items <small>— yours, only on this device</small></div>`+mine.map(({e,i})=>{const on=findRow(sec,e)>=0;return `<label class="pi my${on?" on":""}${e.note?" nt":""}"><input type="checkbox" data-my="${i}"${on?" checked":""}><span class="it">${e.note?"⚠ ":""}${esc(e.item)}</span><span class="rs">${e.note?"caution note":esc(e.resp)}</span><button class="icon myx" data-myx="${i}" title="Remove from My items">✕</button></label>`}).join("")+`<div class="myh">${esc((ov.querySelector("#pkLib").selectedOptions[0]||{}).text||"List")}</div>`:"";
+    lst.innerHTML=myHtml+(items.length?items.map(({e,i})=>{const on=findRow(sec,e)>=0;return `<label class="pi${on?" on":""}${e.note?" nt":""}"><input type="checkbox" data-i="${i}"${on?" checked":""}><span class="it">${e.note?"⚠ ":""}${e.ff?"★ ":""}${esc(e.item)}</span><span class="rs">${e.note?"caution note":esc(e.resp)}</span></label>`}).join(""):'<div class="pk-empty">Nothing matches. Try another list or turn on more aircraft options.</div>');
     const n=sec.rows.filter(r=>r.type!=="divider").length;
     ov.querySelector("#pkCnt").textContent=`${n} line${n===1?"":"s"} in this section`;
   }
   ov.querySelector("#pkLib").onchange=e=>{key=e.target.value;draw();lst.scrollTop=0};
   ov.querySelector("#pkQ").oninput=e=>{q=e.target.value;draw()};
   ov.querySelector(".prof").onclick=e=>{const b=e.target.closest("button");if(!b)return; if(b.dataset.eng)S.profile.engine=b.dataset.eng; else S.profile[b.dataset.f]=!S.profile[b.dataset.f]; save(); draw()};
-  lst.onchange=e=>{const cb=e.target; if(!cb.dataset.i)return; const ent=getList(key)[+cb.dataset.i]; const at=findRow(sec,ent);
+  lst.onclick=e=>{const x=e.target.closest("[data-myx]"); if(!x) return; e.preventDefault(); e.stopPropagation(); myDel(myKeyFor(sec.title),+x.dataset.myx); draw()};
+  lst.onchange=e=>{const cb=e.target; if(!cb.dataset.i&&!cb.dataset.my)return; const ent=cb.dataset.my?MY[myKeyFor(sec.title)][+cb.dataset.my]:getList(key)[+cb.dataset.i]; const at=findRow(sec,ent);
     if(cb.checked&&at<0) sec.rows.push(ent.note?{id:uid(),type:"note",text:ent.item.toUpperCase()}:I(ent.item,ent.resp,!!ent.ff));
     if(!cb.checked&&at>=0) sec.rows.splice(at,1);
     sec.rows=sec.rows.filter(r=>!(r.type==="item"&&!r.item&&!r.resp));
     cb.closest(".pi").classList.toggle("on",cb.checked); changed(); draw()};
   const own=()=>{const a=ov.querySelector("#ownI"),b=ov.querySelector("#ownR"); if(!a.value.trim())return a.focus();
-    sec.rows=sec.rows.filter(r=>!(r.type==="item"&&!r.item&&!r.resp)); sec.rows.push(I(a.value.trim(),b.value.trim().toUpperCase(),false)); a.value="";b.value=""; a.focus(); changed(); draw()};
+    sec.rows=sec.rows.filter(r=>!(r.type==="item"&&!r.item&&!r.resp)); sec.rows.push(I(a.value.trim(),b.value.trim().toUpperCase(),false)); if(ov.querySelector("#ownSave").checked) myAdd(myKeyFor(sec.title),{item:a.value,resp:b.value}); a.value="";b.value=""; a.focus(); changed(); draw()};
   ov.querySelector("#ownAdd").onclick=own;
   ov.querySelector("#ownI").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();ov.querySelector("#ownR").focus()}};
   ov.querySelector("#ownR").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();own()}};
@@ -618,9 +654,9 @@ async function offer(filename,data){
 }
 const fname=ext=>((S.aircraft||"Aircraft").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim()+" Checklist"+(ext==="docx"?" v"+(S.version||"1.0"):"")+(ext==="docx"&&size==="large"?" LARGE PRINT":"")+"."+ext);
 $("dlWord").onclick=async()=>{ if(!S.sections.length){status("Add a section first.");return} status("Building Word file…"); try{ const blob=await window.docx.Packer.toBlob(buildDoc(size==="large")); await offer(fname("docx"),blob);}catch(e){status("Something went wrong building the file.")} };
-$("saveJson").onclick=()=>offer(fname("json").replace(/\.json$/," v"+(S.version||"1.0")+".json"),JSON.stringify(Object.assign({builderVersion:APP_VERSION},S),null,1));
+$("saveJson").onclick=()=>offer(fname("json").replace(/\.json$/," v"+(S.version||"1.0")+".json"),JSON.stringify(Object.assign({builderVersion:APP_VERSION},S,{myItems:MY}),null,1));
 $("openJson").onclick=()=>$("fileIn").click();
-$("fileIn").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().then(t=>{try{const x=JSON.parse(t); if(!Array.isArray(x.sections)) throw 0; S=x; if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; loadHeader(); renderEditor(); changed(); drawSel(); status("Opened "+f.name)}catch(_){alert("That file isn't a checklist file from this builder.")}}); e.target.value=""};
+$("fileIn").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().then(t=>{try{const x=JSON.parse(t); if(!Array.isArray(x.sections)) throw 0; const mi=x.myItems; delete x.myItems; if(mi&&typeof mi==="object") for(const k in mi) (mi[k]||[]).forEach(e=>myAdd(k,e)); S=x; if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; loadHeader(); renderEditor(); changed(); drawSel(); status("Opened "+f.name)}catch(_){alert("That file isn't a checklist file from this builder.")}}); e.target.value=""};
 
 {{ENDORSEMENTS}}
 /* ---------- CFI endorsements (AC 61-65K) ---------- */

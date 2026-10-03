@@ -47,6 +47,8 @@ Open `dist/index.html` in a browser to try it.
 * **Add an item to a pick list:** add a line to the right `data/sections/*.yaml`, e.g.
   `- {item: Fuel Caps, response: SECURE}` — add `tags: [jet]` (piston, turboprop, jet, turbine, twin, retract, press)
   if it only applies to some aircraft. A caution line is `- {note: NO TAKEOFF WITH FROST ON WINGS}`.
+* **Change an aircraft's standard default:** in `data/sections/*.yaml`, `default_section` says which aircraft get that section (all, turbine, jet, press, retract, twin) and `default: true` marks the items included. Aircraft with a suggested model checklist use that instead.
+* **★ My items** (personal lines) are stored only in each user's browser, not in this repository. They never change the shared lists.
 * **Add an aircraft:** append to its make's file with the **next unused `seq`** (never renumber or delete).
 * **Add a suggested model checklist:** copy a file in `data/models/`, give it a new `key`, `status: draft`,
   list its `aircraft` ids. Only a qualified pilot on the type may change it to `status: reviewed` (with

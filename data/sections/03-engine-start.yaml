@@ -2,29 +2,30 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 title: ENGINE START
 order: 3
+default_section: all      # included in an aircraft's standard default checklist: all | turbine | jet | press | retract | twin
 items:
-  - {item: Propeller Area, response: CLEAR (CALL "CLEAR"), tags: [piston, turboprop]}
-  - {item: Engine Area, response: CLEAR, tags: [jet]}
-  - {item: Beacon, response: 'ON'}
-  - {item: Battery / Master, response: 'ON'}
-  - {item: Fuel Pump, response: ON / PRIME AS REQUIRED, tags: [piston]}
+  - {item: Propeller Area, response: CLEAR (CALL "CLEAR"), tags: [piston, turboprop], default: true}
+  - {item: Engine Area, response: CLEAR, tags: [jet], default: true}
+  - {item: Beacon, response: 'ON', default: true}
+  - {item: Battery / Master, response: 'ON', default: true}
+  - {item: Fuel Pump, response: ON / PRIME AS REQUIRED, tags: [piston], default: true}
   - {item: Primer, response: AS REQUIRED, tags: [piston]}
-  - {item: Mixture, response: RICH, tags: [piston]}
-  - {item: Throttle, response: OPEN 1/4 INCH, tags: [piston]}
-  - {item: Magnetos / Starter, response: START, tags: [piston]}
-  - {note: NO OIL PRESSURE IN 30 SEC → SHUT DOWN, tags: [piston]}
-  - {item: Starter, response: ENGAGE, tags: [turbine]}
+  - {item: Mixture, response: RICH, tags: [piston], default: true}
+  - {item: Throttle, response: OPEN 1/4 INCH, tags: [piston], default: true}
+  - {item: Magnetos / Starter, response: START, tags: [piston], default: true}
+  - {note: NO OIL PRESSURE IN 30 SEC → SHUT DOWN, tags: [piston], default: true}
+  - {item: Starter, response: ENGAGE, tags: [turbine], default: true}
   - {item: Starter Annunciator, response: OUT, tags: [turbine]}
-  - {item: Ignition, response: ON / AUTO, tags: [turbine]}
-  - {item: Fuel / Condition Lever, response: INTRODUCE AT AFM N2 / NG, tags: [turbine]}
-  - {item: ITT, response: MONITOR, tags: [turbine]}
-  - {item: N1 Rotation, response: CONFIRMED, tags: [jet]}
-  - {note: HOT / HUNG / NO LIGHT-OFF → ABORT START, tags: [turbine]}
-  - {item: Oil Pressure, response: RISING}
-  - {item: Engine Instruments, response: IN THE GREEN}
-  - {item: Generator(s), response: ON / CHECKED}
-  - {item: External Power, response: DISCONNECTED, tags: [turbine]}
+  - {item: Ignition, response: ON / AUTO, tags: [turbine], default: true}
+  - {item: Fuel / Condition Lever, response: INTRODUCE AT AFM N2 / NG, tags: [turbine], default: true}
+  - {item: ITT, response: MONITOR, tags: [turbine], default: true}
+  - {item: N1 Rotation, response: CONFIRMED, tags: [jet], default: true}
+  - {note: HOT / HUNG / NO LIGHT-OFF → ABORT START, tags: [turbine], default: true}
+  - {item: Oil Pressure, response: RISING, default: true}
+  - {item: Engine Instruments, response: IN THE GREEN, default: true}
+  - {item: Generator(s), response: ON / CHECKED, default: true}
+  - {item: External Power, response: DISCONNECTED, tags: [turbine], default: true}
   - {item: Ammeter / Volts, response: CHECKED}
-  - {item: Second Engine, response: START, tags: [twin]}
+  - {item: Second Engine, response: START, tags: [twin], default: true}
   - {item: Hydraulic Pressure, response: CHECKED, tags: [turbine]}
   - {item: Annunciators, response: AS EXPECTED}

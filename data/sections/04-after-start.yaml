@@ -2,22 +2,23 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 title: AFTER START
 order: 4
+default_section: all      # included in an aircraft's standard default checklist: all | turbine | jet | press | retract | twin
 items:
-  - {item: Avionics Master, response: 'ON'}
-  - {item: Radios / Nav, response: SET}
+  - {item: Avionics Master, response: 'ON', default: true}
+  - {item: Radios / Nav, response: SET, default: true}
   - {item: Transponder, response: STBY / ALT}
   - {item: Flaps, response: UP / AS REQUIRED}
   - {item: Exterior Lights, response: AS REQUIRED}
-  - {item: Mixture, response: LEAN FOR TAXI, tags: [piston]}
-  - {item: Engine Instruments, response: CHECKED}
-  - {item: Alternator / Generator, response: CHECKED}
-  - {item: Suction / Vacuum, response: CHECKED, tags: [piston]}
+  - {item: Mixture, response: LEAN FOR TAXI, tags: [piston], default: true}
+  - {item: Engine Instruments, response: CHECKED, default: true}
+  - {item: Alternator / Generator, response: CHECKED, default: true}
+  - {item: Suction / Vacuum, response: CHECKED, tags: [piston], default: true}
   - {item: Fuel Pump, response: AS REQUIRED}
-  - {item: Hydraulic Pressure, response: CHECKED, tags: [turbine]}
+  - {item: Hydraulic Pressure, response: CHECKED, tags: [turbine], default: true}
   - {item: Bleed Air, response: 'ON', tags: [press]}
   - {item: Pressurization, response: SET, tags: [press]}
   - {item: APU, response: AS REQUIRED, tags: [jet]}
-  - {item: GPU, response: DISCONNECTED, tags: [turbine]}
+  - {item: GPU, response: DISCONNECTED, tags: [turbine], default: true}
   - {item: Heading Indicator, response: SET}
   - {item: Altimeter, response: SET}
   - {item: Flight Controls, response: FREE & CORRECT}

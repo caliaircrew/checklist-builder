@@ -2,17 +2,18 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 title: SECURING
 order: 25
+default_section: all      # included in an aircraft's standard default checklist: all | turbine | jet | press | retract | twin
 items:
-  - {item: Control Lock / Gust Lock, response: INSTALLED}
-  - {item: Pitot Covers, response: INSTALLED}
+  - {item: Control Lock / Gust Lock, response: INSTALLED, default: true}
+  - {item: Pitot Covers, response: INSTALLED, default: true}
   - {item: Engine Covers / Plugs, response: INSTALLED}
-  - {item: Chocks, response: IN PLACE}
-  - {item: Tie-downs, response: SECURED}
-  - {item: Doors, response: LOCKED}
+  - {item: Chocks, response: IN PLACE, default: true}
+  - {item: Tie-downs, response: SECURED, default: true}
+  - {item: Doors, response: LOCKED, default: true}
   - {item: Windows, response: CLOSED}
   - {item: Emergency Lights, response: DISARMED, tags: [turbine]}
   - {item: Battery, response: OFF / DISCONNECTED}
   - {item: Fuel Order, response: PLACED}
-  - {item: Squawks / Discrepancies, response: RECORDED}
-  - {item: Logbook, response: COMPLETE}
+  - {item: Squawks / Discrepancies, response: RECORDED, default: true}
+  - {item: Logbook, response: COMPLETE, default: true}
   - {item: Cabin, response: CLEANED}

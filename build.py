@@ -17,6 +17,10 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.1.0  2026-10-03  Steve  Pick-list defaults: section 'default_section' and
+                            item 'default: true' become each aircraft's
+                            standard default checklist (LIB_DEFAULTS). Builds
+                            app 1.08.
   2.0.0  2026-10-03  Steve  Data moved out of the script into YAML files
                             (sections, aircraft, models, endorsements, app
                             settings). Page template moved to src/. Docx
@@ -35,7 +39,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.0.0"
+SCRIPT_VERSION = "2.1.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -98,7 +102,7 @@ def build_app(app):
 
 # ---------------------------------------------------------------- sections
 def build_sections():
-    secs, titles, n_items = [], set(), 0
+    secs, titles, n_items, defaults = [], set(), 0, {}
     for path in files("data/sections/*.yaml"):
         rel = os.path.relpath(path, ROOT)
         d = load(rel)
@@ -106,11 +110,20 @@ def build_sections():
         t = str(d["title"])
         need(t not in titles, f"{rel}: duplicate section title {t}")
         titles.add(t)
+        ds = d.get("default_section")
+        if ds is not None:
+            need(ds in ("all", "turbine", "jet", "press", "retract", "twin"),
+                 f"{rel}: default_section must be all, turbine, jet, press, retract or twin")
+            defaults[t] = ds
         lines = []
         for i, it in enumerate(d["items"], 1):
             tags = it.get("tags", []) or []
             bad = set(tags) - VALID_TAGS
             need(not bad, f"{rel} item {i}: unknown tag(s) {sorted(bad)}")
+            need(it.get("default", False) in (True, False), f"{rel} item {i}: default must be true or false")
+            if it.get("default"):
+                need(ds is not None, f"{rel} item {i}: default item in a section without default_section")
+                tags = list(tags) + ["default"]
             if "note" in it:
                 lines.append("note:" + no_bar(str(it["note"]), f"{rel} item {i}") + "|" + " ".join(tags))
             else:
@@ -120,7 +133,8 @@ def build_sections():
         secs.append((int(d.get("order", 999)), t, lines))
     secs.sort(key=lambda x: x[0])
     need(secs, "data/sections: no pick lists found")
-    lib = "const LIB_RAW={\n" + ",\n".join(f'"{t}":`' + "\n".join(l) + "`" for _, t, l in secs) + "};\n"
+    lib = ("const LIB_RAW={\n" + ",\n".join(f'"{t}":`' + "\n".join(l) + "`" for _, t, l in secs) + "};\n"
+           + "const LIB_DEFAULTS=" + json.dumps(defaults, ensure_ascii=False, separators=(",", ":")) + ";\n")
     m = load("data/section-matching.yaml")
     pairs = []
     for i, p in enumerate(m["matching"], 1):

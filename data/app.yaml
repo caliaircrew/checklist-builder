@@ -1,12 +1,20 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.07'
+app_version: '1.08'
 show_drafts: true
 docx:
   version: 9.6.1
   sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
 changelog:
+  - version: '1.08'
+    notes:
+      - "Every aircraft now has a default checklist: the ⭐ suggested model checklist where one exists, otherwise a standard checklist built from the general lists for that aircraft's engine type, gear, pressurization and number of engines"
+      - "Picking an aircraft fills every section with its default (it asks first only if you have edited your lines). Reset to default, at the top and in Step 2, puts the checklist back to that aircraft's default at any time"
+      - "New: ★ My items. Lines you add can be saved to your own pick list for that section (only on your device). They appear at the top of Pick items from list, survive Reset, and travel with Save checklist file. Use ⋯ to save or remove any line"
+      - "Standard defaults are labeled as not yet specific to the model's POH until a pilot checks them against the manual"
+      - "Fixed: caution notes in the pick lists now follow the aircraft type"
+      - "Fixed: the ⋯ button on a line sometimes did nothing after using it on another line"
   - version: '1.07'
     notes:
       - "The site is now built automatically from the caliaircrew GitHub repository; every change is checked before it goes live"
