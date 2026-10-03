@@ -4,3 +4,6 @@ aircraft:
   - {seq: 451, id: mcdonnell-douglas-dc-9, make: McDonnell Douglas, model: DC-9, years: 1965–1982, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner}
   - {seq: 452, id: mcdonnell-douglas-md-80-series, make: McDonnell Douglas, model: MD-80 series (MD-81 to MD-88), years: 1980–1999, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner Mad Dog}
   - {seq: 453, id: mcdonnell-douglas-md-90, make: McDonnell Douglas, model: MD-90, years: 1995–2000, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner}
+  - {seq: 617, id: mcdonnell-douglas-dc-8, make: McDonnell Douglas, model: DC-8, years: 1959–1972, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody four-engine}
+  - {seq: 618, id: mcdonnell-douglas-dc-10, make: McDonnell Douglas, model: DC-10, years: 1971–1989, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody trijet}
+  - {seq: 619, id: mcdonnell-douglas-md-11-md-11f, make: McDonnell Douglas, model: MD-11 / MD-11F, years: 1990–2001, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody trijet freighter}

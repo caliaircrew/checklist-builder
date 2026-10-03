@@ -1,0 +1,4 @@
+# Aircraft: COMAC. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 622, id: comac-c919, make: COMAC, model: C919, years: 2023–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody}

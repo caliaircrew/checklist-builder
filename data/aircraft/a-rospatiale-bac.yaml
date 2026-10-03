@@ -1,0 +1,4 @@
+# Aircraft: Aérospatiale-BAC. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 621, id: a-rospatiale-bac-concorde, make: Aérospatiale-BAC, model: Concorde, years: 1976–2003, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner supersonic four-engine}

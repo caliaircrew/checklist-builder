@@ -3,3 +3,27 @@
 aircraft:
   - {seq: 401, id: boeing-bbj-bbj2-bbj3, make: Boeing, model: BBJ (737-700) / BBJ2 / BBJ3, years: 1999–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Boeing Business Jet bizliner}
   - {seq: 450, id: boeing-717-200, make: Boeing, model: 717-200, years: 1999–2006, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner MD-95}
+  - {seq: 576, id: boeing-707-120-707-320, make: Boeing, model: 707-120 / 707-320, years: 1958–1979, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner four-engine narrowbody}
+  - {seq: 577, id: boeing-727-100-727-200, make: Boeing, model: 727-100 / 727-200, years: 1963–1984, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner trijet narrowbody}
+  - {seq: 578, id: boeing-737-100-737-200, make: Boeing, model: 737-100 / 737-200 (Original), years: 1967–1988, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 737 Original}
+  - {seq: 579, id: boeing-737-300-400-500, make: Boeing, model: 737-300 / -400 / -500 (Classic), years: 1984–2000, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 737 Classic}
+  - {seq: 580, id: boeing-737-600-700, make: Boeing, model: 737-600 / -700 (Next Generation), years: 1998–2019, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 737NG}
+  - {seq: 581, id: boeing-737-800, make: Boeing, model: 737-800 (Next Generation), years: 1998–2019, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 737NG 738}
+  - {seq: 582, id: boeing-737-900-900er, make: Boeing, model: 737-900 / -900ER (Next Generation), years: 2001–2019, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 737NG 739}
+  - {seq: 583, id: boeing-737-max-8-max-200, make: Boeing, model: 737 MAX 8 / MAX 200, years: 2017–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 7M8 MAX8}
+  - {seq: 584, id: boeing-737-max-9, make: Boeing, model: 737 MAX 9, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 7M9 MAX9}
+  - {seq: 585, id: boeing-747-100-200-sp, make: Boeing, model: 747-100 / -200 / SP, years: 1970–1991, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody jumbo four-engine}
+  - {seq: 586, id: boeing-747-400-747-400f, make: Boeing, model: 747-400 / 747-400F, years: 1989–2009, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody jumbo four-engine 744}
+  - {seq: 587, id: boeing-747-8-intercontinental-747-8f, make: Boeing, model: 747-8 Intercontinental / 747-8F, years: 2011–2023, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody jumbo four-engine 748}
+  - {seq: 588, id: boeing-757-200-757-300, make: Boeing, model: 757-200 / 757-300, years: 1983–2005, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody 752 753}
+  - {seq: 589, id: boeing-767-200-200er, make: Boeing, model: 767-200 / -200ER, years: 1982–2000s, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 762}
+  - {seq: 590, id: boeing-767-300-300er-300f, make: Boeing, model: 767-300 / -300ER / -300F, years: 1986–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 763 freighter}
+  - {seq: 591, id: boeing-767-400er, make: Boeing, model: 767-400ER, years: 2000–2014, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 764}
+  - {seq: 592, id: boeing-777-200-777-200er, make: Boeing, model: 777-200 / 777-200ER, years: 1995–2013, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody triple seven 772}
+  - {seq: 593, id: boeing-777-200lr, make: Boeing, model: 777-200LR, years: 2006–2020s, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody triple seven 77L Worldliner}
+  - {seq: 594, id: boeing-777-300, make: Boeing, model: 777-300, years: 1998–2006, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody triple seven 773}
+  - {seq: 595, id: boeing-777-300er, make: Boeing, model: 777-300ER, years: 2004–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody triple seven 77W}
+  - {seq: 596, id: boeing-777f, make: Boeing, model: 777F (Freighter), years: 2009–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody triple seven freighter 77F}
+  - {seq: 597, id: boeing-787-8-dreamliner, make: Boeing, model: 787-8 Dreamliner, years: 2011–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 788}
+  - {seq: 598, id: boeing-787-9-dreamliner, make: Boeing, model: 787-9 Dreamliner, years: 2014–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 789}
+  - {seq: 599, id: boeing-787-10-dreamliner, make: Boeing, model: 787-10 Dreamliner, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 78X}

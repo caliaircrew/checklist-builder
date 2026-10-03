@@ -3,3 +3,20 @@
 aircraft:
   - {seq: 400, id: airbus-acj318-acj319-acj320, make: Airbus, model: ACJ318 / ACJ319 / ACJ320, years: 2000s–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Airbus Corporate Jet bizliner}
   - {seq: 449, id: airbus-a220-100-a220-300, make: Airbus, model: A220-100 / A220-300 (CSeries), years: 2016–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner CS100 CS300}
+  - {seq: 600, id: airbus-a300b4-a300-600-a300-600f, make: Airbus, model: A300B4 / A300-600 / A300-600F, years: 1974–2007, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody}
+  - {seq: 601, id: airbus-a310, make: Airbus, model: A310, years: 1983–1998, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody}
+  - {seq: 602, id: airbus-a318, make: Airbus, model: A318, years: 2003–2013, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody A320 family baby bus}
+  - {seq: 603, id: airbus-a319, make: Airbus, model: A319 (ceo), years: 1996–2010s, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody A320 family}
+  - {seq: 604, id: airbus-a320, make: Airbus, model: A320 (ceo), years: 1988–2010s, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody A320 family}
+  - {seq: 605, id: airbus-a321, make: Airbus, model: A321 (ceo), years: 1994–2010s, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody A320 family}
+  - {seq: 606, id: airbus-a319neo, make: Airbus, model: A319neo, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody A320neo family}
+  - {seq: 607, id: airbus-a320neo, make: Airbus, model: A320neo, years: 2016–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody A320neo family}
+  - {seq: 608, id: airbus-a321neo-a321lr-a321xlr, make: Airbus, model: A321neo / A321LR / A321XLR, years: 2017–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner narrowbody A320neo family}
+  - {seq: 609, id: airbus-a330-200-a330-200f, make: Airbus, model: A330-200 / A330-200F, years: 1998–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 332}
+  - {seq: 610, id: airbus-a330-300, make: Airbus, model: A330-300, years: 1994–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody 333}
+  - {seq: 611, id: airbus-a330-800-a330-900, make: Airbus, model: A330-800 / A330-900 (neo), years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody A330neo 339}
+  - {seq: 612, id: airbus-a340-200-a340-300, make: Airbus, model: A340-200 / A340-300, years: 1993–2011, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody four-engine}
+  - {seq: 613, id: airbus-a340-500-a340-600, make: Airbus, model: A340-500 / A340-600, years: 2002–2011, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody four-engine}
+  - {seq: 614, id: airbus-a350-900, make: Airbus, model: A350-900, years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody XWB 359}
+  - {seq: 615, id: airbus-a350-1000, make: Airbus, model: A350-1000, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody XWB 35K}
+  - {seq: 616, id: airbus-a380-800, make: Airbus, model: A380-800, years: 2007–2021, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner widebody superjumbo double-decker four-engine}

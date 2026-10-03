@@ -1,12 +1,15 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.12'
+app_version: '1.13'
 show_drafts: true
 docx:
   version: 9.6.1
   sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
 changelog:
+  - version: '1.13'
+    notes:
+      - "The big jets: Boeing 707, 727, 737 (Original, Classic, NG, MAX 8/9), 747 (-100 through -8), 757, 767, 777 (-200, -200ER, -200LR, -300, -300ER, 777F) and 787-8/9/10; Airbus A300, A310, A318 through A321 and the neo family, A330 and A330neo, A340, A350-900/1000 and A380; plus DC-8, DC-10, MD-11, L-1011 TriStar, Concorde and COMAC C919. Like the regional types, these are for study and flow practice"
   - version: '1.12'
     notes:
       - "About 140 more aircraft (now about 575), including regional jets and turboprops for airline-track students: CRJ100 to CRJ1000, ERJ-135/140/145, E170 to E195 and E2, A220, 717, MD-80/90, BAe 146/Avro RJ, ATR 42/72, Dash 7 and Dash 8/Q400, Saab 340/2000, Brasilia, Jetstream 41, Fokker, Dornier 228/328. Airlines fly these from company checklists, so cards made here are for study and flow practice"
