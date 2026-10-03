@@ -1,7 +1,11 @@
 # vendor/
 
-`docx-9.6.1.iife.js` is the browser build of the open-source **docx** library (MIT license, see `docx-LICENSE.txt`),
-used to create the Word files inside the app. It is stored here so builds never depend on a download.
+Third-party libraries stored in the repository so builds never depend on a download.
+`build.py` refuses to build if a file's SHA-256 does not match the value in `data/app.yaml`.
 
-`build.py` refuses to build if this file's SHA-256 does not match `data/app.yaml → docx.sha256`.
-To upgrade: replace the file, update `docx.version` and `docx.sha256` together, bump the app version, and test the Word export.
+| File | Library | License | Pinned in |
+|---|---|---|---|
+| `docx-9.6.1.iife.js` | docx (Word export) | MIT, `docx-LICENSE.txt` | `data/app.yaml → docx` |
+| `supabase-js-2.117.2.umd.js` | supabase-js (sign-in & sync) | MIT, `supabase-js-LICENSE.txt` | `data/app.yaml → supabase_js` |
+
+To upgrade: replace the file, update the version and sha256 together, bump the app version, and retest.

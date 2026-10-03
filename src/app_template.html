@@ -181,7 +181,7 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 </head>
 <body>
 <header class="top">
-  <h1>✈️ Aircraft Checklist Builder</h1><button class="ver" id="verBtn" title="What's new"></button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button>
+  <h1>✈️ Aircraft Checklist Builder</h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="acctBtn" hidden>👤 Sign in</button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button>
   <div class="tabs" id="tabs"><button data-v="edit" class="on">1 · Type it in</button><button data-v="preview">2 · See &amp; print</button></div>
 </header>
 <main id="main" data-view="edit">
@@ -191,7 +191,7 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
       <div class="libtop"><label class="f">This checklist's name<input type="text" id="libName" placeholder="e.g. N123AB – Citation XLS"></label><span class="libsaved" id="libSaved">✓ Saved on this device</span></div>
       <div class="outbar"><select id="libPick" class="esel" aria-label="Open a saved checklist"></select><button class="btn small" id="libNew">＋ New</button><button class="btn small" id="libDup">⧉ Duplicate</button><button class="btn small" id="libDel" style="color:var(--danger)">Delete</button></div>
       <div class="outbar"><button class="btn small" id="libExport">⬇ Back up all checklists</button><button class="btn small" id="libImport">⬆ Restore / import</button><input type="file" id="libFile" accept=".json,application/json" hidden></div>
-      <p class="help">Every checklist saves automatically as you work. To move them to another iPad or phone, tap <b>Back up all checklists</b>, then <b>Restore / import</b> on the other device. Your ★ My items come along too.</p>
+      <p class="help" id="libHelp">Every checklist saves automatically as you work. To move them to another iPad or phone, tap <b>Back up all checklists</b>, then <b>Restore / import</b> on the other device. Your ★ My items come along too.</p>
     </div>
     <div class="card">
       <p class="step">Step 1 · Your aircraft &amp; top of the page</p>
@@ -289,6 +289,9 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 <<<DOCX_LIB>>>
 </script>
 <script>
+<<<SUPABASE_LIB>>>
+</script>
+<script>
 (function(){
 /* Item library. Line format: Item|RESPONSE|tags   tags: piston turboprop jet turbine(=turboprop+jet) twin retract press   note: prefix = caution note */
 {{LIB_RAW}}
@@ -313,6 +316,7 @@ for(const k in MODELS){const m=MODELS[k]; m.sections=[]; let cur=null;
 const modelFor=a=>{if(!a) return null; for(const k in MODELS) if((MODELS[k].status==="reviewed"||(SHOW_DRAFTS&&MODELS[k].status==="draft"))&&MODELS[k].match(a)) return k; return null};
 const statusText=m=>m.status==="reviewed"?`Reviewed by ${m.reviewed_by} on ${m.review_date}.`:"DRAFT — not yet reviewed by a type-rated pilot.";
 
+{{CLOUD_CONFIG}}
 const KEY="acb-checklist-v1";
 const uid=()=>Math.random().toString(36).slice(2,9);
 const nice=k=>k.split(" ").map((w,i)=>/^(RVSM|ATIS|VREF|FL\d+)$/.test(w)?w:(i?w.toLowerCase():w.charAt(0)+w.slice(1).toLowerCase())).join(" ");
@@ -341,14 +345,15 @@ if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true};
 /* ---------- My checklists library (on this device; ready for account sync later) ---------- */
 const LKEY="acb-library-v1"; let LIBR; try{LIBR=JSON.parse(localStorage.getItem(LKEY)||"null")}catch(e){LIBR=null}
 if(!LIBR||typeof LIBR.items!=="object") LIBR={format:"acb-library",items:{},current:null};
+if(!LIBR.deleted||typeof LIBR.deleted!=="object") LIBR.deleted={};
 let libWarned=false;
 const lsave=()=>{try{localStorage.setItem(LKEY,JSON.stringify(LIBR)); return true}catch(e){if(!libWarned){libWarned=true; alert("This device's storage for the builder is full. Back up all checklists, then delete some you no longer need.")} return false}};
 const snap=x=>JSON.parse(JSON.stringify(x));
-function libTouch(){const it=LIBR.items[LIBR.current]; if(!it) return; it.data=snap(S); it.updated=Date.now(); it.acft=S.aircraft||""; lsave()}
+function libTouch(){const it=LIBR.items[LIBR.current]; if(!it) return; delete it.auto; it.data=snap(S); it.updated=Date.now(); it.acft=S.aircraft||""; lsave(); cloudDirty(it.id)}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} libTouch()};
 /* ---------- My items: personal pick-list lines, kept only on this device ---------- */
 const MYKEY="acb-myitems-v1"; let MY; try{MY=JSON.parse(localStorage.getItem(MYKEY)||"{}")||{}}catch(e){MY={}}
-const mysave=()=>{try{localStorage.setItem(MYKEY,JSON.stringify(MY))}catch(e){}};
+const mysave=()=>{try{localStorage.setItem(MYKEY,JSON.stringify(MY)); localStorage.setItem("acb-myitems-updated",String(Date.now()))}catch(e){} cloudDirtyMy()};
 const myKeyFor=title=>libFor(title)||String(title||"").trim().toUpperCase();
 const myHas=(k,e)=>(MY[k]||[]).findIndex(x=>!!x.note===!!e.note&&String(x.item).trim().toUpperCase()===String(e.item).trim().toUpperCase());
 function myAdd(k,e){if(!e.item||!String(e.item).trim()||myHas(k,e)>=0) return false; (MY[k]=MY[k]||[]).push({item:String(e.item).trim(),resp:e.note?"":String(e.resp||"").toUpperCase(),note:!!e.note}); mysave(); return true}
@@ -771,17 +776,17 @@ function drawLib(){const cur=LIBR.items[LIBR.current];
   $("libDel").disabled=Object.keys(LIBR.items).length<1;
   $("hdrPick").innerHTML=`<option value="" disabled>📁 Saved checklists</option>`+libSorted().map(it=>`<option value="${esc(it.id)}"${it.id===LIBR.current?" selected":""}>📁 ${esc(it.name||"Untitled")}</option>`).join("");}
 function libOpen(id){const it=LIBR.items[id]; if(!it) return; libTouch(); LIBR.current=id; S=snap(it.data); if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib(); window.scrollTo(0,0)}
-function libAdd(data,name){libTouch(); const id=uid(); LIBR.items[id]={id,name:name||"New checklist",created:Date.now(),updated:Date.now(),acft:data.aircraft||"",data:snap(data)}; LIBR.current=id; S=snap(data); save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib(); return id}
+function libAdd(data,name){libTouch(); const id=uid(); LIBR.items[id]={id,name:name||"New checklist",created:Date.now(),updated:Date.now(),acft:data.aircraft||"",data:snap(data)}; LIBR.current=id; S=snap(data); save(); lsave(); cloudDirty(id); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib(); return id}
 function nextName(base){const names=new Set(Object.values(LIBR.items).map(i=>i.name)); if(!names.has(base)) return base; let n=2; while(names.has(base+" "+n)) n++; return base+" "+n}
 // first run with the library: keep whatever is on screen as the first saved checklist
-if(!LIBR.current||!LIBR.items[LIBR.current]){const first=libSorted()[0]; if(first){LIBR.current=first.id; S=snap(first.data)} else {const id=uid(); LIBR.items[id]={id,name:S.aircraft||"My checklist",created:Date.now(),updated:Date.now(),acft:S.aircraft||"",data:snap(S)}; LIBR.current=id} lsave(); loadHeader()}
-$("libName").addEventListener("input",()=>{const it=LIBR.items[LIBR.current]; if(!it) return; it.name=$("libName").value; it.updated=Date.now(); lsave(); const o=$("libPick").querySelector(`option[value="${it.id}"]`); if(o) o.textContent=(it.name||"Untitled")+(it.acft&&it.acft!==it.name?" · "+it.acft:""); const h=$("hdrPick").querySelector(`option[value="${it.id}"]`); if(h) h.textContent="📁 "+(it.name||"Untitled")});
+if(!LIBR.current||!LIBR.items[LIBR.current]){const first=libSorted()[0]; if(first){LIBR.current=first.id; S=snap(first.data)} else {const id=uid(); LIBR.items[id]={id,name:S.aircraft||"My checklist",created:Date.now(),updated:Date.now(),acft:S.aircraft||"",data:snap(S),auto:true}; LIBR.current=id} lsave(); loadHeader()}
+$("libName").addEventListener("input",()=>{const it=LIBR.items[LIBR.current]; if(!it) return; it.name=$("libName").value; it.updated=Date.now(); lsave(); cloudDirty(it.id); const o=$("libPick").querySelector(`option[value="${it.id}"]`); if(o) o.textContent=(it.name||"Untitled")+(it.acft&&it.acft!==it.name?" · "+it.acft:""); const h=$("hdrPick").querySelector(`option[value="${it.id}"]`); if(h) h.textContent="📁 "+(it.name||"Untitled")});
 $("libPick").onchange=e=>libOpen(e.target.value);
 $("hdrPick").onchange=e=>{if(e.target.value) libOpen(e.target.value)};
 $("libNew").onclick=()=>{libAdd({operator:S.operator||"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},nextName("New checklist")); $("libName").select(); status(""); setTimeout(()=>{const q=$("aQ"); if(q&&!q.closest("[hidden]")) q.scrollIntoView({block:"center"})},50)};
 $("libDup").onclick=()=>{const it=LIBR.items[LIBR.current]; libAdd(snap(S),nextName((it&&it.name||"Checklist")+" (copy)")); $("libName").select()};
 $("libDel").onclick=()=>{const it=LIBR.items[LIBR.current]; if(!it) return; if(!confirm(`Delete "${it.name||"Untitled"}" from this device?\n\nTip: Back up all checklists first if you might want it later.`)) return;
-  delete LIBR.items[it.id]; const next=libSorted()[0]; if(next){LIBR.current=next.id; S=snap(next.data); save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib()} else {LIBR.current=null; libAdd({operator:"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},"New checklist")}};
+  delete LIBR.items[it.id]; LIBR.deleted[it.id]=Date.now(); cloudDirty(it.id); const next=libSorted()[0]; if(next){LIBR.current=next.id; S=snap(next.data); save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib()} else {LIBR.current=null; libAdd({operator:"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},"New checklist")}};
 $("libExport").onclick=()=>{libTouch(); const d=new Date(), ds=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
   offer(`Checklists backup ${ds} (${Object.keys(LIBR.items).length}).json`,JSON.stringify({format:"acb-library",builderVersion:APP_VERSION,exported:new Date().toISOString(),items:LIBR.items,myItems:MY},null,1))};
 $("libImport").onclick=()=>$("libFile").click();
@@ -790,10 +795,144 @@ $("libFile").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().the
     for(const id in x.items){const inc=x.items[id]; if(!inc||!inc.data||!Array.isArray(inc.data.sections)) continue; const ex=LIBR.items[id];
       if(!ex){LIBR.items[id]=inc; added++} else if((inc.updated||0)>(ex.updated||0)){LIBR.items[id]=inc; updated++}}
     if(x.myItems&&typeof x.myItems==="object") for(const k in x.myItems) (x.myItems[k]||[]).forEach(e=>myAdd(k,e));
-    lsave(); const cur=LIBR.items[LIBR.current]; if(cur){S=snap(cur.data); save()} loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib();
+    lsave(); if(sbUser) setTimeout(syncAll,0); const cur=LIBR.items[LIBR.current]; if(cur){S=snap(cur.data); save()} loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib();
     alert(`Restored: ${added} new checklist${added===1?"":"s"}, ${updated} updated with newer copies. Nothing was deleted.`)}
   else if(x&&Array.isArray(x.sections)){const mi=x.myItems; delete x.myItems; if(mi&&typeof mi==="object") for(const k in mi) (mi[k]||[]).forEach(e=>myAdd(k,e)); if(!x.profile) x.profile={engine:"any",twin:true,retract:true,press:true}; libAdd(x,nextName((x.aircraft||f.name.replace(/\.json$/i,"")).trim()))}
   else alert("That file isn't a backup or checklist file from this builder.")}); e.target.value=""};
+/* ---------- Account sign-in & sync (optional; Supabase) ---------- */
+var sb=null, sbUser=null, cloudState="local", cloudMsg="", dirty=new Set(), dirtyMy=false, pushTimer=null, syncing=false, syncAgain=false;
+if(CLOUD.enabled&&window.supabase&&window.supabase.createClient){try{sb=window.supabase.createClient(CLOUD.url,CLOUD.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"acb-auth"}})}catch(e){sb=null}}
+const myStamp=()=>+(localStorage.getItem("acb-myitems-updated")||0);
+const blankData=()=>({operator:"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]});
+function setCloud(st,msg){cloudState=st; cloudMsg=msg||""; const el=$("libSaved"); if(el) el.textContent=!sbUser?"✓ Saved on this device":
+  st==="synced"?"☁ Synced to your account":st==="syncing"?"⟳ Syncing…":st==="offline"?"✓ Saved on this device · syncs when back online":
+  st==="needs2fa"?"🔒 Enter your Microsoft Authenticator code to sync":st==="error"?"⚠ Not synced yet: "+cloudMsg:"✓ Saved on this device"; drawAcct();}
+function cloudDirty(id){if(!sb||!sbUser) return; if(id) dirty.add(id); clearTimeout(pushTimer); pushTimer=setTimeout(pushDirty,2500)}
+function cloudDirtyMy(){if(!sb||!sbUser) return; dirtyMy=true; clearTimeout(pushTimer); pushTimer=setTimeout(pushDirty,2500)}
+async function needMfa(){const r=await sb.auth.mfa.getAuthenticatorAssuranceLevel(); const a=r&&r.data; return !!(a&&a.nextLevel==="aal2"&&a.currentLevel!=="aal2")}
+const rowOf=it=>({user_id:sbUser.id,id:it.id,name:it.name||"",acft:it.acft||"",data:it.data,updated:it.updated||Date.now(),deleted:false});
+async function pushDirty(){
+  if(!sb||!sbUser) return; if(!navigator.onLine){setCloud("offline");return}
+  if(syncing){syncAgain=true;return}
+  syncing=true;
+  try{
+    if(await needMfa()){setCloud("needs2fa");return}
+    const ids=[...dirty]; dirty.clear(); setCloud("syncing");
+    const rows=[];
+    for(const id of ids){const it=LIBR.items[id]; if(it) rows.push(rowOf(it)); else if(LIBR.deleted[id]) rows.push({user_id:sbUser.id,id,name:"",acft:"",data:{},updated:LIBR.deleted[id],deleted:true})}
+    if(rows.length){const {error}=await sb.from("checklists").upsert(rows,{onConflict:"user_id,id"}); if(error){ids.forEach(i=>dirty.add(i)); throw error}
+      rows.filter(r=>r.deleted).forEach(r=>delete LIBR.deleted[r.id]); lsave()}
+    if(dirtyMy){dirtyMy=false; const {error}=await sb.from("my_items").upsert({user_id:sbUser.id,data:MY,updated:myStamp()||Date.now()},{onConflict:"user_id"}); if(error){dirtyMy=true; throw error}}
+    setCloud("synced");
+  }catch(e){setCloud(navigator.onLine?"error":"offline",(e&&e.message)||"try again")}
+  finally{syncing=false; if(syncAgain){syncAgain=false; pushDirty()}}
+}
+async function syncAll(){
+  if(!sb||!sbUser) return; if(!navigator.onLine){setCloud("offline");return}
+  if(syncing){syncAgain=true;return}
+  syncing=true;
+  try{
+    if(await needMfa()){setCloud("needs2fa");return}
+    setCloud("syncing");
+    if(LIBR.owner&&LIBR.owner!==sbUser.id){
+      if(!confirm("This device has checklists from a different account.\n\nOK = add them to this account too.\nCancel = remove them from this device and load only this account's checklists.")){LIBR.items={}; LIBR.deleted={}; LIBR.current=null}}
+    LIBR.owner=sbUser.id;
+    const curBefore=JSON.stringify((LIBR.items[LIBR.current]||{}).data||null);
+    const {data:rows,error}=await sb.from("checklists").select("id,name,acft,data,updated,deleted"); if(error) throw error;
+    const remote={}; (rows||[]).forEach(r=>{remote[r.id]=r});
+    for(const r of rows||[]){const loc=LIBR.items[r.id], tomb=LIBR.deleted[r.id];
+      if(r.deleted){if(loc&&(loc.updated||0)<=r.updated) delete LIBR.items[r.id]; continue}
+      if(tomb&&tomb>=r.updated) continue;
+      if(!loc||(loc.updated||0)<r.updated){LIBR.items[r.id]={id:r.id,name:r.name,acft:r.acft,created:(loc&&loc.created)||r.updated,updated:r.updated,data:r.data}; if(tomb) delete LIBR.deleted[r.id]}}
+    if((rows||[]).length) for(const id in LIBR.items){if(LIBR.items[id].auto&&!remote[id]) delete LIBR.items[id]}
+    const ups=[];
+    for(const id in LIBR.items){const it=LIBR.items[id], r=remote[id]; if(it.auto) continue; if(!r||(it.updated||0)>r.updated) ups.push(rowOf(it))}
+    for(const id in LIBR.deleted){const r=remote[id]; if(r&&!r.deleted&&r.updated<=LIBR.deleted[id]) ups.push({user_id:sbUser.id,id,name:r.name,acft:r.acft,data:{},updated:LIBR.deleted[id],deleted:true})}
+    if(ups.length){const {error:e2}=await sb.from("checklists").upsert(ups,{onConflict:"user_id,id"}); if(e2) throw e2}
+    LIBR.deleted={}; dirty.clear();
+    const {data:mi,error:e3}=await sb.from("my_items").select("data,updated").maybeSingle(); if(e3) throw e3;
+    if(mi&&mi.updated>myStamp()){MY=mi.data||{}; try{localStorage.setItem(MYKEY,JSON.stringify(MY)); localStorage.setItem("acb-myitems-updated",String(mi.updated))}catch(_){}}
+    else if(!mi||myStamp()>mi.updated){const {error:e4}=await sb.from("my_items").upsert({user_id:sbUser.id,data:MY,updated:myStamp()||Date.now()},{onConflict:"user_id"}); if(e4) throw e4}
+    dirtyMy=false;
+    if(!LIBR.items[LIBR.current]){const n=libSorted()[0]; if(n) LIBR.current=n.id; else {const id=uid(); LIBR.items[id]={id,name:"New checklist",created:Date.now(),updated:Date.now(),acft:"",data:blankData()}; LIBR.current=id}}
+    lsave();
+    if(JSON.stringify(LIBR.items[LIBR.current].data)!==curBefore){S=snap(LIBR.items[LIBR.current].data); if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; try{localStorage.setItem(KEY,JSON.stringify(S))}catch(_){} loadHeader(); renderEditor(); renderPreview(); drawSel()}
+    drawLib(); setCloud("synced");
+  }catch(e){setCloud(navigator.onLine?"error":"offline",(e&&e.message)||"try again")}
+  finally{syncing=false; if(syncAgain){syncAgain=false; pushDirty()}}
+}
+function modalBox(html){const m=document.createElement("div"); m.className="modal"; m.innerHTML=`<div class="box">${html}</div>`; document.body.appendChild(m); m.addEventListener("click",e=>{if(e.target===m) m.remove()}); return m}
+async function mfaVerify(code){
+  if(!/^\d{6}$/.test(code)) return "Enter the 6-digit code from Microsoft Authenticator.";
+  const {data:f,error:e1}=await sb.auth.mfa.listFactors(); if(e1) return e1.message;
+  const t=((f&&f.totp)||[]).find(x=>x.status==="verified")||((f&&f.totp)||[])[0]; if(!t) return "No authenticator is set up for this account.";
+  const {data:ch,error:e2}=await sb.auth.mfa.challenge({factorId:t.id}); if(e2) return e2.message;
+  const {error:e3}=await sb.auth.mfa.verify({factorId:t.id,challengeId:ch.id,code}); return e3?e3.message:"";
+}
+function openSignIn(){
+  const m=modalBox(`<h2>Sign in to sync</h2><p class="help">Optional. Signing in keeps your checklists and ★ My items on every device you sign in on. Without it, everything still works and stays on this device.</p><div id="siStep"></div><div id="siMsg" class="help" style="color:var(--danger);min-height:1.2em"></div><div style="text-align:right;margin-top:8px"><button class="btn" id="siClose">Close</button></div>`);
+  const step=m.querySelector("#siStep"), msg=t=>{m.querySelector("#siMsg").textContent=t||""};
+  m.querySelector("#siClose").onclick=()=>m.remove();
+  let email="";
+  const s1=()=>{msg(""); step.innerHTML=`<label class="f">Email<input type="text" id="siEmail" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="you@example.com"></label><button class="btn primary" id="siSend">Email me a sign-in code</button>`;
+    const e=step.querySelector("#siEmail"), b=step.querySelector("#siSend"); e.value=email; e.focus();
+    const go=async()=>{email=e.value.trim().toLowerCase(); if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg("Enter a valid email address."); msg(""); b.disabled=true; b.textContent="Sending…";
+      const {error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});
+      if(error){b.disabled=false; b.textContent="Email me a sign-in code"; return msg(error.message)} s2()};
+    b.onclick=go; e.onkeydown=ev=>{if(ev.key==="Enter") go()}};
+  const s2=()=>{msg(""); step.innerHTML=`<p>We emailed a sign-in code to <b>${esc(email)}</b>. Type it here. (Check spam if it's not there in a minute.)</p><label class="f">Sign-in code<input type="text" id="siCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456"></label><button class="btn primary" id="siVerify">Sign in</button> <button class="btn small" id="siBack">Use a different email</button>`;
+    const c=step.querySelector("#siCode"), b=step.querySelector("#siVerify"); c.focus(); step.querySelector("#siBack").onclick=s1;
+    const go=async()=>{const token=c.value.replace(/\s/g,""); if(!/^\d{6,10}$/.test(token)) return msg("Enter the code from the email."); msg(""); b.disabled=true;
+      const {error}=await sb.auth.verifyOtp({email,token,type:"email"}); b.disabled=false; if(error) return msg(error.message);
+      if(await needMfa()) return s3(); m.remove()};
+    b.onclick=go; c.onkeydown=ev=>{if(ev.key==="Enter") go()}};
+  const s3=()=>{msg(""); step.innerHTML=`<p>Two-step sign-in is on for this account. Open <b>Microsoft Authenticator</b> and type the 6-digit code for Checklist Builder.</p><label class="f">Authenticator code<input type="text" id="siTotp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label><button class="btn primary" id="siTotpGo">Verify</button>`;
+    const c=step.querySelector("#siTotp"), b=step.querySelector("#siTotpGo"); c.focus();
+    const go=async()=>{b.disabled=true; const r=await mfaVerify(c.value.trim()); b.disabled=false; if(r) return msg(r); m.remove(); syncAll()};
+    b.onclick=go; c.onkeydown=ev=>{if(ev.key==="Enter") go()}};
+  if(sbUser) s3(); else s1();
+}
+async function openAccount(){
+  const {data:f}=await sb.auth.mfa.listFactors(); const on=((f&&f.all)||[]).some(x=>x.factor_type==="totp"&&x.status==="verified");
+  const m=modalBox(`<h2>Your account</h2><p>Signed in as <b>${esc(sbUser.email||"")}</b></p><p class="help" id="acState">${esc($("libSaved").textContent)}</p>
+    <div class="outbar"><button class="btn small" id="acSync">⟳ Sync now</button></div>
+    <h3>Two-step sign-in</h3><div id="acMfa"></div>
+    <h3>Sign out</h3><div class="outbar"><button class="btn small" id="acOut">Sign out (keep checklists on this device)</button><button class="btn small" id="acWipe" style="color:var(--danger)">Sign out and remove them from this device</button></div>
+    <div style="text-align:right;margin-top:12px"><button class="btn" id="acClose">Close</button></div>`);
+  m.querySelector("#acClose").onclick=()=>m.remove();
+  m.querySelector("#acSync").onclick=()=>{m.remove(); syncAll()};
+  m.querySelector("#acOut").onclick=async()=>{m.remove(); await sb.auth.signOut()};
+  m.querySelector("#acWipe").onclick=async()=>{if(!confirm("Remove all checklists and ★ My items from this device?\n\nThey stay in your account and come back when you sign in again.")) return;
+    await pushDirty(); await sb.auth.signOut(); [LKEY,KEY,MYKEY,"acb-myitems-updated"].forEach(k=>{try{localStorage.removeItem(k)}catch(_){}}); location.reload()};
+  const box=m.querySelector("#acMfa");
+  const drawM=on=>{box.innerHTML=on?`<p>✓ On. Microsoft Authenticator is required when you sign in on a new device.</p><button class="btn small" id="acOff" style="color:var(--danger)">Turn off two-step sign-in</button>`
+      :`<p class="help">Optional extra security: after the email code, you also type a code from <b>Microsoft Authenticator</b> on your phone. Tip: add it on two devices (phone and iPad) so losing one doesn't lock you out.</p><button class="btn small primary" id="acOn">Turn on with Microsoft Authenticator</button>`;
+    if(on) box.querySelector("#acOff").onclick=async()=>{if(!confirm("Turn off two-step sign-in?")) return; const {data:f}=await sb.auth.mfa.listFactors(); for(const x of (f&&f.all)||[]) if(x.factor_type==="totp") await sb.auth.mfa.unenroll({factorId:x.id}); try{await sb.auth.refreshSession()}catch(_){} drawM(false)};
+    else box.querySelector("#acOn").onclick=enroll};
+  const enroll=async()=>{const {data:f}=await sb.auth.mfa.listFactors(); for(const x of (f&&f.all)||[]) if(x.factor_type==="totp"&&x.status!=="verified") await sb.auth.mfa.unenroll({factorId:x.id});
+    const {data,error}=await sb.auth.mfa.enroll({factorType:"totp",friendlyName:"Microsoft Authenticator "+new Date().toISOString().slice(0,16),issuer:"Checklist Builder"});
+    if(error){box.insertAdjacentHTML("beforeend",`<p class="help" style="color:var(--danger)">${esc(error.message)}</p>`); return}
+    box.innerHTML=`<ol class="help" style="padding-left:20px"><li>Open <b>Microsoft Authenticator</b>, tap <b>＋</b>, then <b>Other account</b>.</li><li>Scan this code. (On this same phone? Choose <b>Enter code manually</b> instead.)</li><li>Type the 6-digit code it shows, then tap Confirm.</li></ol>
+      <div style="text-align:center"><img src="${data.totp.qr_code}" alt="QR code for Microsoft Authenticator" style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px"></div>
+      <p class="help">Manual setup key: <code style="user-select:all;word-break:break-all">${esc(data.totp.secret)}</code></p>
+      <label class="f">6-digit code<input type="text" id="acCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label><button class="btn primary" id="acConfirm">Confirm</button><div id="acErr" class="help" style="color:var(--danger)"></div>`;
+    box.querySelector("#acConfirm").onclick=async()=>{const code=box.querySelector("#acCode").value.trim(); const err=t=>{box.querySelector("#acErr").textContent=t};
+      if(!/^\d{6}$/.test(code)) return err("Enter the 6-digit code.");
+      const {data:ch,error:e1}=await sb.auth.mfa.challenge({factorId:data.id}); if(e1) return err(e1.message);
+      const {error:e2}=await sb.auth.mfa.verify({factorId:data.id,challengeId:ch.id,code}); if(e2) return err(e2.message); drawM(true)}};
+  drawM(on);
+}
+function drawAcct(){const b=$("acctBtn"); if(!b) return; if(!sb){b.hidden=true; return} b.hidden=false; b.textContent=sbUser?(cloudState==="needs2fa"?"🔒 ":"☁ ")+((sbUser.email||"Account").split("@")[0]):"👤 Sign in"}
+if(sb){
+  $("acctBtn").onclick=()=>{if(!sbUser||cloudState==="needs2fa") openSignIn(); else openAccount()};
+  $("libHelp").innerHTML+=" <b>Sign in</b> (top of the screen) to keep them on every device automatically.";
+  sb.auth.onAuthStateChange((ev,session)=>{const was=sbUser&&sbUser.id; sbUser=(session&&session.user)||null; drawAcct();
+    if(!sbUser){setCloud("local"); return}
+    if(ev==="INITIAL_SESSION"||ev==="MFA_CHALLENGE_VERIFIED"||(ev==="SIGNED_IN"&&was!==sbUser.id)) setTimeout(syncAll,0)});
+  window.addEventListener("online",()=>syncAll());
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible") syncAll()});
+}
+drawAcct();
 renderChips(); renderEditor(); renderPreview(); drawSel(); drawLib();
 })();
 </script>

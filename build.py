@@ -17,6 +17,10 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.3.0  2026-10-03  Steve  Bundles supabase-js (vendored, checksum-verified)
+                            and the cloud config (project URL + publishable
+                            key) from data/app.yaml; refuses secret keys.
+                            Builds app 1.15.
   2.2.0  2026-10-03  Steve  Section 'when' line and 'plain' (un-numbered
                             reference block) fields; unique whole-number
                             'order' check. Emits LIB_WHEN / LIB_PLAIN.
@@ -43,12 +47,12 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.2.0"
+SCRIPT_VERSION = "2.3.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
 VALID_VALIDITY = {"none", "90d", "24cm", "2cm", "flight"}
-PLACEHOLDERS = ["{{LIB_RAW}}\n", "{{SECTION_MATCH}}", "{{ACFT_RAW}}\n", "{{MODELS}}\n",
+PLACEHOLDERS = ["<<<SUPABASE_LIB>>>", "{{CLOUD_CONFIG}}\n", "{{LIB_RAW}}\n", "{{SECTION_MATCH}}", "{{ACFT_RAW}}\n", "{{MODELS}}\n",
                 "{{ENDORSEMENTS}}\n", "{{VERSION_AND_CHANGELOG}}\n", "<<<DOCX_LIB>>>"]
 
 
@@ -260,6 +264,25 @@ def build_endorsements():
 
 
 # ---------------------------------------------------------------- docx library
+def load_vendor(name, filename, want):
+    path = os.path.join(ROOT, "vendor", filename)
+    need(os.path.exists(path), f"missing vendor/{filename}")
+    data = open(path, "rb").read()
+    need(sha256(data) == want, f"vendor/{filename} checksum mismatch (expected {want})")
+    return data.decode("utf-8").replace("</script", "<\\/script").replace("\ufffd", "\\uFFFD")
+
+
+def cloud_config(app):
+    c = app.get("cloud") or {}
+    url, key = str(c.get("url") or ""), str(c.get("publishable_key") or "")
+    if c.get("enabled"):
+        need(re.fullmatch(r"https://[a-z0-9]{20}\.supabase\.co", url), "data/app.yaml cloud.url must look like https://<20-char-ref>.supabase.co")
+        need(key.startswith("sb_publishable_"), "data/app.yaml cloud.publishable_key must be the PUBLISHABLE key (sb_publishable_...), never a secret key")
+    need("sb_secret_" not in json.dumps(c) and "service_role" not in json.dumps(c), "data/app.yaml must never contain a secret / service_role key")
+    on = bool(c.get("enabled"))
+    return "const CLOUD=" + json.dumps({"enabled": on, "url": url if on else "", "key": key if on else ""}) + ";\n"
+
+
 def load_docx(app):
     ver, want = app["docx"]["version"], app["docx"]["sha256"]
     path = os.path.join(ROOT, "vendor", f"docx-{ver}.iife.js")
@@ -309,7 +332,9 @@ def main(argv=None):
         html = (tmpl.replace("{{LIB_RAW}}\n", lib).replace("{{SECTION_MATCH}}", match)
                     .replace("{{ACFT_RAW}}\n", acft).replace("{{MODELS}}\n", models)
                     .replace("{{ENDORSEMENTS}}\n", endo).replace("{{VERSION_AND_CHANGELOG}}\n", ver_js)
-                    .replace("<<<DOCX_LIB>>>", load_docx(app)))
+                    .replace("<<<DOCX_LIB>>>", load_docx(app))
+                    .replace("{{CLOUD_CONFIG}}\n", cloud_config(app))
+                    .replace("<<<SUPABASE_LIB>>>", load_vendor("supabase-js", f"supabase-js-{app['supabase_js']['version']}.umd.js", app["supabase_js"]["sha256"])))
         notes = []
         check_output(html, notes)
     except BuildError as e:
@@ -334,7 +359,7 @@ def main(argv=None):
         "built_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "commit": os.environ.get("GITHUB_SHA", ""), "python": sys.version.split()[0],
         "output": {"file": "index.html", "bytes": len(data), "sha256": sha256(data)},
-        "inputs": inputs, "docx": app["docx"],
+        "inputs": inputs, "docx": app["docx"], "supabase_js": app.get("supabase_js"), "cloud_enabled": bool((app.get("cloud") or {}).get("enabled")),
         "content": {"pick_list_sections": n_secs, "pick_list_items": n_items, "aircraft": n_ac,
                     "suggested_models": minfo, "endorsements": einfo},
         "changelog_top": app["changelog"][0],

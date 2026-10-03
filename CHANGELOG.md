@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.15 | 2026-10-03 | Optional accounts (Supabase): email-code sign-in, optional Microsoft Authenticator (TOTP) two-step, sync of checklists and My items across devices with offline queue and newest-wins merge, delete tombstones, account panel. Database setup in supabase/001_checklists.sql (owner-only RLS + MFA-when-enrolled). |
 | 1.14 | 2026-10-03 | My checklists library (named, multiple, autosave, duplicate/delete), backup/restore all with merge-by-newest, tail number on the card, single-file open adds a new checklist. Top-of-screen 📁 switcher. Phone-width aircraft search fix. Groundwork for account sync. |
 | 1.13 | 2026-10-03 | 47 airliners: Boeing 707 to 787 (incl. full 777 family), Airbus A300 to A380 (incl. neo family, A350), DC-8, DC-10, MD-11, L-1011, Concorde, C919. Study/flow-practice note applies. Data only. |
 | 1.12 | 2026-10-03 | ~140 more aircraft (~575): regional jets and turboprops (CRJ, ERJ, E-Jets, A220, 717, MD-80/90, BAe 146, ATR, Dash 7/8, Saab, Brasilia, Jetstream 41, Fokker, Dornier), Seminole DX, Cirrus G7+, more variants, LSA, aerobatic, kit, warbirds. Fixed Corvalis/TTx gear flag (fixed, not retractable); MU-2 short-body name. |
@@ -22,6 +23,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.3.0 | 2026-10-03 | Vendored supabase-js + cloud config from app.yaml (publishable key only; secret keys refused). Builds app 1.15. |
 | 2.2.0 | 2026-10-03 | Section `when` and `plain` fields, unique `order` check; emits LIB_WHEN / LIB_PLAIN. Builds app 1.09. |
 | 2.1.0 | 2026-10-03 | Pick-list default fields (`default_section`, item `default`) and LIB_DEFAULTS output. Builds app 1.08. |
 | 2.0.0 | 2026-10-03 | Repository layout: data in YAML, template in src/, vendored docx, index.html output, GitHub Actions deploy. Verified identical app output to 1.2.0. |

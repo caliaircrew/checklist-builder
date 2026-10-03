@@ -1,12 +1,25 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.14'
+app_version: '1.15'
 show_drafts: true
 docx:
   version: 9.6.1
   sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
+supabase_js:
+  version: 2.117.2
+  sha256: 59d39487c3589843b410322d8a3d562ce022aba1e5ccb16898ef3fb2a0da2ecd
+cloud:                       # optional sign-in & sync (Supabase). Only the PUBLISHABLE key goes here.
+  enabled: true
+  url: https://egpfdyvksqierfdkogwe.supabase.co
+  publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.15'
+    notes:
+      - "Optional sign-in (👤 Sign in, top of the screen): enter your email, type the 6-digit code we send, and your checklists and ★ My items sync to every device you sign in on. No passwords. Without signing in, everything still works on this device"
+      - "Optional two-step sign-in with Microsoft Authenticator (Your account → Turn on): after the email code, you also type the code from the app"
+      - "Works offline: each device keeps its own copy and catches up when it's back online. If the same checklist was changed on two devices, the most recent change wins"
+      - "Your account panel: Sync now, turn two-step sign-in on or off, sign out, or sign out and remove your checklists from a shared device"
   - version: '1.14'
     notes:
       - "New: 📁 My checklists. Keep as many checklists as you like on each device, each with your own name (tail number, aircraft, club). Switch between them, duplicate one to start a similar airplane, or delete old ones. Everything saves automatically and works offline. A 📁 dropdown at the top of the screen switches between them from anywhere"

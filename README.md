@@ -29,7 +29,8 @@ publishes it. Pull requests are built and checked but not published.
 | `data/models/*.yaml` | Suggested checklists for specific models, with review status |
 | `data/endorsements/ac-61-65k.yaml` | All 96 AC 61-65K endorsements (+ § 61.195(h)) with wording status |
 | `src/app_template.html` | Page layout, styles and behavior (placeholders are filled from the data) |
-| `vendor/` | The docx library used for Word export (checksum-verified) |
+| `vendor/` | docx (Word export) and supabase-js (sign-in & sync), checksum-verified |
+| `supabase/` | Database setup SQL for optional accounts (run once in Supabase's SQL Editor) |
 | `docs/CHANGE_MANAGEMENT.md` | How changes are requested, reviewed, versioned, released and rolled back |
 | `CHANGELOG.md` | Release history |
 
