@@ -12,6 +12,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 5. Helicopters: ~40 types, helicopter category, ~10 helicopter pick lists, helicopter defaults (v1.20)
 - [ ] 6. SFAR 73 (Robinson R22/R44) awareness-training endorsements, verified against the FAA text
 - [ ] 7. Offline install (PWA): home-screen icon, works without signal
+- [ ] 7a. Fly mode (iPad landscape): one section at a time, large type, tap to check each line, swipe to next section, Reset; optional night mode (dim red on black); "verify against AFM/POH" note
 
 ## C. Website
 - [ ] 8. Partners page (small): insurance, sim training, flight schools; labeled sponsored; "Become a partner" contact
@@ -24,12 +25,13 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 13. Profile editor (build → publish/unpublish) and public profile page
 - [ ] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
 - [ ] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
+- [ ] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)
 - [ ] 15. Admin review for James (approve, hide, handle reports)
 - [ ] 16. Homepage update; invite James's network
 
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile
-- [ ] 18. Owner accounts + messaging (pilots choose when to share phone/email)
+- [ ] 18. Messaging between operators and crew (pilots choose when to share phone/email); later "Notify me" when a new operator of an aircraft type joins
 - [ ] 19. Availability calendar (dates, home base, travel radius)
 - [ ] 20. Verification badges (FAA airmen database match; sim training checked by James)
 - [ ] 21. Currency & expiration tracker with email reminders; "current" badge; owner aircraft inspections due
@@ -49,6 +51,29 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - Layout rules: spacing on an 8 px scale (8/16/24/32/48/64); repeated items (steps, cards, tiles) in equal-width grids so icons, circles and headings line up regardless of text length; one main (sky-blue) action per screen.
 - Homepage headline: "Find the right pilot for every aircraft, / and the right tool for the job."
 - [ ] Apply the clear-sky look and new headline to the live homepage and checklist builder
+- iPad rule: portrait shows one thing at a time; landscape shows a list on the left and details on the right (rotating never changes how anything works):
+  - Find crew: results left, selected profile right
+  - Browse by aircraft: categories left, tiles / aircraft page right
+  - My profile editor: form left, live public-profile preview right
+  - Messages: conversations left, open conversation right
+  - Crew profile: details beside the availability calendar
+  - CFI endorsements and résumé: form beside the finished version
+  - Checklist builder: editor + print preview (done), plus Fly mode (item 7a)
+
+### Screens on the design canvas
+- [x] Style guide · Homepage · Find crew · Browse by aircraft · Aircraft page (Citation XLS) · Crew profile (phone) · Checklist builder (phone)
+- [ ] Find crew, iPad landscape (results + profile side by side)
+- [ ] Fly mode (iPad landscape, day and night)
+- [ ] My profile editor (with live preview; "I fly this aircraft" tiles)
+- [ ] Operator profile + aircraft page "Operators flying this aircraft" tab
+- [ ] Sign in and Account (two-step sign-in, currency and expiration tracker)
+- [ ] Messages
+- [ ] Availability calendar
+- [ ] One-tap résumé (PDF)
+- [ ] Partners page
+- [ ] Admin review
+- [ ] Terms and Privacy
+- Find a CFI = a preset view of Find crew (no separate design)
 
 ## Guardrails (from earlier decisions)
 - No aircraft-for-sale or charter listings (different business; charter-broker risk). Operator profiles ("aircraft that need crew") are Phase 2.
