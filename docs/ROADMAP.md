@@ -12,6 +12,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 5. Helicopters: ~40 types, helicopter category, ~10 helicopter pick lists, helicopter defaults (v1.20)
 - [ ] 6. SFAR 73 (Robinson R22/R44) awareness-training endorsements, verified against the FAA text
 - [ ] 7. Offline install (PWA): home-screen icon, works without signal
+- [ ] 7b. Checklist builder theme matches the rest of the site: clear-sky palette, white top bar with Cali Aircrew logo and the same menu (Checklists, Crew, Partners, Sign in), Barlow Condensed + Source Sans 3, sky-blue main buttons, 8 px spacing, phone bottom tab bar (printed card keeps its black-and-white print style)
 - [ ] 7a. Fly mode (iPad landscape): one section at a time, large type, tap to check each line, swipe to next section, Reset; optional night mode (dim red on black); "verify against AFM/POH" note
 
 ## C. Website
@@ -50,7 +51,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - Look and feel: "clear sky" palette (sky ink #234A6E, sky blue #2470B3 for the main action, cloud #E4EEF8, page #F4F8FC, white cards, sage for verified/current), Barlow Condensed + Source Sans 3, white top bar on computers, bottom tab bar on phones. Design canvas: https://claude.ai/artifact/Aq6Toqrz36YdWrZXiHgfjz
 - Layout rules: spacing on an 8 px scale (8/16/24/32/48/64); repeated items (steps, cards, tiles) in equal-width grids so icons, circles and headings line up regardless of text length; one main (sky-blue) action per screen.
 - Homepage headline: "Find the right pilot for every aircraft, / and the right tool for the job."
-- [ ] Apply the clear-sky look and new headline to the live homepage and checklist builder
+- [x] Clear-sky look and new headline on the live homepage (v1.20); checklist builder: see item 7b
 - iPad rule: portrait shows one thing at a time; landscape shows a list on the left and details on the right (rotating never changes how anything works):
   - Find crew: results left, selected profile right
   - Browse by aircraft: categories left, tiles / aircraft page right
