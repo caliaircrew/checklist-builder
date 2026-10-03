@@ -5,3 +5,4 @@ aircraft:
   - {seq: 184, id: socata-tb-20-tb-21-trinidad, make: Socata, model: TB 20 / TB 21 Trinidad, years: 1980–2012, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Trinidad}
   - {seq: 432, id: socata-rallye, make: Socata, model: Rallye, years: 1959–1990s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: STOL}
   - {seq: 433, id: socata-tb-30-epsilon, make: Socata, model: TB 30 Epsilon, years: 1979–1989, engine: piston, twin: false, retractable: true, pressurized: false, search_words: aerobatic trainer}
+  - {seq: 571, id: socata-tb-200-tobago-xl, make: Socata, model: TB 200 Tobago XL, years: 1991–2012, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Tobago XL}

@@ -2,3 +2,4 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 189, id: britten-norman-bn-2-islander, make: Britten-Norman, model: BN-2 Islander, years: 1965–present, engine: piston, twin: true, retractable: false, pressurized: false, search_words: Islander}
+  - {seq: 535, id: britten-norman-bn-2a-mk-iii-trislander, make: Britten-Norman, model: BN-2A Mk III Trislander, years: 1970–1984, engine: piston, twin: true, retractable: false, pressurized: false, search_words: Trislander three-engine}

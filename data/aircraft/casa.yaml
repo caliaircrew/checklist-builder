@@ -1,0 +1,4 @@
+# Aircraft: CASA. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 478, id: casa-c-212-aviocar, make: CASA, model: C-212 Aviocar, years: 1974–2013, engine: turboprop, twin: true, retractable: false, pressurized: false, search_words: utility STOL}

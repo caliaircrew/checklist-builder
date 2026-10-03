@@ -10,3 +10,4 @@ aircraft:
   - {seq: 70, id: challenger-350, make: Bombardier Challenger, model: '350', years: 2014–2023, engine: jet, twin: true, retractable: true, pressurized: true, search_words: BD-100 CL350}
   - {seq: 71, id: challenger-3500, make: Bombardier Challenger, model: '3500', years: 2021–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: BD-100}
   - {seq: 72, id: challenger-850-870-890, make: Bombardier Challenger, model: 850 / 870 / 890 (CRJ-based), years: 2006–2015, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CRJ200 SE}
+  - {seq: 481, id: bombardier-challenger-870-890, make: Bombardier Challenger, model: 870 / 890 (CRJ-based), years: 2008–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Challenger 870}

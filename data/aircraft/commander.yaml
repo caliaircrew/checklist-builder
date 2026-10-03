@@ -2,3 +2,4 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 165, id: commander-112-114-114b-114tc, make: Commander, model: 112 / 114 / 114B / 114TC, years: 1972–2002, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Rockwell Commander Aero Commander 112 114}
+  - {seq: 568, id: commander-115-115tc, make: Commander, model: 115 / 115TC, years: 1990s–2002, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Commander 115}

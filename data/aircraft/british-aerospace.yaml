@@ -2,3 +2,5 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 352, id: british-aerospace-jetstream-31-32, make: British Aerospace, model: Jetstream 31 / 32, years: 1982–1993, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Jetstream}
+  - {seq: 456, id: british-aerospace-bae-146-avro-rj70-rj85-rj100, make: British Aerospace, model: BAe 146 / Avro RJ70 / RJ85 / RJ100, years: 1983–2003, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner four-engine}
+  - {seq: 474, id: british-aerospace-jetstream-41, make: British Aerospace, model: Jetstream 41, years: 1992–1997, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop}

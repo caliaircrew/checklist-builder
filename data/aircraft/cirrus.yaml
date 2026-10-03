@@ -22,3 +22,5 @@ aircraft:
   - {seq: 222, id: cirrus-sr22t-g7, make: Cirrus, model: SR22T G7, years: 2023–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22T turbo}
   - {seq: 223, id: cirrus-sf50-vision-jet-g1, make: Cirrus, model: SF50 Vision Jet G1, years: 2016–2021, engine: jet, twin: false, retractable: true, pressurized: true, search_words: Vision Jet}
   - {seq: 224, id: cirrus-sf50-vision-jet-g2-g2, make: Cirrus, model: SF50 Vision Jet G2 / G2+, years: 2022–present, engine: jet, twin: false, retractable: true, pressurized: true, search_words: Vision Jet}
+  - {seq: 497, id: cirrus-sr20-g7-2, make: Cirrus, model: SR20 G7+ (Garmin Autoland), years: 2025–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR20 Autoland}
+  - {seq: 498, id: cirrus-sr22-g7-sr22t-g7, make: Cirrus, model: SR22 G7+ / SR22T G7+ (Garmin Autoland), years: 2025–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22 Autoland}

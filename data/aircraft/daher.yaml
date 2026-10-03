@@ -9,3 +9,4 @@ aircraft:
   - {seq: 235, id: daher-tbm-960, make: Daher, model: TBM 960, years: 2022–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: TBM960}
   - {seq: 236, id: daher-kodiak-100-series-ii-iii, make: Daher, model: Kodiak 100 Series II / III, years: 2019–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Kodiak Quest}
   - {seq: 237, id: daher-kodiak-900, make: Daher, model: Kodiak 900, years: 2023–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Kodiak}
+  - {seq: 495, id: daher-kodiak-100-on-floats, make: Daher, model: Kodiak 100 on floats (amphibian), years: 2010s–present, engine: turboprop, twin: false, retractable: true, pressurized: false, search_words: amphibian}

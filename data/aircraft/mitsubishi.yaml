@@ -3,4 +3,5 @@
 aircraft:
   - {seq: 146, id: mitsubishi-mu-2, make: Mitsubishi, model: MU-2, years: 1963–1986, engine: turboprop, twin: true, retractable: true, pressurized: true}
   - {seq: 205, id: mitsubishi-mu-300-diamond, make: Mitsubishi, model: MU-300 Diamond, years: 1981–1985, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Diamond I}
-  - {seq: 349, id: mitsubishi-mu-2b-short-body, make: Mitsubishi, model: 'MU-2B short body (Solitaire, Marquise)', years: 1965–1986, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: MU-2B-40 Solitaire MU-2B-60 Marquise}
+  - {seq: 349, id: mitsubishi-mu-2b-short-body, make: Mitsubishi, model: 'MU-2B short body (incl. Solitaire)', years: 1965–1986, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: MU-2B-40 Solitaire short body}
+  - {seq: 493, id: mitsubishi-mu-2b-long-body, make: Mitsubishi, model: MU-2B long body (N / P models), years: 1970s–1986, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: MU-2 Marquise long body}

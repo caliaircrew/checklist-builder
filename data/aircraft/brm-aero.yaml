@@ -1,0 +1,4 @@
+# Aircraft: BRM Aero. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 546, id: brm-aero-bristell-ng5-b23, make: BRM Aero, model: Bristell NG5 / B23, years: 2011–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA trainer}

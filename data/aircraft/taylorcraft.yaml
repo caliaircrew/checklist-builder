@@ -1,0 +1,4 @@
+# Aircraft: Taylorcraft. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 541, id: taylorcraft-bc-12d-f-19-f-21, make: Taylorcraft, model: BC-12D / F-19 / F-21, years: 1946–1980s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Taylorcraft tailwheel}

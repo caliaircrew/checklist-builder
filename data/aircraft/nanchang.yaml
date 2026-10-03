@@ -1,0 +1,4 @@
+# Aircraft: Nanchang. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 561, id: nanchang-cj-6, make: Nanchang, model: CJ-6, years: 1958–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: warbird radial}

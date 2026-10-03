@@ -1,12 +1,17 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.11'
+app_version: '1.12'
 show_drafts: true
 docx:
   version: 9.6.1
   sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
 changelog:
+  - version: '1.12'
+    notes:
+      - "About 140 more aircraft (now about 575), including regional jets and turboprops for airline-track students: CRJ100 to CRJ1000, ERJ-135/140/145, E170 to E195 and E2, A220, 717, MD-80/90, BAe 146/Avro RJ, ATR 42/72, Dash 7 and Dash 8/Q400, Saab 340/2000, Brasilia, Jetstream 41, Fokker, Dornier 228/328. Airlines fly these from company checklists, so cards made here are for study and flow practice"
+      - "Also new: Seminole DX and Cirrus G7+ with Autoland (current training fleets), more Cessna, Piper, Beech and Mooney variants, light-sport trainers, aerobatic and kit aircraft, warbirds and classic taildraggers"
+      - "Fixed: the Columbia / Cessna 350-400 Corvalis / TTx is now listed with fixed landing gear; MU-2 short-body entry renamed"
   - version: '1.11'
     notes:
       - "Over 200 more aircraft (now about 430), including each Cirrus SR20/SR22/SR22T generation and Vision Jet, every Pilatus PC-12 version plus PC-7/PC-9, the TBM 700 through 960, Piper M-class and Malibu/Matrix, King Air variants from the C90 to the 360, Learjet, Global, Gulfstream, Falcon and Hawker variants, Phenom/Praetor, ACJ and BBJ, plus a deep set of aerobatic, training, light-sport, warbird, amphibian and kit aircraft"

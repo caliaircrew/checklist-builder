@@ -1,0 +1,7 @@
+# Aircraft: Fokker. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 454, id: fokker-f28-fellowship, make: Fokker, model: F28 Fellowship, years: 1969–1987, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner}
+  - {seq: 455, id: fokker-70-100, make: Fokker, model: 70 / 100, years: 1988–1997, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner F100}
+  - {seq: 475, id: fokker-50, make: Fokker, model: '50', years: 1987–1997, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 476, id: fokker-f27-friendship, make: Fokker, model: F27 Friendship, years: 1958–1987, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}

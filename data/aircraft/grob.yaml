@@ -3,3 +3,4 @@
 aircraft:
   - {seq: 322, id: grob-g115-tutor, make: Grob, model: G115 / Tutor, years: 1987–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic trainer}
   - {seq: 323, id: grob-g120a-g120tp, make: Grob, model: G120A / G120TP, years: 1999–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: trainer}
+  - {seq: 575, id: grob-g109, make: Grob, model: G109 (motorglider), years: 1981–1990s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: motorglider}

@@ -3,3 +3,4 @@
 aircraft:
   - {seq: 338, id: yakovlev-yak-52-yak-52tw, make: Yakovlev, model: Yak-52 / Yak-52TW, years: 1979–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: aerobatic radial}
   - {seq: 339, id: yakovlev-yak-18t, make: Yakovlev, model: Yak-18T, years: 1973–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: radial}
+  - {seq: 558, id: yakovlev-yak-54-yak-55, make: Yakovlev, model: Yak-54 / Yak-55, years: 1982–2000s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic radial}

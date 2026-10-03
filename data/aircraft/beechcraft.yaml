@@ -43,3 +43,9 @@ aircraft:
   - {seq: 280, id: beechcraft-99-airliner, make: Beechcraft, model: 99 Airliner, years: 1968–1986, engine: turboprop, twin: true, retractable: true, pressurized: false, search_words: Beech 99 commuter}
   - {seq: 281, id: beechcraft-1900c-1900d, make: Beechcraft, model: 1900C / 1900D, years: 1984–2002, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Beech 1900 corporate shuttle}
   - {seq: 399, id: beechcraft-premier-ia, make: Beechcraft, model: Premier IA, years: 2006–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Premier}
+  - {seq: 492, id: beechcraft-t-34c-turbo-mentor, make: Beechcraft, model: T-34C Turbo Mentor, years: 1977–1990, engine: turboprop, twin: false, retractable: true, pressurized: false, search_words: warbird turboprop}
+  - {seq: 523, id: beechcraft-a36tc-b36tc-turbo-bonanza, make: Beechcraft, model: A36TC / B36TC Turbo Bonanza, years: 1979–2002, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Turbo Bonanza}
+  - {seq: 524, id: beechcraft-f33a-f33c-bonanza, make: Beechcraft, model: F33A / F33C Bonanza (aerobatic), years: 1970–1994, engine: piston, twin: false, retractable: true, pressurized: false, search_words: F33C aerobatic}
+  - {seq: 525, id: beechcraft-56tc-turbo-baron, make: Beechcraft, model: 56TC Turbo Baron, years: 1967–1971, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Baron 56TC}
+  - {seq: 526, id: beechcraft-b60-duke, make: Beechcraft, model: B60 Duke, years: 1974–1982, engine: piston, twin: true, retractable: true, pressurized: true, search_words: Duke}
+  - {seq: 527, id: beechcraft-bonanza-35, make: Beechcraft, model: Bonanza 35 (early V-tail), years: 1947–1969, engine: piston, twin: false, retractable: true, pressurized: false, search_words: V-tail Bonanza}

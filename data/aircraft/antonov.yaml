@@ -1,0 +1,4 @@
+# Aircraft: Antonov. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 565, id: antonov-an-2, make: Antonov, model: An-2, years: 1947–2001, engine: piston, twin: false, retractable: false, pressurized: false, search_words: biplane radial utility}

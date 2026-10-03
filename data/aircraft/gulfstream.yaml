@@ -17,3 +17,5 @@ aircraft:
   - {seq: 380, id: gulfstream-g500-g550, make: Gulfstream, model: G500 (GV-SP) / G550, years: 2003–2021, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G550}
   - {seq: 381, id: gulfstream-g500-g600-2, make: Gulfstream, model: G500 (2018) / G600, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G600}
   - {seq: 382, id: gulfstream-g800, make: Gulfstream, model: G800, years: 2025–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G800}
+  - {seq: 485, id: gulfstream-g-1159-gii-gii-b-gii-sp, make: Gulfstream, model: G-1159 GII / GII-B / GII-SP, years: 1967–1980, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G2 GII}
+  - {seq: 486, id: gulfstream-g-1159a-giii, make: Gulfstream, model: G-1159A GIII, years: 1980–1986, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G3 GIII}

@@ -2,3 +2,4 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 400, id: airbus-acj318-acj319-acj320, make: Airbus, model: ACJ318 / ACJ319 / ACJ320, years: 2000s–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Airbus Corporate Jet bizliner}
+  - {seq: 449, id: airbus-a220-100-a220-300, make: Airbus, model: A220-100 / A220-300 (CSeries), years: 2016–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner CS100 CS300}

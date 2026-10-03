@@ -11,3 +11,5 @@ aircraft:
   - {seq: 288, id: mooney-m20r-ovation, make: Mooney, model: M20R Ovation, years: 1994–2019, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Ovation}
   - {seq: 289, id: mooney-m20tn-acclaim, make: Mooney, model: M20TN Acclaim, years: 2006–2019, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Acclaim turbo}
   - {seq: 290, id: mooney-m20v-acclaim-ultra-m20u-ovation-ultra, make: Mooney, model: M20V Acclaim Ultra / M20U Ovation Ultra, years: 2017–2019, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Ultra}
+  - {seq: 528, id: mooney-m20-m20a, make: Mooney, model: M20 / M20A (wood wing), years: 1955–1960, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Mooney Mark 20}
+  - {seq: 529, id: mooney-m20g-statesman, make: Mooney, model: M20G Statesman, years: 1968–1970, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Statesman}

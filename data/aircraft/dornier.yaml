@@ -1,0 +1,6 @@
+# Aircraft: Dornier. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 457, id: dornier-328jet, make: Dornier, model: 328JET, years: 1999–2002, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet}
+  - {seq: 458, id: dornier-328, make: Dornier, model: 328 (turboprop), years: 1993–2000, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop}
+  - {seq: 459, id: dornier-228-228-ng, make: Dornier, model: 228 / 228 NG, years: 1981–present, engine: turboprop, twin: true, retractable: true, pressurized: false, search_words: utility commuter}

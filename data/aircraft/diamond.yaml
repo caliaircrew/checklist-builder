@@ -9,3 +9,7 @@ aircraft:
   - {seq: 312, id: diamond-da20-c1-eclipse-evolution, make: Diamond, model: DA20-C1 Eclipse / Evolution, years: 1998–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: DA20 trainer}
   - {seq: 313, id: diamond-da40-xls-ng-ngx, make: Diamond, model: DA40 XLS / NG / NGX, years: 2005–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: DA40 diesel}
   - {seq: 314, id: diamond-da42-vi-ng, make: Diamond, model: DA42-VI / NG, years: 2013–present, engine: piston, twin: true, retractable: true, pressurized: false, search_words: DA42 diesel}
+  - {seq: 530, id: diamond-da42-tdi, make: Diamond, model: DA42 TDI (Thielert), years: 2004–2009, engine: piston, twin: true, retractable: true, pressurized: false, search_words: DA42 diesel}
+  - {seq: 531, id: diamond-da40-cs-fp, make: Diamond, model: DA40 CS / FP, years: 2000–2010, engine: piston, twin: false, retractable: false, pressurized: false, search_words: DA40}
+  - {seq: 532, id: diamond-da62-mpp-surveillance, make: Diamond, model: DA62 MPP / surveillance, years: 2018–present, engine: piston, twin: true, retractable: true, pressurized: false, search_words: DA62}
+  - {seq: 574, id: diamond-hk36-super-dimona, make: Diamond, model: HK36 Super Dimona (motorglider), years: 1990–2000s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: motorglider}

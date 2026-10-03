@@ -1,0 +1,4 @@
+# Aircraft: Columbia. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 538, id: columbia-300-350-400, make: Columbia, model: 300 / 350 / 400 (Lancair), years: 2000–2007, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Lancair Columbia}

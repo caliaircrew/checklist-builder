@@ -1,0 +1,8 @@
+# Aircraft: Bombardier. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 435, id: bombardier-crj100-crj200-crj440, make: Bombardier, model: CRJ100 / CRJ200 / CRJ440, years: 1992–2006, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner Canadair RJ}
+  - {seq: 436, id: bombardier-crj550, make: Bombardier, model: CRJ550 (converted CRJ700), years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner}
+  - {seq: 437, id: bombardier-crj700-crj705, make: Bombardier, model: CRJ700 / CRJ705, years: 2001–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner}
+  - {seq: 438, id: bombardier-crj900-crj900-nextgen, make: Bombardier, model: CRJ900 / CRJ900 NextGen, years: 2003–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner}
+  - {seq: 439, id: bombardier-crj1000, make: Bombardier, model: CRJ1000, years: 2010–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner}

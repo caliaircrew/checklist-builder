@@ -1,0 +1,4 @@
+# Aircraft: Zivko. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 553, id: zivko-edge-540, make: Zivko, model: Edge 540, years: 1994–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic race}

@@ -12,3 +12,15 @@ aircraft:
   - {seq: 374, id: embraer-praetor-500, make: Embraer, model: Praetor 500, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Praetor}
   - {seq: 375, id: embraer-praetor-600, make: Embraer, model: Praetor 600, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Praetor}
   - {seq: 376, id: embraer-lineage-1000-1000e, make: Embraer, model: Lineage 1000 / 1000E, years: 2009–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E190 bizliner}
+  - {seq: 440, id: embraer-erj-135, make: Embraer, model: ERJ-135, years: 1999–2006, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner ERJ135}
+  - {seq: 441, id: embraer-erj-140, make: Embraer, model: ERJ-140, years: 2001–2006, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner ERJ140}
+  - {seq: 442, id: embraer-erj-145-145xr, make: Embraer, model: ERJ-145 / 145XR, years: 1996–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: regional jet airliner ERJ145}
+  - {seq: 443, id: embraer-e170, make: Embraer, model: E170, years: 2004–2021, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E-Jet regional airliner}
+  - {seq: 444, id: embraer-e175, make: Embraer, model: E175, years: 2005–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E-Jet regional airliner}
+  - {seq: 445, id: embraer-e190, make: Embraer, model: E190, years: 2005–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E-Jet regional airliner}
+  - {seq: 446, id: embraer-e195, make: Embraer, model: E195, years: 2006–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E-Jet regional airliner}
+  - {seq: 447, id: embraer-e190-e2, make: Embraer, model: E190-E2, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E2 regional airliner}
+  - {seq: 448, id: embraer-e195-e2, make: Embraer, model: E195-E2, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E2 regional airliner}
+  - {seq: 472, id: embraer-emb-120-brasilia, make: Embraer, model: EMB-120 Brasilia, years: 1985–2001, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 473, id: embraer-emb-110-bandeirante, make: Embraer, model: EMB-110 Bandeirante, years: 1973–1990, engine: turboprop, twin: true, retractable: true, pressurized: false, search_words: commuter turboprop}
+  - {seq: 482, id: embraer-legacy-650e, make: Embraer, model: Legacy 650E, years: 2016–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Legacy 650}

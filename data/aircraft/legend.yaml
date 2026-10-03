@@ -1,0 +1,4 @@
+# Aircraft: Legend. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 544, id: legend-cub-super-legend, make: Legend, model: Cub / Super Legend, years: 2005–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA tailwheel}

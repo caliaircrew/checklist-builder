@@ -10,3 +10,4 @@ aircraft:
   - {seq: 228, id: pilatus-pc-12-ngx, make: Pilatus, model: PC-12 NGX, years: 2019–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: PC12 NGX}
   - {seq: 229, id: pilatus-pc-7-pc-7-mkii, make: Pilatus, model: PC-7 / PC-7 MkII, years: 1978–present, engine: turboprop, twin: false, retractable: true, pressurized: false, search_words: trainer}
   - {seq: 230, id: pilatus-pc-9, make: Pilatus, model: PC-9, years: 1985–2000s, engine: turboprop, twin: false, retractable: true, pressurized: false, search_words: trainer}
+  - {seq: 560, id: pilatus-p-3, make: Pilatus, model: P-3, years: 1953–1958, engine: piston, twin: false, retractable: true, pressurized: false, search_words: warbird trainer}

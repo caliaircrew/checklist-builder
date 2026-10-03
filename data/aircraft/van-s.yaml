@@ -2,3 +2,5 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 180, id: van-s-rv-6-7-8-9-10-14, make: Van's, model: RV-6 / 7 / 8 / 9 / 10 / 14 (kit), years: 1986–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: experimental homebuilt RV}
+  - {seq: 551, id: van-s-rv-12-rv-12is, make: Van's, model: RV-12 / RV-12iS, years: 2008–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: kit LSA}
+  - {seq: 552, id: van-s-rv-3-rv-4, make: Van's, model: RV-3 / RV-4, years: 1971–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: kit aerobatic}

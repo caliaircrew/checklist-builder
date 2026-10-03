@@ -1,0 +1,4 @@
+# Aircraft: de Havilland. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 536, id: de-havilland-dh-104-dove, make: de Havilland, model: DH.104 Dove, years: 1946–1967, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Dove}

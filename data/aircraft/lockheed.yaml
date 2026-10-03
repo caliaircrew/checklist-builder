@@ -2,3 +2,4 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 204, id: lockheed-jetstar, make: Lockheed, model: JetStar, years: 1961–1978, engine: jet, twin: true, retractable: true, pressurized: true, search_words: L-1329}
+  - {seq: 566, id: lockheed-t-33-shooting-star, make: Lockheed, model: T-33 Shooting Star, years: 1948–1959, engine: jet, twin: false, retractable: true, pressurized: false, search_words: warbird jet trainer}

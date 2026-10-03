@@ -25,7 +25,7 @@ aircraft:
   - {seq: 21, id: cessna-207-skywagon-stationair-7-8, make: Cessna, model: 207 Skywagon / Stationair 7 & 8, years: 1969–1984, engine: piston, twin: false, retractable: false, pressurized: false}
   - {seq: 22, id: cessna-210-centurion, make: Cessna, model: 210 Centurion, years: 1957–1986, engine: piston, twin: false, retractable: true, pressurized: false, search_words: T210 turbo centurion}
   - {seq: 23, id: cessna-p210-pressurized-centurion, make: Cessna, model: P210 Pressurized Centurion, years: 1978–1986, engine: piston, twin: false, retractable: true, pressurized: true}
-  - {seq: 24, id: cessna-350-400-corvalis, make: Cessna, model: 350 / 400 Corvalis (TTx), years: 2007–2018, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Columbia TTx T240}
+  - {seq: 24, id: cessna-350-400-corvalis, make: Cessna, model: 350 / 400 Corvalis (TTx), years: 2007–2018, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Columbia TTx T240}
   - {seq: 25, id: cessna-303-crusader, make: Cessna, model: 303 Crusader, years: 1982–1985, engine: piston, twin: true, retractable: true, pressurized: false, search_words: T303}
   - {seq: 26, id: cessna-310, make: Cessna, model: '310', years: 1954–1980, engine: piston, twin: true, retractable: true, pressurized: false, search_words: T310}
   - {seq: 27, id: cessna-320-skyknight, make: Cessna, model: 320 Skyknight, years: 1962–1968, engine: piston, twin: true, retractable: true, pressurized: false}
@@ -71,3 +71,19 @@ aircraft:
   - {seq: 405, id: cessna-195b-businessliner, make: Cessna, model: 195B Businessliner, years: 1952–1954, engine: piston, twin: false, retractable: false, pressurized: false, search_words: radial tailwheel}
   - {seq: 423, id: cessna-u206-soloy-turbine-conversion, make: Cessna, model: U206 Soloy / turbine conversion, years: 1980s–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Soloy}
   - {seq: 424, id: cessna-p210n-silver-eagle, make: Cessna, model: P210N Silver Eagle (turbine conversion), years: 1990s–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: Silver Eagle}
+  - {seq: 494, id: cessna-208-caravan-amphibian, make: Cessna, model: 208 Caravan Amphibian, years: 1985–present, engine: turboprop, twin: false, retractable: true, pressurized: false, search_words: floats amphibian}
+  - {seq: 508, id: cessna-310q-t310q, make: Cessna, model: 310Q / T310Q, years: 1970–1974, engine: piston, twin: true, retractable: true, pressurized: false, search_words: '310'}
+  - {seq: 509, id: cessna-310r-t310r, make: Cessna, model: 310R / T310R, years: 1975–1981, engine: piston, twin: true, retractable: true, pressurized: false, search_words: '310'}
+  - {seq: 510, id: cessna-402b, make: Cessna, model: 402B, years: 1972–1977, engine: piston, twin: true, retractable: true, pressurized: false, search_words: '402'}
+  - {seq: 511, id: cessna-402c, make: Cessna, model: 402C, years: 1979–1985, engine: piston, twin: true, retractable: true, pressurized: false, search_words: '402'}
+  - {seq: 512, id: cessna-421b-golden-eagle, make: Cessna, model: 421B Golden Eagle, years: 1970–1975, engine: piston, twin: true, retractable: true, pressurized: true, search_words: '421'}
+  - {seq: 513, id: cessna-177b-cardinal, make: Cessna, model: 177B Cardinal, years: 1971–1978, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Cardinal}
+  - {seq: 514, id: cessna-tr182-turbo-skylane-rg, make: Cessna, model: TR182 Turbo Skylane RG, years: 1979–1986, engine: piston, twin: false, retractable: true, pressurized: false, search_words: TR182}
+  - {seq: 515, id: cessna-t210-turbo-centurion, make: Cessna, model: T210 Turbo Centurion (earlier), years: 1966–1978, engine: piston, twin: false, retractable: true, pressurized: false, search_words: T210}
+  - {seq: 516, id: cessna-t206h-206h-stationair, make: Cessna, model: T206H / 206H Stationair (G1000), years: 2005–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Stationair NXi}
+  - {seq: 517, id: cessna-172-skyhawk-nxi, make: Cessna, model: 172 Skyhawk NXi, years: 2018–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: 172S NXi G1000}
+  - {seq: 518, id: cessna-182-skylane-nxi, make: Cessna, model: 182 Skylane NXi, years: 2018–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: 182T NXi}
+  - {seq: 519, id: cessna-172q-cutlass, make: Cessna, model: 172Q Cutlass, years: 1983–1984, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Cutlass 180hp}
+  - {seq: 520, id: cessna-r172k-hawk-xp, make: Cessna, model: R172K Hawk XP, years: 1977–1981, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Hawk XP}
+  - {seq: 521, id: cessna-120-140, make: Cessna, model: 120 / 140, years: 1946–1951, engine: piston, twin: false, retractable: false, pressurized: false, search_words: tailwheel}
+  - {seq: 522, id: cessna-l-19-o-1-bird-dog, make: Cessna, model: L-19 / O-1 Bird Dog, years: 1950–1959, engine: piston, twin: false, retractable: false, pressurized: false, search_words: warbird tailwheel}

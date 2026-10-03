@@ -22,3 +22,4 @@ aircraft:
   - {seq: 61, id: citation-680a-citation-latitude, make: Cessna Citation, model: 680A Citation Latitude, years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 62, id: citation-700-citation-longitude, make: Cessna Citation, model: 700 Citation Longitude, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 63, id: citation-750-citation-x-x, make: Cessna Citation, model: 750 Citation X / X+, years: 1996–2018, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Citation 10 ten}
+  - {seq: 491, id: cessna-citation-500-citation-eagle-stallion, make: Cessna Citation, model: 500 Citation Eagle / Stallion (modified), years: 1980s–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Citation conversion}

@@ -2,3 +2,4 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 401, id: boeing-bbj-bbj2-bbj3, make: Boeing, model: BBJ (737-700) / BBJ2 / BBJ3, years: 1999–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Boeing Business Jet bizliner}
+  - {seq: 450, id: boeing-717-200, make: Boeing, model: 717-200, years: 1999–2006, engine: jet, twin: true, retractable: true, pressurized: true, search_words: airliner MD-95}

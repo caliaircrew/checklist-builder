@@ -3,3 +3,5 @@
 aircraft:
   - {seq: 325, id: robin-dr400, make: Robin, model: DR400, years: 1972–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Robin}
   - {seq: 326, id: robin-hr200-r2160, make: Robin, model: HR200 / R2160, years: 1971–2000s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic trainer}
+  - {seq: 572, id: robin-dr400-180-regent, make: Robin, model: DR400/180 Regent, years: 1972–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Regent}
+  - {seq: 573, id: robin-dr500-president, make: Robin, model: DR500 President, years: 1997–2000s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: President}

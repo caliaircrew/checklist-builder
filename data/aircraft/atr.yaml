@@ -1,0 +1,9 @@
+# Aircraft: ATR. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 460, id: atr-42-300-42-320, make: ATR, model: 42-300 / 42-320, years: 1985–1996, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 461, id: atr-42-500, make: ATR, model: 42-500, years: 1995–2012, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 462, id: atr-42-600, make: ATR, model: 42-600, years: 2010–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 463, id: atr-72-200-72-210, make: ATR, model: 72-200 / 72-210, years: 1989–1997, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 464, id: atr-72-500, make: ATR, model: 72-500, years: 1997–2011, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 465, id: atr-72-600, make: ATR, model: 72-600, years: 2011–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}

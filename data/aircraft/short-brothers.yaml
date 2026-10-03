@@ -1,0 +1,4 @@
+# Aircraft: Short Brothers. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 477, id: short-brothers-330-360, make: Short Brothers, model: 330 / 360, years: 1976–1991, engine: turboprop, twin: true, retractable: false, pressurized: false, search_words: Shorts commuter}

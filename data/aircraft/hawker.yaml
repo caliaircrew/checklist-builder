@@ -9,3 +9,5 @@ aircraft:
   - {seq: 393, id: hawker-900xp-750, make: Hawker, model: 900XP / 750, years: 2007–2013, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Hawker 900XP 750}
   - {seq: 394, id: hawker-1000, make: Hawker, model: 1000 (125-1000), years: 1991–1997, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Hawker 1000}
   - {seq: 395, id: hawker-400xp-400xpr, make: Hawker, model: 400XP / 400XPR, years: 2003–2009, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Beechjet 400A}
+  - {seq: 487, id: hawker-hs-125-series-1-to-400, make: Hawker, model: HS-125 Series 1 to 400, years: 1964–1972, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Hawker Siddeley DH.125}
+  - {seq: 488, id: hawker-hs-125-600, make: Hawker, model: HS-125-600, years: 1973–1977, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Hawker Siddeley 600}

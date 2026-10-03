@@ -6,3 +6,5 @@ aircraft:
   - {seq: 315, id: tecnam-p-mentor, make: Tecnam, model: P-Mentor, years: 2021–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: trainer}
   - {seq: 316, id: tecnam-p92-echo-eaglet, make: Tecnam, model: P92 Echo / Eaglet, years: 1993–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA}
   - {seq: 317, id: tecnam-p2002-sierra, make: Tecnam, model: P2002 Sierra, years: 2003–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA}
+  - {seq: 569, id: tecnam-p2012-traveller, make: Tecnam, model: P2012 Traveller, years: 2019–present, engine: piston, twin: true, retractable: false, pressurized: false, search_words: commuter twin}
+  - {seq: 570, id: tecnam-p2010-tdi, make: Tecnam, model: P2010 TDI, years: 2018–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: diesel}

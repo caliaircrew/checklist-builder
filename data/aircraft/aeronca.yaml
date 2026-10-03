@@ -1,0 +1,5 @@
+# Aircraft: Aeronca. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 539, id: aeronca-7ac-champ, make: Aeronca, model: 7AC Champ, years: 1946–1951, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Champ tailwheel}
+  - {seq: 540, id: aeronca-11ac-chief, make: Aeronca, model: 11AC Chief, years: 1946–1950, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Chief tailwheel}

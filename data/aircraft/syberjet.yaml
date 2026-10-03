@@ -1,0 +1,4 @@
+# Aircraft: SyberJet. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 489, id: syberjet-sj30-2, make: SyberJet, model: SJ30-2, years: 2006–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Swearingen SJ30}

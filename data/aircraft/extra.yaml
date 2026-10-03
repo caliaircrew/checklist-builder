@@ -7,3 +7,4 @@ aircraft:
   - {seq: 331, id: extra-ea-330lx-330sc, make: Extra, model: EA-330LX / 330SC, years: 2010–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}
   - {seq: 332, id: extra-ng, make: Extra, model: NG, years: 2019–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}
   - {seq: 355, id: extra-ea-500, make: Extra, model: EA-500, years: 2003–2010s, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: EA500}
+  - {seq: 567, id: extra-ea-300s-300sc, make: Extra, model: EA-300S / 300SC (single-seat), years: 1990s–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}

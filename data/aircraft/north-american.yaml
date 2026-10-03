@@ -3,3 +3,4 @@
 aircraft:
   - {seq: 342, id: north-american-t-6-texan-harvard, make: North American, model: T-6 Texan / Harvard, years: 1937–1954, engine: piston, twin: false, retractable: true, pressurized: false, search_words: warbird radial tailwheel}
   - {seq: 343, id: north-american-t-28-trojan, make: North American, model: T-28 Trojan, years: 1950–1957, engine: piston, twin: false, retractable: true, pressurized: false, search_words: warbird radial}
+  - {seq: 562, id: north-american-p-51d-mustang, make: North American, model: P-51D Mustang, years: 1944–1951, engine: piston, twin: false, retractable: true, pressurized: false, search_words: warbird}

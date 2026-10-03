@@ -1,0 +1,5 @@
+# Aircraft: Aero Vodochody. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 563, id: aero-vodochody-l-39-albatros, make: Aero Vodochody, model: L-39 Albatros, years: 1971–1996, engine: jet, twin: false, retractable: true, pressurized: false, search_words: warbird jet trainer}
+  - {seq: 564, id: aero-vodochody-l-29-delf-n, make: Aero Vodochody, model: L-29 Delfín, years: 1963–1974, engine: jet, twin: false, retractable: true, pressurized: false, search_words: warbird jet trainer}

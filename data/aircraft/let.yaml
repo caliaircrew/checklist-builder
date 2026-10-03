@@ -1,0 +1,4 @@
+# Aircraft: Let. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 479, id: let-l-410-turbolet, make: Let, model: L-410 Turbolet, years: 1971–present, engine: turboprop, twin: true, retractable: true, pressurized: false, search_words: commuter}

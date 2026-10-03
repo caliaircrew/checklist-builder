@@ -1,0 +1,5 @@
+# Aircraft: Vulcanair. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 533, id: vulcanair-p68r, make: Vulcanair, model: P68R (retractable), years: 2019–present, engine: piston, twin: true, retractable: true, pressurized: false, search_words: P68R}
+  - {seq: 534, id: vulcanair-v1-0, make: Vulcanair, model: V1.0, years: 2014–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: trainer}

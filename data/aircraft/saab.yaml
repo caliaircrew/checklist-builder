@@ -1,0 +1,5 @@
+# Aircraft: Saab. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 470, id: saab-340a-340b, make: Saab, model: 340A / 340B, years: 1983–1999, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
+  - {seq: 471, id: saab-2000, make: Saab, model: '2000', years: 1994–1999, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: regional turboprop airliner}
