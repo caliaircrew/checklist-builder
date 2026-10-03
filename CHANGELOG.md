@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.07 | 2026-10-03 | Site built and published automatically from the GitHub repository (GitHub Actions). No feature changes. |
 | 1.06 | 2026-10-03 | CFI endorsements screen: all 96 AC 61-65K endorsements, fill-in blanks, validity dates, Word export with AC-format signature lines. |
 | 1.05 | 2026-10-03 | 11 new section lists (Passing 10,000, Flight levels/RVSM, High-altitude oxygen, Cruise check, Transition level, Below 10,000, Final/stabilized, Go-around, Quick turn, Cold weather, Briefings). |
 | 1.04 | 2026-10-03 | Aircraft list ≈150 models; draft suggested checklists for Cirrus SR22 and Piper Archer; review status shown. |
