@@ -1,0 +1,6 @@
+# Aircraft: de Havilland Canada. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 190, id: de-havilland-canada-dhc-2-beaver, make: de Havilland Canada, model: DHC-2 Beaver, years: 1947–1967, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Beaver floatplane radial}
+  - {seq: 191, id: de-havilland-canada-dhc-3-otter, make: de Havilland Canada, model: DHC-3 Otter, years: 1951–1967, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Otter}
+  - {seq: 192, id: de-havilland-canada-dhc-6-twin-otter, make: de Havilland Canada, model: DHC-6 Twin Otter, years: 1965–present, engine: turboprop, twin: true, retractable: false, pressurized: false, search_words: Twin Otter Viking}

@@ -14,3 +14,10 @@ aircraft:
   - {seq: 102, id: beechcraft-king-air-350-360, make: Beechcraft, model: King Air 350 / 360, years: 1990–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 350}
   - {seq: 103, id: beechcraft-beechjet-400-hawker-400xp, make: Beechcraft, model: Beechjet 400 / Hawker 400XP, years: 1985–2009, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 104, id: beechcraft-premier-i-ia, make: Beechcraft, model: Premier I / IA, years: 2001–2012, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 154, id: beechcraft-18-twin-beech, make: Beechcraft, model: 18 Twin Beech, years: 1937–1970, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Model 18 tailwheel}
+  - {seq: 155, id: beechcraft-50-twin-bonanza, make: Beechcraft, model: 50 Twin Bonanza, years: 1951–1963, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 156, id: beechcraft-65-80-88-queen-air, make: Beechcraft, model: 65 / 80 / 88 Queen Air, years: 1960–1977, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Queen Air}
+  - {seq: 157, id: beechcraft-95-travel-air, make: Beechcraft, model: 95 Travel Air, years: 1958–1968, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 158, id: beechcraft-77-skipper, make: Beechcraft, model: 77 Skipper, years: 1979–1981, engine: piston, twin: false, retractable: false, pressurized: false, search_words: trainer}
+  - {seq: 159, id: beechcraft-king-air-100-a100-b100, make: Beechcraft, model: King Air 100 / A100 / B100, years: 1969–1983, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 100}
+  - {seq: 160, id: beechcraft-2000-starship, make: Beechcraft, model: 2000 Starship, years: 1989–1995, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Starship pusher}

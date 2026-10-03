@@ -1,0 +1,4 @@
+# Aircraft: Bellanca. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 167, id: bellanca-17-30-17-31-viking-super-viking, make: Bellanca, model: 17-30 / 17-31 Viking / Super Viking, years: 1967–1980, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Super Viking}

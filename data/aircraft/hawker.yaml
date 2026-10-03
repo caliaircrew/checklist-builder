@@ -2,3 +2,4 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 142, id: hawker-125-700-800-800xp-850xp-900xp, make: Hawker, model: 125 / 700 / 800 / 800XP / 850XP / 900XP, years: 1964–2013, engine: jet, twin: true, retractable: true, pressurized: true, search_words: HS-125 Hawker 800XP}
+  - {seq: 161, id: hawker-4000, make: Hawker, model: '4000', years: 2008–2013, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Horizon}

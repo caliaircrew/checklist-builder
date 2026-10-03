@@ -1,0 +1,4 @@
+# Aircraft: Van's. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 180, id: van-s-rv-6-7-8-9-10-14, make: Van's, model: RV-6 / 7 / 8 / 9 / 10 / 14 (kit), years: 1986–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: experimental homebuilt RV}

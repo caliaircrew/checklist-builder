@@ -20,3 +20,9 @@ aircraft:
   - {seq: 89, id: piper-pa-31t-cheyenne, make: Piper, model: PA-31T Cheyenne, years: 1974–1984, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Cheyenne}
   - {seq: 90, id: piper-pa-46-malibu-mirage-m350, make: Piper, model: PA-46 Malibu / Mirage / M350, years: 1984–present, engine: piston, twin: false, retractable: true, pressurized: true, search_words: Malibu}
   - {seq: 91, id: piper-pa-46-meridian-m500-m600, make: Piper, model: PA-46 Meridian / M500 / M600, years: 1998–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: Meridian}
+  - {seq: 148, id: piper-pa-20-pacer, make: Piper, model: PA-20 Pacer, years: 1950–1954, engine: piston, twin: false, retractable: false, pressurized: false, search_words: tailwheel}
+  - {seq: 149, id: piper-pa-25-pawnee, make: Piper, model: PA-25 Pawnee, years: 1959–1981, engine: piston, twin: false, retractable: false, pressurized: false, search_words: ag sprayer}
+  - {seq: 150, id: piper-pa-31p-pressurized-navajo, make: Piper, model: PA-31P Pressurized Navajo, years: 1970–1977, engine: piston, twin: true, retractable: true, pressurized: true, search_words: Navajo P}
+  - {seq: 151, id: piper-pa-42-cheyenne-iii-iiia-400, make: Piper, model: PA-42 Cheyenne III / IIIA / 400, years: 1980–1993, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Cheyenne 400LS}
+  - {seq: 152, id: piper-aerostar-600-601, make: Piper, model: Aerostar 600 / 601 (unpressurized), years: 1968–1984, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Ted Smith Aerostar PA-60}
+  - {seq: 153, id: piper-aerostar-601p-602p-700p, make: Piper, model: Aerostar 601P / 602P / 700P (pressurized), years: 1973–1984, engine: piston, twin: true, retractable: true, pressurized: true, search_words: Ted Smith Aerostar PA-60}

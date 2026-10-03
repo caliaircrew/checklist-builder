@@ -1,0 +1,4 @@
+# Aircraft: Sabreliner. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 203, id: sabreliner-t-39-sabreliner-40-60-65, make: Sabreliner, model: T-39 / Sabreliner 40 / 60 / 65, years: 1958–1981, engine: jet, twin: true, retractable: true, pressurized: true, search_words: North American Rockwell Sabre}

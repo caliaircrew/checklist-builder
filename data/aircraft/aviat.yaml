@@ -1,0 +1,5 @@
+# Aircraft: Aviat. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 171, id: aviat-a-1-husky, make: Aviat, model: A-1 Husky, years: 1987–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: tailwheel bush}
+  - {seq: 172, id: aviat-pitts-s-2-series, make: Aviat, model: Pitts S-2 series, years: 1971–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic S-2B S-2C}

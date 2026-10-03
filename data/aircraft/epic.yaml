@@ -1,0 +1,4 @@
+# Aircraft: Epic. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 194, id: epic-lt-e1000-e1000-gx, make: Epic, model: LT / E1000 / E1000 GX, years: 2019–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: E1000}

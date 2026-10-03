@@ -1,0 +1,4 @@
+# Aircraft: IAI. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 202, id: iai-1124-westwind, make: IAI, model: 1124 Westwind, years: 1976–1987, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Westwind Jet Commander 1121}

@@ -1,0 +1,4 @@
+# Aircraft: Nextant. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 206, id: nextant-400xt-400xti, make: Nextant, model: 400XT / 400XTi, years: 2011–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Beechjet remanufactured}

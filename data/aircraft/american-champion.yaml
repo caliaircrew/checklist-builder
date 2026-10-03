@@ -1,0 +1,6 @@
+# Aircraft: American Champion. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 173, id: american-champion-7eca-7gcaa-7gcbc-citabria, make: American Champion, model: 7ECA / 7GCAA / 7GCBC Citabria, years: 1964–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Bellanca Champion tailwheel 7EC Traveler}
+  - {seq: 174, id: american-champion-8kcab-decathlon-super-decathlon, make: American Champion, model: 8KCAB Decathlon / Super Decathlon, years: 1970–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic tailwheel}
+  - {seq: 175, id: american-champion-8gcbc-scout, make: American Champion, model: 8GCBC Scout, years: 1974–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: tailwheel bush}

@@ -7,3 +7,4 @@ aircraft:
   - {seq: 131, id: dassault-falcon-900-series, make: Dassault Falcon, model: 900 series, years: 1986–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 900EX}
   - {seq: 132, id: dassault-falcon-2000-series, make: Dassault Falcon, model: 2000 series, years: 1995–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 2000}
   - {seq: 133, id: dassault-falcon-7x-8x, make: Dassault Falcon, model: 7X / 8X, years: 2007–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 201, id: dassault-falcon-6x, make: Dassault Falcon, model: 6X, years: 2023–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 6X}

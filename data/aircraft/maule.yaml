@@ -1,0 +1,4 @@
+# Aircraft: Maule. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 176, id: maule-m-4-to-m-9-series, make: Maule, model: M-4 to M-9 series, years: 1962–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: M-7 STOL bush tailwheel}

@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.10 | 2026-10-03 | ~60 more aircraft in the finder (now ~210): taildraggers/bush, aerobatic, trainers, amphibians, classic and utility twins, turboprops, business jets. Data only. |
 | 1.09 | 2026-10-03 | 20 new pick lists from flight-school checklists (airworthiness, 5-zone walkaround, pre-taxi/avionics, run-up, takeoff briefing, initial climb, pre-maneuver, clearing turns, maneuver setup, in-range, pattern entry, post-flight) plus reference blocks (V-speeds, frequencies, transponder codes, phone numbers). Section 'when' lines; un-numbered reference blocks; additions to existing lists; 48 lists in flight order. |
 | 1.08 | 2026-10-03 | Default checklist for every aircraft (model checklist, or standard built from the general lists and labeled not yet POH-specific); picking an aircraft loads it; Reset to default (top and Step 2). ★ My items: personal pick-list lines kept on the device, survive Reset, travel in checklist files. Fixed ⋯ menu not opening after first use; caution notes now follow aircraft type. |
 | 1.07 | 2026-10-03 | Site built and published automatically from the GitHub repository (GitHub Actions). No feature changes. |

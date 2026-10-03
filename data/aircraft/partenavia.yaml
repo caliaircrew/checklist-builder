@@ -1,0 +1,4 @@
+# Aircraft: Partenavia. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 188, id: partenavia-p68, make: Partenavia, model: P68 (Vulcanair), years: 1970–present, engine: piston, twin: true, retractable: false, pressurized: false, search_words: Vulcanair P68}

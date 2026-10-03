@@ -1,0 +1,4 @@
+# Aircraft: Air Tractor. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 195, id: air-tractor-at-502-at-802, make: Air Tractor, model: AT-502 / AT-802, years: 1987–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: ag sprayer}

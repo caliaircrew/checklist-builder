@@ -5,3 +5,4 @@ aircraft:
   - {seq: 110, id: diamond-da40-diamond-star, make: Diamond, model: DA40 Diamond Star, years: 2000–present, engine: piston, twin: false, retractable: false, pressurized: false}
   - {seq: 111, id: diamond-da42-twin-star, make: Diamond, model: DA42 Twin Star, years: 2004–present, engine: piston, twin: true, retractable: true, pressurized: false}
   - {seq: 112, id: diamond-da62, make: Diamond, model: DA62, years: 2015–present, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 185, id: diamond-da50-rg, make: Diamond, model: DA50 RG, years: 2020–present, engine: piston, twin: false, retractable: true, pressurized: false}

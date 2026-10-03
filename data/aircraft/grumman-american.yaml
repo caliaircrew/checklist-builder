@@ -1,0 +1,6 @@
+# Aircraft: Grumman American. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 162, id: grumman-american-aa-1-yankee-trainer-t-cat-lynx, make: Grumman American, model: AA-1 Yankee / Trainer / T-Cat / Lynx, years: 1969–1978, engine: piston, twin: false, retractable: false, pressurized: false, search_words: AA1 Gulfstream American}
+  - {seq: 163, id: grumman-american-aa-5-traveler-cheetah-tiger, make: Grumman American, model: AA-5 Traveler / Cheetah / Tiger, years: 1972–2006, engine: piston, twin: false, retractable: false, pressurized: false, search_words: AA5 AG-5B Tiger}
+  - {seq: 164, id: grumman-american-ga-7-cougar, make: Grumman American, model: GA-7 Cougar, years: 1978–1979, engine: piston, twin: true, retractable: true, pressurized: false}

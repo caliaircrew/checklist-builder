@@ -1,0 +1,4 @@
+# Aircraft: Britten-Norman. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 189, id: britten-norman-bn-2-islander, make: Britten-Norman, model: BN-2 Islander, years: 1965–present, engine: piston, twin: true, retractable: false, pressurized: false, search_words: Islander}

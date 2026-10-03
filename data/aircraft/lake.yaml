@@ -1,0 +1,4 @@
+# Aircraft: Lake. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 182, id: lake-la-4-buccaneer-renegade, make: Lake, model: LA-4 / Buccaneer / Renegade, years: 1960–2000s, engine: piston, twin: false, retractable: true, pressurized: false, search_words: amphibian seaplane}

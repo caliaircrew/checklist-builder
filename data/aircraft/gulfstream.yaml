@@ -7,3 +7,7 @@ aircraft:
   - {seq: 125, id: gulfstream-g280, make: Gulfstream, model: G280, years: 2012–present, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 126, id: gulfstream-g500-g600, make: Gulfstream, model: G500 / G600, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 127, id: gulfstream-g650-g650er, make: Gulfstream, model: G650 / G650ER, years: 2012–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 197, id: gulfstream-g-159-gulfstream-i, make: Gulfstream, model: G-159 Gulfstream I, years: 1958–1969, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: G1 GI}
+  - {seq: 198, id: gulfstream-g100-g150, make: Gulfstream, model: G100 / G150 (IAI Astra), years: 1985–2017, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Astra SPX}
+  - {seq: 199, id: gulfstream-g200, make: Gulfstream, model: G200 (IAI Galaxy), years: 1999–2011, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Galaxy}
+  - {seq: 200, id: gulfstream-g700, make: Gulfstream, model: G700, years: 2024–present, engine: jet, twin: true, retractable: true, pressurized: true}
