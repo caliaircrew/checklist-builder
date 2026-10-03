@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.19'
+app_version: '1.20'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,9 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.20'
+    notes:
+      - "New Cali Aircrew homepage in the clear-sky look: 'Find the right pilot for every aircraft, and the right tool for the job.' Crew directory sections are marked Coming soon with a Get notified sign-up"
   - version: '1.19'
     notes:
       - "Homepage name updated to Cali Aircrew"

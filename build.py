@@ -51,7 +51,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.4.0"
+SCRIPT_VERSION = "2.4.1"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -357,6 +357,8 @@ def main(argv=None):
     try:
         need(os.path.exists(home_path), "missing site/home.html (homepage)")
         home = open(home_path, encoding="utf-8").read()
+        c = app.get("cloud") or {}
+        home = home.replace("{{CLOUD_JSON}}", json.dumps({"enabled": bool(c.get("enabled")), "url": c.get("url", "") if c.get("enabled") else "", "key": c.get("publishable_key", "") if c.get("enabled") else ""}))
         need('href="checklists/"' in home, "site/home.html must link to the builder at checklists/")
         need("not FAA-approved" in home, "site/home.html must keep the safety note in the footer")
     except BuildError as e:

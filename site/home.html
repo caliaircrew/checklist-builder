@@ -3,208 +3,269 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cali Aircrew</title>
-<meta name="description" content="Cali Aircrew: practical tools for pilots and flight instructors, including a free aircraft checklist builder.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E2A47'/%3E%3Cpath d='M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z' fill='%23F2A541'/%3E%3C/svg%3E">
+<title>Cali Aircrew: find the right pilot for every aircraft</title>
+<meta name="description" content="Cali Aircrew connects aircraft owners and charter operators with professional, type-current pilots, CFIs, flight attendants and mechanics, plus a free checklist builder for any airplane or helicopter.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232470B3'/%3E%3Cpath d='M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--pacific:#0E2A47;--deep:#081A2E;--amber:#F2A541;--ember:#D9622B;--haze:#DCE8F3;--sage:#5F7F6E;--paper:#F7FAFC;--ink:#132235;--muted:#4B5E73;
-  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif;
+:root{--ink:#234A6E;--text:#1F2A37;--sub:#3A4A5B;--muted:#5B6B7C;--blue:#2470B3;--blue-hover:#1C5E98;--cloud:#E4EEF8;--page:#F4F8FC;--line:#D6E0EA;--field:#A9BBCD;--sage-bg:#E3EFE8;--sage:#1F4A35;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.6 var(--body);-webkit-font-smoothing:antialiased}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:4px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-
-/* ---------- hero ---------- */
-.hero{position:relative;color:#fff;background:var(--deep);overflow:hidden;isolation:isolate}
-.hero svg.scene{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 1.35rem/1 var(--display);letter-spacing:.04em}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--text);font:400 1.0625rem/1.6 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}a:hover{color:var(--text)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+.d{font-family:var(--display)}
+/* header */
+header.top{background:#fff;border-bottom:1px solid var(--line)}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;padding:14px 0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:700 24px/1 var(--display)}
 .brand svg{width:34px;height:34px}
-.nav a.navlink{font:600 1rem/1 var(--display);letter-spacing:.06em;text-decoration:none;opacity:.9;padding:8px 2px;border-bottom:2px solid transparent}
-.nav a.navlink:hover{border-bottom-color:var(--amber)}
-.hero-body{padding:9vh 0 28vh;max-width:640px}
-.hero h1{font:700 clamp(3.2rem,9vw,6.4rem)/.9 var(--display);letter-spacing:.01em;margin:0 0 .35em;text-shadow:0 2px 24px rgba(8,26,46,.35)}
-.hero p.lede{font-size:clamp(1.1rem,2.2vw,1.35rem);line-height:1.5;margin:0 0 2rem;max-width:34ch;color:#F3F7FB}
-.cta{display:inline-flex;align-items:center;gap:12px;background:var(--amber);color:var(--deep);text-decoration:none;font:700 1.25rem/1 var(--display);letter-spacing:.05em;padding:18px 26px;border-radius:6px;box-shadow:0 10px 30px rgba(217,98,43,.35)}
-.cta:hover{background:#F6B65E}
-.cta svg{width:22px;height:22px}
-.hero small.note{display:block;margin-top:14px;color:#DCE8F3;font-size:.95rem}
-
-/* ---------- product ---------- */
-.product{padding:88px 0 72px}
-.product .grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:64px;align-items:center}
-.product h2,.cfi h2{font:700 clamp(2.1rem,4.5vw,3rem)/1 var(--display);letter-spacing:.01em;margin:0 0 18px;color:var(--pacific)}
-.product p,.cfi p{max-width:58ch;margin:0 0 16px;color:var(--ink)}
-.product ul{margin:22px 0 28px;padding:0;list-style:none;max-width:56ch}
-.product li{padding:10px 0 10px 30px;position:relative;border-top:1px solid #D6E1EC}
-.product li:last-child{border-bottom:1px solid #D6E1EC}
-.product li::before{content:"";position:absolute;left:4px;top:19px;width:12px;height:2px;background:var(--ember)}
-.textlink{font:600 1.15rem/1 var(--display);letter-spacing:.05em;color:var(--pacific);text-decoration:none;border-bottom:2px solid var(--amber);padding-bottom:3px}
-
-/* the printed-card sample: the one thing worth remembering */
-.card-sample{background:#fff;padding:22px 22px 16px;box-shadow:0 30px 60px -20px rgba(14,42,71,.35),0 0 0 1px #E3EAF2;transform:rotate(-1.4deg);font-family:Arial,Helvetica,sans-serif;color:#000}
-.card-sample .hdr{display:flex;justify-content:space-between;font:700 12px/1.2 Arial,sans-serif;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:12px}
-.cs{border:1px solid #000;margin-bottom:12px;font-size:12.5px}
-.cs .bar{background:#000;color:#fff;font-weight:700;text-align:center;padding:4px}
-.cs .when{font-style:italic;font-size:11px;text-align:center;padding:2px;border-bottom:1px solid #bfbfbf;color:#333}
-.cs .r{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #bfbfbf;align-items:center}
-.cs .bar + .r,.cs .when + .r{border-top:0}
-.cs .a{display:flex;align-items:baseline;padding:4px 0 4px 6px;white-space:nowrap;overflow:hidden}
-.cs .a b{font-weight:400;width:2em;flex:none}
-.cs .a span.d{flex:1;overflow:hidden;margin:0 6px 0 2px}
-.cs .a span.d::after{content:"..............................................................................................."}
-.cs .v{font-weight:700;padding:4px 6px}
-.cs .ff{outline:3px solid #000;outline-offset:-2px}
-.cs .note{background:#d9d9d9;font-weight:700;font-style:italic;text-align:center;padding:4px;border-top:1px solid #bfbfbf;font-size:11.5px}
-
-/* ---------- CFI band ---------- */
-.cfi{background:var(--haze);padding:72px 0}
-.cfi .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
-.cfi .sig{font-family:"Courier New",monospace;font-size:.95rem;background:#fff;padding:18px 20px;border-left:4px solid var(--sage);color:#1d2b3a;line-height:1.55}
-
-/* ---------- footer ---------- */
-footer{background:var(--pacific);color:#C9D7E6;padding:44px 0 56px;font-size:.95rem}
-footer .grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px}
-footer strong{color:#fff;font:600 1.2rem/1 var(--display);letter-spacing:.05em}
-footer p{max-width:62ch;margin:10px 0 0}
-
-@media (max-width:520px){.nav a.navlink{display:none}}
-@media (max-width:860px){
-  .product .grid,.cfi .grid{grid-template-columns:1fr;gap:40px}
-  .hero-body{padding:6vh 0 30vh}
-  .card-sample{transform:none}
+.nav nav{display:flex;flex-wrap:wrap;gap:8px 24px;margin-left:auto;align-items:center;font:600 19px/1 var(--display);letter-spacing:.04em}
+.nav nav a{color:var(--ink);text-decoration:none;padding:6px 0}
+.nav nav a:hover{color:var(--blue)}
+.soon{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:var(--cloud);color:var(--ink);font:600 12px/1.4 var(--body);letter-spacing:0;vertical-align:middle}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:8px;text-decoration:none;font:700 21px/1 var(--display);letter-spacing:.04em;border:0;cursor:pointer}
+.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-hover);color:#fff}
+.btn.secondary{background:#fff;color:var(--ink);border:2px solid var(--ink)}.btn.secondary:hover{background:var(--cloud);color:var(--ink)}
+.nav .btn{min-height:44px;padding:0 18px;font-size:19px}
+/* hero */
+.hero{position:relative;overflow:hidden;background:#DCEBF8;isolation:isolate}
+.hero svg.scene{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.hero .wrap{padding-top:72px;padding-bottom:168px;display:flex;flex-direction:column;gap:24px}
+.hero h1{margin:0;font:700 clamp(2.2rem,4.6vw,3.9rem)/1 var(--display);color:var(--text);display:flex;flex-direction:column;gap:10px}
+.hero h1 .one{white-space:nowrap}
+.hero h1 .two{color:var(--blue)}
+.hero p.lede{margin:0;max-width:640px;font-size:20px;line-height:1.5;color:var(--sub)}
+.hero .actions{display:flex;flex-wrap:wrap;gap:16px}
+/* boxes */
+.boxes{padding-top:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.box{position:relative;display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--text)}
+a.box:hover{border-color:var(--blue)}
+.box h2,.box h3{margin:0;font:700 28px/1.1 var(--display);color:var(--ink)}
+.box p{margin:0;font-size:17px;line-height:1.5}
+.box .go{margin-top:auto;align-self:flex-start;font:600 19px/1.3 var(--display);color:var(--ink);border-bottom:2px solid #7FB3E3}
+.box .soon{position:absolute;top:24px;right:24px;margin:0}
+.wide{margin-top:24px}
+.wide .head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.tile{padding:14px 16px;background:var(--cloud);border-radius:10px;font:700 20px/1.2 var(--display);color:var(--ink)}
+/* steps */
+.how{padding:48px 32px 64px;display:flex;flex-direction:column;gap:24px}
+.how h2,.notify h2,.partners h2{margin:0;font:700 36px/1.05 var(--display);color:var(--ink)}
+.how .intro{display:flex;flex-direction:column;gap:8px;max-width:720px}
+.how .intro p{margin:0;font-size:18px;line-height:1.6}
+.steps{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.steps li{display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.num{width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font:700 22px/1 var(--display)}
+.steps h3{margin:0;font:700 24px/1.1 var(--display);color:var(--ink)}
+.steps p{margin:0;font-size:17px;line-height:1.5}
+/* notify */
+.notify{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.notify .wrap{padding-top:48px;padding-bottom:48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;align-items:start}
+.notify p{margin:8px 0 0;font-size:18px;line-height:1.6;max-width:52ch}
+form.nf{display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.field legend{font-size:16px;font-weight:600}
+.field input[type=email]{height:52px;border:1px solid var(--field);border-radius:8px;padding:0 14px;font:400 17px var(--body);color:var(--text);background:#fff}
+fieldset.field{border:0;margin:0;padding:0}
+.roles{display:flex;flex-wrap:wrap;gap:8px}
+.roles label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--field);border-radius:999px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;background:#fff}
+.roles input{width:18px;height:18px;accent-color:var(--blue);margin:0}
+.roles label:has(input:checked){background:var(--cloud);border-color:var(--blue)}
+.msg{min-height:1.4em;font-size:16px;font-weight:600}
+.msg.ok{color:var(--sage)}.msg.err{color:#A12A20}
+/* partners + footer */
+.partners{background:var(--cloud)}
+.partners .wrap{padding-top:32px;padding-bottom:32px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 32px}
+.partners h2{font-size:28px}
+.partners span{font-size:17px;color:var(--sub)}
+.partners a{margin-left:auto;font:600 19px/1 var(--display)}
+footer{background:#E9EFF5;color:var(--sub)}
+footer .wrap{padding-top:32px;padding-bottom:48px;display:flex;flex-wrap:wrap;gap:16px 40px;font-size:15px}
+footer strong{font:700 22px/1 var(--display);color:var(--ink)}
+footer p{margin:0;flex:1 1 100%;max-width:72ch}
+.short{display:none}
+.tabbar{display:none}
+@media (max-width:720px){
+  .nav nav{display:none}
+  .long{display:none}.short{display:inline}
+  .climb{display:none}
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:10;gap:4px;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line)}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;border-radius:10px;color:var(--muted);text-decoration:none;font:600 15px/1 var(--display);letter-spacing:.03em}
+  .tabbar a[aria-current]{background:var(--cloud);color:var(--ink);font-weight:700}
+  .tabbar svg{width:24px;height:24px}
+  .wrap{padding:0 20px}
+  .hero h1 .one{white-space:normal}
+  .hero .wrap{padding-top:48px;padding-bottom:180px}
+  .how{padding:40px 20px 48px}
+  .partners a{margin-left:0}
 }
-@media (prefers-reduced-motion:no-preference){
-  .climb{animation:climb 2.8s cubic-bezier(.2,.7,.2,1) .2s both}
-  @keyframes climb{from{transform:translate(-120px,60px) rotate(4deg);opacity:0}to{transform:none;opacity:1}}
-}
+@media (prefers-reduced-motion:no-preference){.climb{animation:climb 2.8s cubic-bezier(.2,.7,.2,1) .2s both}@keyframes climb{from{transform:translate(-120px,50px);opacity:0}to{transform:none;opacity:1}}}
 </style>
 </head>
 <body>
-<header class="hero">
-  <!-- Original illustration: Pacific coast at golden hour, runway to the horizon, aircraft climbing out -->
-  <svg class="scene" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#081A2E"/><stop offset=".42" stop-color="#1D4268"/><stop offset=".68" stop-color="#C9724A"/><stop offset=".8" stop-color="#F2A541"/><stop offset="1" stop-color="#F6C27A"/>
-      </linearGradient>
-      <radialGradient id="sun" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1060 640) scale(260)">
-        <stop offset="0" stop-color="#FFE6B0"/><stop offset=".25" stop-color="#F8C56E" stop-opacity=".9"/><stop offset="1" stop-color="#F2A541" stop-opacity="0"/>
-      </radialGradient>
-      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9A35C"/><stop offset="1" stop-color="#1D4268"/></linearGradient>
-      <linearGradient id="rwy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B3B4C"/><stop offset="1" stop-color="#0D1824"/></linearGradient>
-    </defs>
-    <rect width="1440" height="900" fill="url(#sky)"/>
-    <circle cx="1060" cy="640" r="260" fill="url(#sun)"/>
-    <circle cx="1060" cy="650" r="58" fill="#FFE2A6" opacity=".95"/>
-    <rect y="660" width="1440" height="80" fill="url(#sea)" opacity=".85"/>
-    <g fill="#F7D9A8" opacity=".55"><rect x="980" y="676" width="160" height="3" rx="1.5"/><rect x="1010" y="690" width="110" height="2" rx="1"/><rect x="1030" y="702" width="70" height="2" rx="1"/></g>
-    <path d="M0 640 C140 600 230 560 360 590 C470 615 540 560 650 575 C720 585 760 640 820 660 L0 680 Z" fill="#3E5E5A" opacity=".9"/>
-    <path d="M0 700 C120 660 260 640 380 668 C520 700 600 650 720 662 C840 674 900 720 1000 735 L1440 760 L1440 900 L0 900 Z" fill="#2E4A47"/>
-    <path d="M0 760 C200 730 380 740 560 770 C760 800 980 780 1200 790 C1320 795 1400 800 1440 805 L1440 900 L0 900 Z" fill="#1B302F"/>
-    <path d="M610 900 L700 742 L742 742 L830 900 Z" fill="url(#rwy)"/>
-    <g fill="#F7FAFC" opacity=".85"><path d="M717 752 L725 752 L726 768 L716 768 Z"/><path d="M715 784 L727 784 L729 808 L713 808 Z"/><path d="M712 830 L730 830 L733 866 L709 866 Z"/></g>
-    <g fill="#F2A541"><circle cx="702" cy="745" r="2"/><circle cx="740" cy="745" r="2"/><circle cx="676" cy="790" r="2.4"/><circle cx="766" cy="790" r="2.4"/><circle cx="648" cy="845" r="3"/><circle cx="794" cy="845" r="3"/></g>
-    <g class="climb" transform="translate(0 0)">
-      <path d="M864 470 C900 452 960 430 1015 418" stroke="#F7FAFC" stroke-width="1.5" stroke-dasharray="2 9" fill="none" opacity=".6"/>
-      <g transform="translate(1030 405) rotate(-12)" fill="#0E1E30">
-        <path d="M-46 2 C-30 -3 18 -5 40 -3 C48 -2 52 0 52 2 C52 4 48 6 40 6 L-40 7 C-46 7 -48 4 -46 2 Z"/>
-        <path d="M-6 3 L22 3 L-8 26 L-18 26 Z"/>
-        <path d="M-4 1 L16 1 L-6 -12 L-14 -12 Z" opacity=".8"/>
-        <path d="M-44 2 L-36 2 L-44 -14 L-50 -14 Z"/>
-        <path d="M-46 4 L-30 4 L-44 12 L-50 12 Z"/>
-      </g>
-    </g>
-  </svg>
-  <div class="wrap">
-    <nav class="nav" aria-label="Main">
-      <a class="brand" href="./">
-        <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#F2A541"/><path d="M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z" fill="#0E2A47"/></svg>
-        Cali Aircrew
-      </a>
-      <a class="navlink" href="checklists/">Checklist Builder</a>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="./"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2470B3"/><path d="M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z" fill="#fff"/></svg>Cali Aircrew</a>
+    <nav aria-label="Main">
+      <a href="checklists/">Checklists</a>
+      <a href="#notify">Find crew<span class="soon">Soon</span></a>
+      <a href="#partners">Partners</a>
+      <a class="btn primary" href="checklists/">Sign in</a>
     </nav>
-    <div class="hero-body">
-      <h1>Cali Aircrew</h1>
-      <p class="lede">Practical tools for pilots and flight instructors, built by people who fly.</p>
-      <a class="cta" href="checklists/">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>
-        Open the Checklist Builder
-      </a>
-      <small class="note">Free to use. Works on iPad, iPhone, Android and computers.</small>
-    </div>
   </div>
 </header>
 
+<section class="hero" aria-labelledby="hero-h">
+  <!-- Original illustration: daytime sky, clouds, coastal mountains, runway, aircraft climbing out -->
+  <svg class="scene" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <rect width="1440" height="520" fill="#CFE3F6"/><rect y="170" width="1440" height="200" fill="#DDEBF8"/><rect y="290" width="1440" height="120" fill="#EAF3FB"/>
+    <g fill="#fff"><ellipse cx="980" cy="120" rx="120" ry="26"/><ellipse cx="1050" cy="104" rx="70" ry="30"/><ellipse cx="1240" cy="190" rx="90" ry="18"/><ellipse cx="760" cy="210" rx="80" ry="16"/></g>
+    <path d="M0 360 L160 300 L260 330 L420 270 L560 320 L700 285 L860 330 L1010 280 L1180 325 L1300 295 L1440 320 L1440 520 L0 520 Z" fill="#B7CADC"/>
+    <path d="M0 410 C200 380 380 385 560 405 C760 428 980 400 1200 410 C1320 416 1400 420 1440 422 L1440 520 L0 520 Z" fill="#9DB4C9"/>
+    <path d="M0 455 C300 440 600 450 900 462 C1120 470 1300 466 1440 468 L1440 520 L0 520 Z" fill="#7F99B1"/>
+    <path d="M650 520 L712 440 L742 440 L800 520 Z" fill="#4E6276"/>
+    <g fill="#fff"><rect x="724" y="450" width="6" height="12"/><rect x="723" y="474" width="8" height="18"/><rect x="722" y="500" width="10" height="20"/></g>
+    <g class="climb"><g transform="translate(1000 230) rotate(-12)" fill="#3A5068"><path d="M-46 2 C-30 -3 18 -5 40 -3 C48 -2 52 0 52 2 C52 4 48 6 40 6 L-40 7 C-46 7 -48 4 -46 2 Z"/><path d="M-6 3 L22 3 L-8 26 L-18 26 Z"/><path d="M-44 2 L-36 2 L-44 -14 L-50 -14 Z"/></g></g>
+  </svg>
+  <div class="wrap">
+    <h1 id="hero-h"><span class="one">Find the right pilot for every aircraft,</span><span class="two">and the right tool for the job.</span></h1>
+    <p class="lede">Aircraft owners and charter operators find professional, type-current pilots, CFIs, flight attendants and mechanics. Pilots get listed free and build clean checklists for any airplane or helicopter.</p>
+    <div class="actions">
+      <a class="btn primary" href="checklists/">Build a checklist</a>
+      <a class="btn secondary" href="#notify"><span class="long">Get notified when Find crew opens</span><span class="short">Get notified</span></a>
+    </div>
+  </div>
+</section>
+
 <main>
-  <section class="product" aria-labelledby="p-h">
-    <div class="wrap grid">
-      <div>
-        <h2 id="p-h">Your checklist, laid out the way pilots print them</h2>
-        <p>Pick your aircraft and the builder fills in a standard checklist for it. Tick the items you want from ready-made lists, add your own, and print a clean two-column card with dot leaders and numbered lines.</p>
-        <ul>
-          <li>More than 600 aircraft, from trainers and taildraggers to business jets and airliners</li>
-          <li>Pick lists for every phase, from the walkaround to engine run-up, flight levels and shutdown</li>
-          <li>First-flight-of-day boxes, caution notes and V-speed reference blocks</li>
-          <li>Word download for printing, plus a large-print layout</li>
-          <li>Optional sign-in keeps your checklists on every device you use</li>
-        </ul>
-        <a class="textlink" href="checklists/">Build a checklist</a>
+  <div class="wrap">
+    <div class="boxes">
+      <a class="box" href="checklists/">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#234A6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>
+        <h2>Checklist builder</h2>
+        <p>Pick from 600+ aircraft, print a two-column card, and keep it on every device. Includes CFI endorsements.</p>
+        <span class="go">Build a checklist</span>
+      </a>
+      <a class="box" href="#notify">
+        <span class="soon">Coming soon</span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#234A6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>
+        <h2>Find crew</h2>
+        <p>Search pilots, CFIs, flight attendants and mechanics by aircraft, area and availability.</p>
+        <span class="go">Get notified</span>
+      </a>
+      <a class="box" href="#notify">
+        <span class="soon">Coming soon</span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#234A6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        <h2>List yourself</h2>
+        <p>Create a free crew profile with your types and hours. You choose when owners can see it.</p>
+        <span class="go">Get notified</span>
+      </a>
+    </div>
+    <div class="box wide">
+      <span class="soon">Coming soon</span>
+      <div class="head">
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:640px">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#234A6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2 -7h-4l-2 2h-3l2 -4l-2 -4h3l2 2h4l-2 -7h3z"/></svg>
+          <h2>Browse crew by aircraft</h2>
+          <p>Start from the aircraft you fly or operate and see who is current on it.</p>
+        </div>
+        <a class="go" href="#notify" style="text-decoration:none">Get notified</a>
       </div>
-      <figure class="card-sample" aria-label="Example of a printed checklist">
-        <div class="hdr"><span>CALI AIRCREW</span><span>NORMAL PROCEDURES</span><span>N123AB</span></div>
-        <div class="cs">
-          <div class="bar">BEFORE TAKEOFF</div>
-          <div class="when">Run-up area, nose into the wind</div>
-          <div class="r"><div class="a"><b>1.</b>Parking Brake<span class="d"></span></div><div class="v">SET</div></div>
-          <div class="r"><div class="a"><b>2.</b>Flight Controls<span class="d"></span></div><div class="v">FREE &amp; CORRECT</div></div>
-          <div class="r"><div class="a"><b>3.</b>Fuel Selector<span class="d"></span></div><div class="v">FULLEST TANK</div></div>
-          <div class="r"><div class="a"><b>4.</b>Magnetos<span class="d"></span></div><div class="v">CHECK L &amp; R</div></div>
-          <div class="note">MAG DROP AND DIFFERENCE LIMITS PER POH</div>
-          <div class="r ff"><div class="a"><b>5.</b>Autopilot Disconnect<span class="d"></span></div><div class="v">TEST</div></div>
-          <div class="r"><div class="a"><b>6.</b>Trim<span class="d"></span></div><div class="v">SET FOR TAKEOFF</div></div>
-          <div class="r"><div class="a"><b>7.</b>Takeoff Briefing<span class="d"></span></div><div class="v">COMPLETE</div></div>
-        </div>
-        <div class="cs">
-          <div class="bar">INITIAL CLIMB</div>
-          <div class="when">Between 500 and 1,500 ft AGL</div>
-          <div class="r"><div class="a"><b>1.</b>Flaps<span class="d"></span></div><div class="v">UP</div></div>
-          <div class="r"><div class="a"><b>2.</b>Fuel Pump<span class="d"></span></div><div class="v">OFF</div></div>
-        </div>
-      </figure>
+      <div class="tiles" aria-label="Examples">
+        <span class="tile">Citation XLS / XLS+</span><span class="tile">King Air 350</span><span class="tile">Pilatus PC-12 NGX</span><span class="tile">Citation CJ3 / CJ3+</span><span class="tile">Phenom 300E</span><span class="tile">Robinson R44</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="wrap how" aria-labelledby="how-h">
+    <div class="intro">
+      <h2 id="how-h">How the crew directory works</h2>
+      <p>Cali Aircrew is a directory, not a broker. Owners and operators contact crew directly and verify each other, the way the industry already works.</p>
+    </div>
+    <ol class="steps">
+      <li><span class="num" aria-hidden="true">1</span><h3>Crew build a profile</h3><p>Aircraft, type ratings, hours, home base and open dates.</p></li>
+      <li><span class="num" aria-hidden="true">2</span><h3>Owners search</h3><p>By exact aircraft type, area and availability.</p></li>
+      <li><span class="num" aria-hidden="true">3</span><h3>They connect</h3><p>Through a private message. Crew share phone numbers when they choose.</p></li>
+    </ol>
+  </section>
+
+  <section class="notify" id="notify" aria-labelledby="nf-h">
+    <div class="wrap">
+      <div>
+        <h2 id="nf-h">Be first in the crew directory</h2>
+        <p>Find crew and crew profiles open soon. Leave your email and we'll tell you the day it opens. No spam, and we never share your address.</p>
+      </div>
+      <form class="nf" id="nf" novalidate>
+        <div class="field"><label for="nf-email">Email</label><input id="nf-email" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+        <fieldset class="field">
+          <legend>I'm a</legend>
+          <div class="roles">
+            <label><input type="radio" name="role" value="pilot" checked> Pilot</label>
+            <label><input type="radio" name="role" value="cfi"> CFI</label>
+            <label><input type="radio" name="role" value="flight_attendant"> Flight attendant</label>
+            <label><input type="radio" name="role" value="mechanic"> Mechanic</label>
+            <label><input type="radio" name="role" value="owner"> Aircraft owner</label>
+            <label><input type="radio" name="role" value="charter"> Charter operator</label>
+            <label><input type="radio" name="role" value="partner"> Partner / business</label>
+          </div>
+        </fieldset>
+        <button class="btn primary" type="submit">Notify me</button>
+        <div class="msg" id="nf-msg" role="status" aria-live="polite"></div>
+      </form>
     </div>
   </section>
 
-  <section class="cfi" aria-labelledby="c-h">
-    <div class="wrap grid">
-      <div>
-        <h2 id="c-h">For flight instructors</h2>
-        <p>The builder includes all 96 sample endorsements from FAA Advisory Circular 61-65K. Enter the student and instructor details once, fill in the blanks, see how long each endorsement stays valid, and download them ready to sign.</p>
-        <a class="textlink" href="checklists/">Open CFI endorsements</a>
-      </div>
-      <p class="sig">I certify that Jane Q. Pilot has received the required training to qualify for solo flying. I have determined they meet the applicable requirements of 14 CFR § 61.87(n) and are proficient to make solo flights in Cessna 172S.<br><br>/s/ ________ 10/03/2026 J. J. Jones 987654321CFI RE 12-31-2027</p>
+  <section class="partners" id="partners" aria-labelledby="pt-h">
+    <div class="wrap">
+      <h2 id="pt-h">Partners</h2>
+      <span>Aviation insurance · Simulator training · Flight schools</span>
+      <a href="#notify">Become a partner</a>
     </div>
   </section>
 </main>
 
+<nav class="tabbar" aria-label="Main">
+  <a href="./" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</a>
+  <a href="checklists/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Checklists</a>
+  <a href="#notify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Find crew</a>
+  <a href="checklists/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Sign in</a>
+</nav>
 <footer>
-  <div class="wrap grid">
-    <div>
-      <strong>Cali Aircrew</strong>
-      <p>Checklists and endorsement wording here are suggestions, not FAA-approved or manufacturer documents. Always verify every item against your aircraft's approved AFM/POH and the current FAA guidance.</p>
-    </div>
+  <div class="wrap">
+    <strong>Cali Aircrew</strong>
+    <p>Profiles are advertisements; verify licenses, medical and training before hiring. Checklists and endorsement wording here are suggestions, not FAA-approved or manufacturer documents. Always verify against your aircraft's approved AFM/POH and current FAA guidance.</p>
     <p>© <span id="yr">2026</span> Cali Aircrew</p>
   </div>
 </footer>
 <script>
 document.getElementById("yr").textContent=new Date().getFullYear();
-// On tall, narrow screens frame the part of the scene with the runway, sun and aircraft
-(function(){const svg=document.querySelector(".scene"); const fit=()=>{const r=svg.getBoundingClientRect(); svg.setAttribute("viewBox", r.width/r.height<1.1?"600 0 560 900":"0 0 1440 900")}; fit(); addEventListener("resize",fit)})();
+(function(){const svg=document.querySelector(".scene");const fit=()=>{const r=svg.getBoundingClientRect();svg.setAttribute("viewBox",r.width/r.height<1.1?"445 0 560 520":"0 0 1440 520")};fit();addEventListener("resize",fit)})();
+(function(){
+  const CLOUD={{CLOUD_JSON}};
+  const f=document.getElementById("nf"), msg=document.getElementById("nf-msg"), email=document.getElementById("nf-email"), btn=f.querySelector("button");
+  const say=(t,ok)=>{msg.textContent=t;msg.className="msg "+(ok?"ok":"err")};
+  email.addEventListener("input",()=>{msg.textContent=""});
+  f.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const v=email.value.trim().toLowerCase();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){say("Enter a valid email address.",false);email.focus();return}
+    if(!CLOUD.enabled){say("Sign-ups aren't switched on yet. Please try again soon.",false);return}
+    const role=(f.querySelector("input[name=role]:checked")||{}).value||"";
+    btn.disabled=true;btn.textContent="Sending…";
+    try{
+      const r=await fetch(CLOUD.url+"/rest/v1/notify_signups",{method:"POST",headers:{"apikey":CLOUD.key,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify({email:v,role})});
+      if(!r.ok) throw new Error(String(r.status));
+      say("You're on the list. We'll email you the day the crew directory opens.",true); f.reset();
+    }catch(_){say("That didn't go through. Check your connection and try again.",false)}
+    finally{btn.disabled=false;btn.textContent="Notify me"}
+  });
+})();
 </script>
 </body>
 </html>
