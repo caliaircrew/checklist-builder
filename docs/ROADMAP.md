@@ -20,9 +20,9 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 10. Contact address (caliaircrew@gmail.com or @caliaircrew.com mailbox); move sign-in email sender to it
 
 ## D. Crew directory — Phase 1 (private beta)
-- [ ] 11. Supabase tables + RLS for profiles (public only when published)
+- [x] 11. Supabase tables + RLS for profiles (public only when published)
 - [ ] 12. Crew types: airplane pilot, helicopter pilot, CFI/CFII/CFI-H, corporate flight attendant, ferry/delivery pilot, mechanic (A&P/IA)
-- [ ] 13. Profile editor (build → publish/unpublish) and public profile page
+- [x] 13. Profile editor (build → publish/unpublish) and public profile page
 - [ ] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
 - [ ] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
 - [ ] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)

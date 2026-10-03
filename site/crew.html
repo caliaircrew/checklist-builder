@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crew directory · Cali Aircrew</title>
+<meta name="description" content="Professional crew profiles on Cali Aircrew: pilots, CFIs, flight attendants and mechanics, by aircraft type.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232470B3'/%3E%3Cpath d='M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{--ink:#234A6E;--text:#1F2A37;--sub:#3A4A5B;--muted:#5B6B7C;--blue:#2470B3;--blue-hover:#1C5E98;--cloud:#E4EEF8;--page:#F4F8FC;--line:#D6E0EA;--field:#A9BBCD;--sage-bg:#E3EFE8;--sage:#1F4A35;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--text);font:400 1.0625rem/1.6 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}a:hover{color:var(--text)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+.d{font-family:var(--display)}
+/* header */
+header.top{background:#fff;border-bottom:1px solid var(--line)}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;padding:14px 0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:700 24px/1 var(--display)}
+.brand svg{width:34px;height:34px}
+.nav nav{display:flex;flex-wrap:wrap;gap:8px 24px;margin-left:auto;align-items:center;font:600 19px/1 var(--display);letter-spacing:.04em}
+.nav nav a{color:var(--ink);text-decoration:none;padding:6px 0}
+.nav nav a:hover{color:var(--blue)}
+.soon{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:var(--cloud);color:var(--ink);font:600 12px/1.4 var(--body);letter-spacing:0;vertical-align:middle}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:8px;text-decoration:none;font:700 21px/1 var(--display);letter-spacing:.04em;border:0;cursor:pointer}
+.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-hover);color:#fff}
+.btn.secondary{background:#fff;color:var(--ink);border:2px solid var(--ink)}.btn.secondary:hover{background:var(--cloud);color:var(--ink)}
+.nav .btn{min-height:44px;padding:0 18px;font-size:19px}
+/* hero */
+.hero{position:relative;overflow:hidden;background:#DCEBF8;isolation:isolate}
+.hero svg.scene{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.hero .wrap{padding-top:72px;padding-bottom:168px;display:flex;flex-direction:column;gap:24px}
+.hero h1{margin:0;font:700 clamp(2.2rem,4.6vw,3.9rem)/1 var(--display);color:var(--text);display:flex;flex-direction:column;gap:10px}
+.hero h1 .one{white-space:nowrap}
+.hero h1 .two{color:var(--blue)}
+.hero p.lede{margin:0;max-width:640px;font-size:20px;line-height:1.5;color:var(--sub)}
+.hero .actions{display:flex;flex-wrap:wrap;gap:16px}
+/* boxes */
+.boxes{padding-top:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.box{position:relative;display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--text)}
+a.box:hover{border-color:var(--blue)}
+.box h2,.box h3{margin:0;font:700 28px/1.1 var(--display);color:var(--ink)}
+.box p{margin:0;font-size:17px;line-height:1.5}
+.box .go{margin-top:auto;align-self:flex-start;font:600 19px/1.3 var(--display);color:var(--ink);border-bottom:2px solid #7FB3E3}
+.box .soon{position:absolute;top:24px;right:24px;margin:0}
+.wide{margin-top:24px}
+.wide .head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.tile{padding:14px 16px;background:var(--cloud);border-radius:10px;font:700 20px/1.2 var(--display);color:var(--ink)}
+/* steps */
+.how{padding:48px 32px 64px;display:flex;flex-direction:column;gap:24px}
+.how h2,.notify h2,.partners h2{margin:0;font:700 36px/1.05 var(--display);color:var(--ink)}
+.how .intro{display:flex;flex-direction:column;gap:8px;max-width:720px}
+.how .intro p{margin:0;font-size:18px;line-height:1.6}
+.steps{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.steps li{display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.num{width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font:700 22px/1 var(--display)}
+.steps h3{margin:0;font:700 24px/1.1 var(--display);color:var(--ink)}
+.steps p{margin:0;font-size:17px;line-height:1.5}
+/* notify */
+.notify{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.notify .wrap{padding-top:48px;padding-bottom:48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;align-items:start}
+.notify p{margin:8px 0 0;font-size:18px;line-height:1.6;max-width:52ch}
+form.nf{display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.field legend{font-size:16px;font-weight:600}
+.field input[type=email]{height:52px;border:1px solid var(--field);border-radius:8px;padding:0 14px;font:400 17px var(--body);color:var(--text);background:#fff}
+fieldset.field{border:0;margin:0;padding:0}
+.roles{display:flex;flex-wrap:wrap;gap:8px}
+.roles label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--field);border-radius:999px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;background:#fff}
+.roles input{width:18px;height:18px;accent-color:var(--blue);margin:0}
+.roles label:has(input:checked){background:var(--cloud);border-color:var(--blue)}
+.msg{min-height:1.4em;font-size:16px;font-weight:600}
+.msg.ok{color:var(--sage)}.msg.err{color:#A12A20}
+/* partners + footer */
+.partners{background:var(--cloud)}
+.partners .wrap{padding-top:32px;padding-bottom:32px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 32px}
+.partners h2{font-size:28px}
+.partners span{font-size:17px;color:var(--sub)}
+.partners a{margin-left:auto;font:600 19px/1 var(--display)}
+footer{background:#E9EFF5;color:var(--sub)}
+footer .wrap{padding-top:32px;padding-bottom:48px;display:flex;flex-wrap:wrap;gap:16px 40px;font-size:15px}
+footer strong{font:700 22px/1 var(--display);color:var(--ink)}
+footer p{margin:0;flex:1 1 100%;max-width:72ch}
+.short{display:none}
+.tabbar{display:none}
+@media (max-width:720px){
+  .nav nav{display:none}
+  .long{display:none}.short{display:inline}
+  .climb{display:none}
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:10;gap:4px;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line)}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;border-radius:10px;color:var(--muted);text-decoration:none;font:600 15px/1 var(--display);letter-spacing:.03em}
+  .tabbar a[aria-current]{background:var(--cloud);color:var(--ink);font-weight:700}
+  .tabbar svg{width:24px;height:24px}
+  .wrap{padding:0 20px}
+  .hero h1 .one{white-space:normal}
+  .hero .wrap{padding-top:48px;padding-bottom:180px}
+  .how{padding:40px 20px 48px}
+  .partners a{margin-left:0}
+}
+@media (prefers-reduced-motion:no-preference){.climb{animation:climb 2.8s cubic-bezier(.2,.7,.2,1) .2s both}@keyframes climb{from{transform:translate(-120px,50px);opacity:0}to{transform:none;opacity:1}}}
+/* ---------- crew pages ---------- */
+main.page{padding-top:32px;padding-bottom:64px}
+.pagehead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:24px}
+.pagehead h1{margin:0;font:700 clamp(2.2rem,4vw,3rem)/1 var(--display);color:var(--ink)}
+.pagehead p{margin:6px 0 0;color:var(--sub);font-size:18px}
+.split{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.split .formcol{flex:999 1 520px;min-width:0;display:flex;flex-direction:column;gap:24px}
+.split .prevcol{flex:1 1 360px;max-width:460px;position:sticky;top:16px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.panel h2{margin:0;font:700 26px/1.1 var(--display);color:var(--ink)}
+.panel .hint{margin:0;font-size:15px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.f{display:flex;flex-direction:column;gap:6px}
+.f label,.f .lbl{font-size:16px;font-weight:600}
+.f input,.f textarea,.f select{font:400 17px var(--body);color:var(--text);border:1px solid var(--field);border-radius:8px;padding:0 12px;background:#fff;min-height:48px;width:100%}
+.f textarea{padding:10px 12px;min-height:120px;resize:vertical}
+.f small{color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--field);border-radius:999px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;background:#fff}
+.chips input{width:18px;height:18px;accent-color:var(--blue);margin:0}
+.chips label:has(input:checked){background:var(--cloud);border-color:var(--blue)}
+.acsearch{position:relative}
+.acres{position:absolute;left:0;right:0;top:100%;z-index:5;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px rgba(35,74,110,.15);max-height:320px;overflow:auto;margin-top:4px}
+.acres button{display:block;width:100%;text-align:left;border:0;background:#fff;padding:12px 14px;font:600 17px var(--body);color:var(--ink);cursor:pointer;border-bottom:1px solid #EEF2F6;min-height:44px}
+.acres button small{display:block;font-weight:400;color:var(--muted);font-size:14px}
+.acres button:hover,.acres button:focus{background:var(--cloud)}
+.acrow{display:grid;grid-template-columns:minmax(0,1fr) auto 110px 44px;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #E6ECF2}
+.acrow .nm{font:700 20px/1.15 var(--display);color:var(--ink)}
+.acrow label.tr{display:flex;align-items:center;gap:6px;font-size:15px;white-space:nowrap}
+.acrow label.tr input{width:18px;height:18px;accent-color:var(--blue)}
+.acrow input.hrs{min-height:44px;border:1px solid var(--field);border-radius:8px;padding:0 10px;font:400 16px var(--body);width:100%}
+.iconbtn{width:44px;height:44px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#8A2A20;font-size:20px;cursor:pointer}
+.switch{display:flex;align-items:center;gap:12px;font-size:17px;font-weight:600;cursor:pointer}
+.switch input{width:22px;height:22px;accent-color:var(--blue)}
+.status{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:15px;font-weight:600;background:var(--cloud);color:var(--ink)}
+.status.ok{background:var(--sage-bg);color:var(--sage)}
+.status.warn{background:#FFF4DE;color:#6A4A00}
+.savebar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.err{color:#A12A20;font-weight:600}
+/* profile card */
+.pcard{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pcard .top{display:flex;gap:16px;align-items:center;padding:24px 24px 16px}
+.avatar{flex:none;width:76px;height:76px;border-radius:50%;background:var(--cloud);color:var(--ink);display:flex;align-items:center;justify-content:center;font:700 28px/1 var(--display)}
+.pcard h2{margin:0;font:700 32px/1 var(--display);color:var(--ink)}
+.pcard .meta{color:var(--muted);font-size:16px}
+.pcard .badges{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 16px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;font-size:15px;font-weight:600;background:var(--cloud);color:var(--ink)}
+.badge.ok{background:var(--sage-bg);color:var(--sage)}
+.pcard section{padding:16px 24px;border-top:1px solid #E6ECF2}
+.pcard h3{margin:0 0 8px;font:700 22px/1.1 var(--display);color:var(--ink)}
+.pcard .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:8px 0;border-top:1px solid #EEF2F6;font-size:17px}
+.pcard .row:first-of-type{border-top:0}
+.pcard .row b{color:var(--ink)}
+.pcard p{margin:0;font-size:17px;line-height:1.55;white-space:pre-line}
+.pcard .actions{display:flex;gap:10px;padding:16px 24px 24px;border-top:1px solid #E6ECF2}
+.pcard .note{padding:0 24px 20px;color:var(--muted);font-size:14px}
+.empty{color:var(--muted);font-style:italic}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(31,42,55,.45);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal .box2{background:#fff;border-radius:14px;max-width:460px;width:100%;padding:24px;display:flex;flex-direction:column;gap:14px;max-height:90vh;overflow:auto}
+.modal h2{margin:0;font:700 28px/1.1 var(--display);color:var(--ink)}
+.center{max-width:640px;margin:48px auto;text-align:center;display:flex;flex-direction:column;gap:16px;align-items:center}
+.center h1{margin:0;font:700 40px/1.05 var(--display);color:var(--ink)}
+.center p{margin:0;font-size:18px;color:var(--sub)}
+.toggleprev{display:none}
+@media (max-width:1023px) and (orientation:portrait){
+  .split .prevcol{display:none;position:static;max-width:none}
+  .split.showprev .prevcol{display:block}
+  .split.showprev .formcol{display:none}
+  .toggleprev{display:inline-flex}
+}
+@media (max-width:720px){.split .prevcol{display:none;position:static;max-width:none}.split.showprev .prevcol{display:block}.split.showprev .formcol{display:none}.toggleprev{display:inline-flex}.acrow{grid-template-columns:minmax(0,1fr) 44px;}.acrow label.tr,.acrow input.hrs{grid-column:1 / span 1}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="../"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2470B3"/><path d="M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z" fill="#fff"/></svg>Cali Aircrew</a>
+    <nav aria-label="Main">
+      <a href="../checklists/">Checklists</a>
+      <a href="#/" aria-current="page" style="border-bottom:3px solid var(--blue)">Crew</a>
+      <a href="../#partners">Partners</a>
+      <a class="btn primary" id="acctBtn" href="#/me">Sign in</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap page" id="app" aria-live="polite"><p>Loading…</p></main>
+<nav class="tabbar" aria-label="Main">
+  <a href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</a>
+  <a href="../checklists/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Checklists</a>
+  <a href="#/" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Crew</a>
+  <a href="#/me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>My profile</a>
+</nav>
+<footer>
+  <div class="wrap">
+    <strong>Cali Aircrew</strong>
+    <p>Profiles are advertisements; verify licenses, medical and training before hiring. Cali Aircrew is a directory, not a broker or employer, and does not arrange flights.</p>
+    <p>© <span id="yr">2026</span> Cali Aircrew</p>
+  </div>
+</footer>
+<script>
+<<<SUPABASE_LIB>>>
+</script>
+<script>
+{{CREW_APP_JS}}
+</script>
+</body>
+</html>

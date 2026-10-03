@@ -17,6 +17,10 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.5.0  2026-10-03  Steve  Crew directory page: site/crew.html + src/crew.js ->
+                            crew/index.html with supabase-js, cloud config and
+                            the aircraft list (seq, make, model, engine, flags,
+                            years); node syntax check. Builds app 1.21.
   2.4.0  2026-10-04  Steve  Site layout: site/home.html becomes the homepage
                             (index.html); the builder moves to
                             checklists/index.html. Homepage checked for the
@@ -51,7 +55,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.4.1"
+SCRIPT_VERSION = "2.5.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -364,6 +368,33 @@ def main(argv=None):
     except BuildError as e:
         print(f"BUILD FAILED: {e}", file=sys.stderr)
         return 1
+    # Crew directory page (site/crew.html + src/crew.js) -> crew/index.html
+    try:
+        crew_html = open(os.path.join(ROOT, "site", "crew.html"), encoding="utf-8").read()
+        crew_js = open(os.path.join(ROOT, "src", "crew.js"), encoding="utf-8").read()
+        acft_rows = []
+        for path in files("data/aircraft/*.yaml"):
+            for ac in (load(os.path.relpath(path, ROOT)) or {}).get("aircraft", []):
+                fl = ("t" if ac.get("twin") else "") + ("r" if ac.get("retractable") else "") + ("p" if ac.get("pressurized") else "") + ("h" if ac.get("category") == "helicopter" else "")
+                acft_rows.append([ac["seq"], str(ac["make"]), str(ac["model"]), ac["engine"], fl, str(ac["years"])])
+        acft_rows.sort(key=lambda r: r[0])
+        c = app.get("cloud") or {}
+        cloud = json.dumps({"enabled": bool(c.get("enabled")), "url": c.get("url", "") if c.get("enabled") else "", "key": c.get("publishable_key", "") if c.get("enabled") else ""})
+        crew_js = crew_js.replace("{{CLOUD_JSON}}", cloud).replace("{{ACFT_JSON}}", json.dumps(acft_rows, ensure_ascii=False, separators=(",", ":")))
+        need("{{" not in crew_js, "src/crew.js has an unfilled {{placeholder}}")
+        tmpjs = os.path.join(tempfile.gettempdir(), "crew_check.js")
+        open(tmpjs, "w", encoding="utf-8").write(crew_js)
+        if shutil.which("node"):
+            r = subprocess.run(["node", "--check", tmpjs], capture_output=True, text=True)
+            need(r.returncode == 0, "src/crew.js JavaScript syntax error:\n" + r.stderr[-800:])
+        crew_page = (crew_html.replace("<<<SUPABASE_LIB>>>", load_vendor("supabase-js", f"supabase-js-{app['supabase_js']['version']}.umd.js", app["supabase_js"]["sha256"]))
+                              .replace("{{CREW_APP_JS}}", crew_js.replace("</script", "<\\/script")))
+        need("not a broker" in crew_page, "site/crew.html must keep the directory/not-a-broker note")
+    except BuildError as e:
+        print(f"BUILD FAILED: {e}", file=sys.stderr)
+        return 1
+    os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)
+    open(os.path.join(a.out, "crew", "index.html"), "w", encoding="utf-8").write(crew_page)
     os.makedirs(os.path.join(a.out, "checklists"), exist_ok=True)
     data = html.encode("utf-8")
     open(os.path.join(a.out, "checklists", "index.html"), "wb").write(data)

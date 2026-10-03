@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.21 | 2026-10-03 | Crew directory page (/crew): sign-in (email code + Microsoft Authenticator), My profile editor with aircraft picker (623 types, hours, type rating), live preview (side by side on wide/landscape; Preview toggle on portrait/phones), publish → review status, public profile page (#/p/<id>) with FAA verified badge. Homepage List yourself box now live. |
 | 1.20 | 2026-10-03 | Homepage redesign (clear-sky palette, new headline, three entry boxes + Browse by aircraft, symmetric how-it-works steps, Get notified form → Supabase notify_signups, phone bottom tab bar). supabase/002_directory.sql: crew/operator profiles, aircraft links, moderation, admins, notify list, public counts. |
 | 1.19 | 2026-10-04 | Brand name on the homepage changed to Cali Aircrew. |
 | 1.18 | 2026-10-04 | Cali Aircrew homepage at the site root (site/home.html, original coastal-sunset illustration, sample printed card, CFI section, safety footer). Builder moved to /checklists/. |
@@ -28,6 +29,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.5.0 | 2026-10-03 | Builds crew/index.html (site/crew.html + src/crew.js, supabase-js, aircraft list, node syntax check). Builds app 1.21. |
 | 2.4.1 | 2026-10-03 | Homepage gets the cloud config (public URL + publishable key) for the Get notified form. |
 | 2.4.0 | 2026-10-04 | Homepage at index.html, builder at checklists/index.html; homepage validation. Builds app 1.18. |
 | 2.3.0 | 2026-10-03 | Vendored supabase-js + cloud config from app.yaml (publishable key only; secret keys refused). Builds app 1.15. |
