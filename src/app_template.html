@@ -306,7 +306,7 @@ function libFor(title){const t=(title||"").toUpperCase();
 
 /* Aircraft list — make|model|years (approx.)|engine|flags (t=twin r=retractable p=pressurized)|search aliases */
 {{ACFT_RAW}}
-const ACFT=ACFT_RAW.split("\n").map((l,i)=>{const [make,model,years,engine,f,alias]=l.split("|");return {id:i,make,model,years,engine,twin:f.includes("t"),retract:f.includes("r"),press:f.includes("p"),alias:alias||""}});
+const ACFT=ACFT_RAW.split("\n").map((l,i)=>{const [make,model,years,engine,f,alias]=l.split("|");return {id:i,make,model,years,engine,twin:f.includes("t"),retract:f.includes("r"),press:f.includes("p"),heli:f.includes("h"),alias:alias||""}});
 const acftName=a=>((a.make==="Cessna Citation"?"Cessna":a.make)+" "+a.model.replace(/\s*\(.*?\)/,"")).trim();
 
 /* Suggested model checklists. "## TITLE" starts a section; "*" = first flight of day; note: / div: lines */
@@ -512,18 +512,19 @@ $("verBtn").onclick=()=>{const m=document.createElement("div"); m.className="mod
 function bump(v){v=String(v||"1.0").trim(); const m=v.match(/^(.*?)(\d+)$/); if(!m) return v+".1"; const n=String(+m[2]+1).padStart(m[2].length,"0"); return m[1]+n}
 $("newRev").onclick=()=>{S.version=bump(S.version); const d=new Date(); S.revision=String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0")+"/"+d.getFullYear(); loadHeader(); changed(); status("")};
 /* ---------- aircraft finder ---------- */
-const tagsOf=a=>[a.engine==="piston"?"Piston":a.engine==="turboprop"?"Turboprop":"Jet",a.twin?"Twin":"Single",a.retract?"Retractable gear":"Fixed gear",a.press?"Pressurized":"Unpressurized"];
+const tagsOf=a=>a.heli?["Helicopter",a.engine==="piston"?"Piston":"Turbine",a.twin?"Twin":"Single"]:[a.engine==="piston"?"Piston":a.engine==="turboprop"?"Turboprop":"Jet",a.twin?"Twin":"Single",a.retract?"Retractable gear":"Fixed gear",a.press?"Pressurized":"Unpressurized"];
 function drawSel(){
   const a=S.acftId!=null?ACFT[S.acftId]:null;
-  $("aSel").innerHTML=a?`<div class="asel"><span>✓ <b>${esc(acftName(a))}</b> · ${esc(a.years)} · ${tagsOf(a).join(" · ")}<br><small style="color:var(--muted)">Pick lists now show only items for this kind of aircraft.</small></span><button class="btn small x" id="aClr">Change</button><div class="sugg" style="width:100%"><span>${modelFor(a)?`⭐ <b>Suggested ${esc(MODELS[modelFor(a)].name)} checklist</b> is this aircraft's default (${MODELS[modelFor(a)].sections.length} sections).`:`Default: <b>${esc(defaultFor(a).label)}</b>, built from the general lists.`}</span><button class="btn small primary" id="aLoad">↺ Reset to ${esc(acftName(a))} default</button>${modelFor(a)?`<div class="disc"><b>${esc(statusText(MODELS[modelFor(a)]))}</b> Suggestions only — not FAA-approved and not the manufacturer's checklist. ${esc(MODELS[modelFor(a)].src)} Verify every item against your AFM/POH before use.</div>`:`${/airliner|regional/i.test(a.alias)?`<div class="disc" style="margin-bottom:6px"><b>Airline / regional type.</b> Carriers fly these from their own company checklists (FCOM / QRH). Use cards made here for study and flow practice only.</div>`:""}<div class="disc"><b>Not yet specific to this model's POH.</b> These are the common items for this type of aircraft. Check each line against your POH, change any wording, and use the pick lists to add what is missing. Suggestions only — not FAA-approved.</div>`}</div></div>`:"";
+  $("aSel").innerHTML=a?`<div class="asel"><span>✓ <b>${esc(acftName(a))}</b> · ${esc(a.years)} · ${tagsOf(a).join(" · ")}<br><small style="color:var(--muted)">Pick lists now show only items for this kind of aircraft.</small></span><button class="btn small x" id="aClr">Change</button>${a.heli?`<div class="sugg" style="width:100%"><span><b>Helicopter.</b> Helicopter checklist defaults and pick lists are coming next. For now, add your own lines from your RFM/POH, or use the general lists that apply.</span></div>`:`<div class="sugg" style="width:100%"><span>${modelFor(a)?`⭐ <b>Suggested ${esc(MODELS[modelFor(a)].name)} checklist</b> is this aircraft's default (${MODELS[modelFor(a)].sections.length} sections).`:`Default: <b>${esc(defaultFor(a).label)}</b>, built from the general lists.`}</span><button class="btn small primary" id="aLoad">↺ Reset to ${esc(acftName(a))} default</button>${modelFor(a)?`<div class="disc"><b>${esc(statusText(MODELS[modelFor(a)]))}</b> Suggestions only — not FAA-approved and not the manufacturer's checklist. ${esc(MODELS[modelFor(a)].src)} Verify every item against your AFM/POH before use.</div>`:`${/airliner|regional/i.test(a.alias)?`<div class="disc" style="margin-bottom:6px"><b>Airline / regional type.</b> Carriers fly these from their own company checklists (FCOM / QRH). Use cards made here for study and flow practice only.</div>`:""}<div class="disc"><b>Not yet specific to this model's POH.</b> These are the common items for this type of aircraft. Check each line against your POH, change any wording, and use the pick lists to add what is missing. Suggestions only — not FAA-approved.</div>`}</div>`}</div>`:"";
   $("aFind").hidden=!!a;
-  if(a) $("aLoad").onclick=()=>resetDefault(a);
-  $("resetDef").hidden=!a;
+  if(a&&!a.heli) $("aLoad").onclick=()=>resetDefault(a);
+  $("resetDef").hidden=!a||!!a.heli;
   if(a) $("aClr").onclick=()=>{S.acftId=null;S.profile={engine:"any",twin:true,retract:true,press:true};changed();drawSel();$("aQ").focus()};
 }
 function searchAcft(q){
   const words=q.toUpperCase().replace(/[-–]/g," ").split(/\s+/).filter(Boolean); if(!words.length) return [];
-  return ACFT.filter(a=>{const hay=(a.make+" "+a.model+" "+a.alias+" "+a.engine).toUpperCase().replace(/[-–]/g," "); return words.every(w=>hay.includes(w))}).slice(0,25);
+  const cw=words.map(w=>w.replace(/[^A-Z0-9]/g,""));
+  return ACFT.filter(a=>{const hay=(a.make+" "+a.model+" "+a.alias+" "+a.engine+(a.heli?" HELICOPTER":"")).toUpperCase().replace(/[-–]/g," "), hc=hay.replace(/[^A-Z0-9]/g,""); return words.every((w,i)=>hay.includes(w)||(cw[i]&&hc.includes(cw[i])))}).slice(0,25);
 }
 $("aQ").addEventListener("input",()=>{const r=searchAcft($("aQ").value), box=$("aRes");
   box.innerHTML=r.length?r.map(a=>`<button data-a="${a.id}">${esc(acftName(a))}${modelFor(a)?'<span class="badge">⭐ suggested checklist</span>':""}<small>${esc(a.years)} · ${tagsOf(a).join(" · ")}</small></button>`).join(""):($("aQ").value.trim()?'<div style="padding:12px;color:var(--muted)">No match yet — that model is not on the list. You can still type any aircraft name in "Aircraft type" below.</div>':"");
@@ -532,11 +533,11 @@ $("aRes").addEventListener("click",e=>{const b=e.target.closest("[data-a]"); if(
   S.acftId=a.id; S.profile={engine:a.engine,twin:a.twin,retract:a.retract,press:a.press}; S.aircraft=acftName(a); loadHeader();
   {const it=LIBR.items[LIBR.current]; if(it&&(/^(My checklist|New checklist)( \d+)?$/.test(it.name)||!it.name)){it.name=acftName(a)+(S.tail?" – "+S.tail:""); lsave(); drawLib()}}
   $("aQ").value=""; $("aRes").hidden=true; changed(); drawSel();
-  loadDefault(a,true);});
+  if(!a.heli) loadDefault(a,true);});
 document.addEventListener("click",e=>{if(!e.target.closest("#aFind")) $("aRes").hidden=true});
 $("resetDef").onclick=()=>{if(S.acftId!=null) resetDefault(ACFT[S.acftId])};
 /* ---------- picker ---------- */
-const ENG={piston:["piston"],turboprop:["turboprop","turbine"],jet:["jet","turbine"]};
+const ENG={piston:["piston"],turboprop:["turboprop","turbine"],jet:["jet","turbine"],turboshaft:["turbine"]};
 function fits(e){return fitsP(e,S.profile)}
 function fitsP(e,p){
   const eng=e.tags.filter(t=>["piston","turboprop","jet","turbine"].includes(t));

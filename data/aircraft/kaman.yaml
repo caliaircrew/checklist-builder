@@ -1,0 +1,4 @@
+# Aircraft: Kaman. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 667, id: kaman-k-max, make: Kaman, model: K-MAX, years: 1994–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: KMAX external load synchropter helicopter}

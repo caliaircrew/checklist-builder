@@ -1,0 +1,6 @@
+# Aircraft: Sikorsky. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 654, id: sikorsky-s-76-a-b-c-d, make: Sikorsky, model: S-76 A / B / C / D, years: 1977–2022, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: S76 helicopter}
+  - {seq: 655, id: sikorsky-s-92, make: Sikorsky, model: S-92, years: 2004–present, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: S92 helicopter}
+  - {seq: 656, id: sikorsky-s-61, make: Sikorsky, model: S-61, years: 1961–1980, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: S61 Sea King helicopter}

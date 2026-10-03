@@ -4,8 +4,8 @@
 (function(){
 "use strict";
 const CLOUD = {{CLOUD_JSON}};
-const ACFT_ROWS = {{ACFT_JSON}};            // [seq, make, model, engine, flags, years]
-const ACFT = ACFT_ROWS.map(r => ({seq:r[0], make:r[1], model:r[2], engine:r[3], twin:r[4].includes("t"), heli:r[4].includes("h"), years:r[5],
+const ACFT_ROWS = {{ACFT_JSON}};            // [seq, make, model, engine, flags, years, search words]
+const ACFT = ACFT_ROWS.map(r => ({seq:r[0], make:r[1], model:r[2], engine:r[3], twin:r[4].includes("t"), heli:r[4].includes("h"), years:r[5], alias:r[6] || "",
   name:((r[1]==="Cessna Citation"?"Cessna":r[1])+" "+String(r[2]).replace(/\s*\(.*?\)/,"")).trim()}));  // same naming as the checklist builder
 const BYSEQ = new Map(ACFT.map(a => [a.seq, a]));
 const CREW_TYPES = [["airplane_pilot","Airplane pilot"],["helicopter_pilot","Helicopter pilot"],["cfi","Flight instructor"],["flight_attendant","Flight attendant"],["ferry_pilot","Ferry / delivery pilot"],["mechanic","Mechanic (A&P / IA)"]];
@@ -64,6 +64,7 @@ function cardHTML(p, aircraft, mod, opts){
   const ac = (aircraft || []).map(a => ({...a, info:BYSEQ.get(a.acft_seq)})).filter(a => a.info).sort((x, y) => (y.hours || 0) - (x.hours || 0));
   const badges = [];
   if (mod && mod.verified_faa) badges.push(`<span class="badge ok">✓ FAA certificate verified</span>`);
+  if ((aircraft || []).some(a => a.part135)) badges.push(`<span class="badge ok">✓ Part 135 current</span>`);
   types.forEach(t => badges.push(`<span class="badge">${esc(t)}</span>`));
   return `<article class="pcard" aria-label="Crew profile">
     <div class="top"><div class="avatar" aria-hidden="true">${esc(initials(p.display_name))}</div>
@@ -72,7 +73,7 @@ function cardHTML(p, aircraft, mod, opts){
       <div class="meta">${p.home_base ? "Based at " + esc(p.home_base) : '<span class="empty">Home base</span>'}</div></div></div>
     ${badges.length ? `<div class="badges">${badges.join("")}</div>` : ""}
     <section><h3>Aircraft and time</h3>
-      ${ac.length ? ac.map(a => `<div class="row"><span>${esc(a.info.name)}${a.type_rated ? " · type rated" : ""}</span><b>${a.hours ? fmt(a.hours) + " hrs" : ""}</b></div>`).join("") : '<p class="empty">Add the aircraft you fly.</p>'}
+      ${ac.length ? ac.map(a => `<div class="row"><span>${esc(a.info.name)}${a.type_rated ? " · type rated" : ""}${a.part135 ? " · 135 " + esc(a.part135) : ""}</span><b>${a.hours ? fmt(a.hours) + " hrs" : ""}</b></div>`).join("") : '<p class="empty">Add the aircraft you fly.</p>'}
       ${p.total_time ? `<div class="row"><span>Total time</span><b>${fmt(p.total_time)} hrs</b></div>` : ""}
     </section>
     ${(p.availability || p.travel || p.experience) ? `<section><h3>Availability and experience</h3>${p.availability ? `<p>${esc(p.availability)}</p>` : ""}${p.travel ? `<p>${esc(p.travel)}</p>` : ""}${p.experience ? `<p>${esc(p.experience)}</p>` : ""}</section>` : ""}
@@ -118,7 +119,7 @@ async function viewMe(){
     sb.from("crew_aircraft").select("*").eq("user_id", uid),
     sb.from("moderation").select("*").eq("user_id", uid).maybeSingle()]);
   const P = Object.assign({display_name:"", crew_types:[], certificate:"", headline:"", home_base:"", travel:"", experience:"", bio:"", total_time:null, availability:"", published:false}, p0 || {});
-  let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, type_rated:!!a.type_rated, hours:a.hours}));
+  let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, type_rated:!!a.type_rated, hours:a.hours, part135:a.part135 || ""}));
   let dirty = false;
   const statusOf = () => {
     if (!p0) return ["", "Not saved yet"];
@@ -172,6 +173,7 @@ async function viewMe(){
     $("aclist").innerHTML = AC.length ? AC.map((a, i) => { const info = BYSEQ.get(a.acft_seq); return `<div class="acrow"><span class="nm">${esc(info ? info.name : "Aircraft #" + a.acft_seq)}</span>
       <label class="tr"><input type="checkbox" data-tr="${i}"${a.type_rated ? " checked" : ""}> Type rated</label>
       <input class="hrs" data-hr="${i}" inputmode="numeric" placeholder="Hours" aria-label="Hours in ${esc(info ? info.name : "")}" value="${a.hours ?? ""}">
+      <select class="p135" data-p135="${i}" aria-label="Part 135 currency in ${esc(info ? info.name : "")}"><option value=""${!a.part135 ? " selected" : ""}>Not 135 current</option><option value="SIC"${a.part135 === "SIC" ? " selected" : ""}>135 current · SIC</option><option value="PIC"${a.part135 === "PIC" ? " selected" : ""}>135 current · PIC</option></select>
       <button class="iconbtn" type="button" data-rm="${i}" aria-label="Remove ${esc(info ? info.name : "aircraft")}">✕</button></div>`; }).join("") : '<p class="empty" style="margin:0">No aircraft yet.</p>';
   };
   const changed = () => { dirty = true; drawPrev(); drawStatus(); };
@@ -181,7 +183,7 @@ async function viewMe(){
     if (t.dataset.hr != null) { const v = t.value.replace(/[^\d]/g, ""); AC[+t.dataset.hr].hours = v ? Math.min(50000, +v) : null; }
     if (t.id !== "acq") changed();
   });
-  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.name === "ct" || t.id === "pub") changed(); });
+  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.p135 != null) { AC[+t.dataset.p135].part135 = t.value; changed(); } else if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.name === "ct" || t.id === "pub") changed(); });
   $("aclist").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (!b) return; AC.splice(+b.dataset.rm, 1); drawAc(); if (!$("acbrowse").hidden) drawBrowse(); changed(); });
   /* browse: category -> manufacturer -> model tiles; tap to add or remove */
   const CATS = [["jet","Jets"],["turboprop","Turboprops"],["ptwin","Piston twins"],["psingle","Piston singles"],["heli","Helicopters"]];
@@ -207,18 +209,19 @@ async function viewMe(){
     const c = e.target.closest("[data-cat]"), m = e.target.closest("[data-make]"), t = e.target.closest("[data-tog]");
     if (c) { bcat = c.dataset.cat === bcat ? null : c.dataset.cat; bmake = null; drawBrowse(); return; }
     if (m) { bmake = m.dataset.make === bmake ? null : m.dataset.make; drawBrowse(); return; }
-    if (t) { const seq = +t.dataset.tog, i = AC.findIndex(a => a.acft_seq === seq); if (i >= 0) AC.splice(i, 1); else AC.push({acft_seq:seq, type_rated:false, hours:null}); drawAc(); drawBrowse(); changed(); }
+    if (t) { const seq = +t.dataset.tog, i = AC.findIndex(a => a.acft_seq === seq); if (i >= 0) AC.splice(i, 1); else AC.push({acft_seq:seq, type_rated:false, hours:null, part135:""}); drawAc(); drawBrowse(); changed(); }
   });
   const q = $("acq"), res = $("acres");
   q.addEventListener("input", () => {
     const words = q.value.toUpperCase().replace(/[-–]/g, " ").split(/\s+/).filter(Boolean);
     if (!words.length) { res.hidden = true; return; }
     const have = new Set(AC.map(a => a.acft_seq));
-    const hits = ACFT.filter(a => !have.has(a.seq) && words.every(w => (a.name + " " + a.engine).toUpperCase().replace(/[-–]/g, " ").includes(w))).slice(0, 20);
-    res.innerHTML = hits.length ? hits.map(a => `<button type="button" data-add="${a.seq}">${esc(a.name)}<small>${esc(a.years)} · ${a.heli ? "Helicopter" : a.engine[0].toUpperCase() + a.engine.slice(1)}${a.twin ? " · twin" : ""}</small></button>`).join("") : '<div style="padding:12px;color:var(--muted)">No match. Try a shorter name.</div>';
+    const cw = words.map(w => w.replace(/[^A-Z0-9]/g, ""));
+    const hits = ACFT.filter(a => { if (have.has(a.seq)) return false; const hay = (a.name + " " + a.alias + " " + a.engine + (a.heli ? " HELICOPTER" : "")).toUpperCase().replace(/[-–]/g, " "), hc = hay.replace(/[^A-Z0-9]/g, ""); return words.every((w, i) => hay.includes(w) || (cw[i] && hc.includes(cw[i]))); }).slice(0, 20);
+    res.innerHTML = hits.length ? hits.map(a => `<button type="button" data-add="${a.seq}">${esc(a.name)}<small>${esc(a.years)} · ${a.heli ? "Helicopter · " + (a.engine === "piston" ? "piston" : "turbine") : a.engine[0].toUpperCase() + a.engine.slice(1)}${a.twin ? " · twin" : ""}</small></button>`).join("") : '<div style="padding:12px;color:var(--muted)">No match. Try a shorter name.</div>';
     res.hidden = false;
   });
-  res.addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return; AC.push({acft_seq:+b.dataset.add, type_rated:false, hours:null}); q.value = ""; res.hidden = true; drawAc(); changed(); const last = app.querySelector(`[data-hr="${AC.length - 1}"]`); if (last) last.focus(); });
+  res.addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return; AC.push({acft_seq:+b.dataset.add, type_rated:false, hours:null, part135:""}); q.value = ""; res.hidden = true; drawAc(); changed(); const last = app.querySelector(`[data-hr="${AC.length - 1}"]`); if (last) last.focus(); });
   document.addEventListener("click", e => { if (!e.target.closest(".acsearch")) res.hidden = true; });
   $("tp").onclick = () => { const s = $("split"); s.classList.toggle("showprev"); $("tp").textContent = s.classList.contains("showprev") ? "Edit" : "Preview"; window.scrollTo(0, 0); };
   $("so").onclick = async () => { await sb.auth.signOut(); location.hash = "#/"; };
@@ -232,7 +235,13 @@ async function viewMe(){
       const row = {user_id:uid, published:P.published, display_name:P.display_name, crew_types:P.crew_types, certificate:P.certificate, headline:P.headline, home_base:P.home_base, travel:P.travel, experience:P.experience, bio:P.bio, total_time:P.total_time, availability:P.availability};
       const r1 = await sb.from("crew_profiles").upsert(row, {onConflict:"user_id"}); if (r1.error) throw r1.error;
       const r2 = await sb.from("crew_aircraft").delete().eq("user_id", uid); if (r2.error) throw r2.error;
-      if (AC.length) { const r3 = await sb.from("crew_aircraft").insert(AC.map(a => ({user_id:uid, acft_seq:a.acft_seq, type_rated:a.type_rated, hours:a.hours}))); if (r3.error) throw r3.error; }
+      if (AC.length) {
+        let r3 = await sb.from("crew_aircraft").insert(AC.map(a => ({user_id:uid, acft_seq:a.acft_seq, type_rated:a.type_rated, hours:a.hours, part135:a.part135 || ""})));
+        if (r3.error && /part135/i.test(r3.error.message || "")) {   // database not yet upgraded (supabase/003): save without it
+          r3 = await sb.from("crew_aircraft").insert(AC.map(a => ({user_id:uid, acft_seq:a.acft_seq, type_rated:a.type_rated, hours:a.hours})));
+          if (!r3.error) $("se").textContent = "Saved, but Part 135 isn't switched on yet (Cali Aircrew setup step pending).";
+        }
+        if (r3.error) throw r3.error; }
       dirty = false; Object.assign(P, row); if (!p0) { await viewMe(); return; }
       drawStatus(); $("se").textContent = "";
       const ok = document.createElement("span"); ok.className = "status ok"; ok.textContent = "Saved"; $("st").appendChild(ok); setTimeout(() => ok.remove(), 2500);

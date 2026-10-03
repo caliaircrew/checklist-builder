@@ -1,0 +1,8 @@
+# Aircraft: Leonardo. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 649, id: leonardo-aw109, make: Leonardo, model: AW109 (A109 Power / GrandNew / Trekker), years: 1976–present, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: A109 AgustaWestland Agusta helicopter}
+  - {seq: 650, id: leonardo-aw119-koala, make: Leonardo, model: AW119 Koala, years: 2000–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: AW119 Koala AgustaWestland helicopter}
+  - {seq: 651, id: leonardo-aw139, make: Leonardo, model: AW139, years: 2003–present, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: AW139 AgustaWestland helicopter}
+  - {seq: 652, id: leonardo-aw169, make: Leonardo, model: AW169, years: 2015–present, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: AW169 AgustaWestland helicopter}
+  - {seq: 653, id: leonardo-aw189, make: Leonardo, model: AW189, years: 2014–present, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: AW189 AgustaWestland helicopter}

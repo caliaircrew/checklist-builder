@@ -1,0 +1,4 @@
+# Aircraft: Hiller. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 669, id: hiller-uh-12, make: Hiller, model: UH-12, years: 1948–1965, engine: piston, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: Hiller 360 helicopter}

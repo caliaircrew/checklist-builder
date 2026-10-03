@@ -1,0 +1,5 @@
+# Aircraft: Schweizer. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 657, id: schweizer-300c-300cbi, make: Schweizer, model: 300C / 300CBi (Hughes 269), years: 1964–present, engine: piston, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: Hughes 269 Sikorsky S-300 trainer helicopter}
+  - {seq: 658, id: schweizer-333, make: Schweizer, model: '333', years: 2000–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: Sikorsky S-333 helicopter}

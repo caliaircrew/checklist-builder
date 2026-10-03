@@ -1,0 +1,13 @@
+# Aircraft: Bell. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 626, id: bell-47, make: Bell, model: 47 (47G / 47J), years: 1946–1974, engine: piston, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: Bell 47 classic helicopter}
+  - {seq: 627, id: bell-206b-jetranger, make: Bell, model: 206B JetRanger, years: 1967–2010, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: 206 JetRanger helicopter}
+  - {seq: 628, id: bell-206l-longranger, make: Bell, model: 206L LongRanger, years: 1975–2010, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: 206L LongRanger helicopter}
+  - {seq: 629, id: bell-222-230, make: Bell, model: 222 / 230, years: 1980–1995, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: 222 230 helicopter}
+  - {seq: 630, id: bell-407-407gxi, make: Bell, model: 407 / 407GXi, years: 1996–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: 407 helicopter}
+  - {seq: 631, id: bell-412-412epi, make: Bell, model: 412 / 412EPI, years: 1981–present, engine: turboshaft, category: helicopter, twin: true, retractable: false, pressurized: false, search_words: 412 helicopter}
+  - {seq: 632, id: bell-429-globalranger, make: Bell, model: 429 GlobalRanger, years: 2009–present, engine: turboshaft, category: helicopter, twin: true, retractable: false, pressurized: false, search_words: 429 helicopter}
+  - {seq: 633, id: bell-430, make: Bell, model: '430', years: 1996–2008, engine: turboshaft, category: helicopter, twin: true, retractable: true, pressurized: false, search_words: 430 helicopter}
+  - {seq: 634, id: bell-505-jet-ranger-x, make: Bell, model: 505 Jet Ranger X, years: 2017–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: 505 helicopter}
+  - {seq: 635, id: bell-uh-1h-huey, make: Bell, model: UH-1H Huey (civil), years: 1960s–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: Huey UH-1 205 helicopter}

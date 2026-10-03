@@ -9,7 +9,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 4. Delete the temporary GitHub fine-grained token after the session (expires ~2026-10-10)
 
 ## B. Checklist builder
-- [ ] 5. Helicopters: ~40 types, helicopter category, ~10 helicopter pick lists, helicopter defaults (v1.20)
+- [ ] 5. Helicopters: [x] 47 types + helicopter category (v1.24); [ ] ~10 helicopter pick lists and helicopter defaults in the checklist builder
 - [ ] 6. SFAR 73 (Robinson R22/R44) awareness-training endorsements, verified against the FAA text
 - [ ] 7. Offline install (PWA): home-screen icon, works without signal
 - [ ] 7b. Checklist builder theme matches the rest of the site: clear-sky palette, white top bar with Cali Aircrew logo and the same menu (Checklists, Crew, Partners, Sign in), Barlow Condensed + Source Sans 3, sky-blue main buttons, 8 px spacing, phone bottom tab bar (printed card keeps its black-and-white print style)

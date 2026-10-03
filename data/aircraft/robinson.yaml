@@ -1,0 +1,6 @@
+# Aircraft: Robinson. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 623, id: robinson-r22-beta-beta-ii-mariner, make: Robinson, model: R22 Beta / Beta II / Mariner, years: 1979–present, engine: piston, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: R22 trainer helicopter}
+  - {seq: 624, id: robinson-r44-raven-i-raven-ii-clipper-cadet, make: Robinson, model: R44 Raven I / Raven II / Clipper / Cadet, years: 1992–present, engine: piston, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: R44 helicopter}
+  - {seq: 625, id: robinson-r66-turbine, make: Robinson, model: R66 Turbine, years: 2010–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: R66 helicopter}

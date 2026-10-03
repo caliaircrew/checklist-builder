@@ -17,6 +17,9 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.6.0  2026-10-03  Steve  Aircraft 'category' (airplane | helicopter) and
+                            engine 'turboshaft' (helicopters only); 'h' flag
+                            passed to the builder and crew pages. Builds 1.24.
   2.5.0  2026-10-03  Steve  Crew directory page: site/crew.html + src/crew.js ->
                             crew/index.html with supabase-js, cloud config and
                             the aircraft list (seq, make, model, engine, flags,
@@ -55,7 +58,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.5.0"
+SCRIPT_VERSION = "2.6.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -180,7 +183,9 @@ def build_aircraft():
         for a in (load(rel) or {}).get("aircraft", []):
             for k in ("seq", "id", "make", "model", "years", "engine"):
                 need(k in a, f"{rel}: aircraft {a.get('id','?')} missing '{k}'")
-            need(a["engine"] in ("piston", "turboprop", "jet"), f"{rel}: {a['id']}: engine must be piston, turboprop or jet")
+            need(a["engine"] in ("piston", "turboprop", "jet", "turboshaft"), f"{rel}: {a['id']}: engine must be piston, turboprop, jet or turboshaft")
+            need(a.get("category", "airplane") in ("airplane", "helicopter"), f"{rel}: {a['id']}: category must be airplane or helicopter")
+            need(a["engine"] != "turboshaft" or a.get("category") == "helicopter", f"{rel}: {a['id']}: turboshaft engines are for helicopters")
             allac.append((rel, a))
     allac.sort(key=lambda x: x[1]["seq"])
     seqs = [a["seq"] for _, a in allac]
@@ -191,7 +196,7 @@ def build_aircraft():
     need(not dup, f"data/aircraft: duplicate id(s) {sorted(dup)}")
     lines = []
     for rel, a in allac:
-        f = ("t" if a.get("twin") else "") + ("r" if a.get("retractable") else "") + ("p" if a.get("pressurized") else "")
+        f = ("t" if a.get("twin") else "") + ("r" if a.get("retractable") else "") + ("p" if a.get("pressurized") else "") + ("h" if a.get("category") == "helicopter" else "")
         parts = [str(a["make"]), str(a["model"]), str(a["years"]), a["engine"], f, str(a.get("search_words", "") or "")]
         for p in parts:
             no_bar(p, f"{rel}: {a['id']}")
@@ -376,7 +381,7 @@ def main(argv=None):
         for path in files("data/aircraft/*.yaml"):
             for ac in (load(os.path.relpath(path, ROOT)) or {}).get("aircraft", []):
                 fl = ("t" if ac.get("twin") else "") + ("r" if ac.get("retractable") else "") + ("p" if ac.get("pressurized") else "") + ("h" if ac.get("category") == "helicopter" else "")
-                acft_rows.append([ac["seq"], str(ac["make"]), str(ac["model"]), ac["engine"], fl, str(ac["years"])])
+                acft_rows.append([ac["seq"], str(ac["make"]), str(ac["model"]), ac["engine"], fl, str(ac["years"]), str(ac.get("search_words", "") or "")])
         acft_rows.sort(key=lambda r: r[0])
         c = app.get("cloud") or {}
         cloud = json.dumps({"enabled": bool(c.get("enabled")), "url": c.get("url", "") if c.get("enabled") else "", "key": c.get("publishable_key", "") if c.get("enabled") else ""})

@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.24 | 2026-10-03 | 47 helicopters (category helicopter, engine turboshaft/piston); builder shows helicopter note instead of airplane defaults; dash/space-insensitive aircraft search (builder + profile, profile now uses search words); per-aircraft Part 135 SIC/PIC + badge (supabase/003_part135.sql); browse panel hidden fix. 670 aircraft. |
 | 1.23 | 2026-10-03 | Builder: Home button + title link to the site root. Homepage Sign in (top bar and phone tab) → crew/#/me. |
 | 1.22 | 2026-10-03 | Profile editor: Browse the list (category → manufacturer → model tiles, tap to add/remove), manufacturer variants grouped (Cessna, Bombardier, Dassault, Embraer). |
 | 1.21 | 2026-10-03 | Crew directory page (/crew): sign-in (email code + Microsoft Authenticator), My profile editor with aircraft picker (623 types, hours, type rating), live preview (side by side on wide/landscape; Preview toggle on portrait/phones), publish → review status, public profile page (#/p/<id>) with FAA verified badge. Homepage List yourself box now live. |
@@ -31,6 +32,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.6.0 | 2026-10-03 | Aircraft category + turboshaft engine; 'h' flag; search words passed to crew page. Builds app 1.24. |
 | 2.5.0 | 2026-10-03 | Builds crew/index.html (site/crew.html + src/crew.js, supabase-js, aircraft list, node syntax check). Builds app 1.21. |
 | 2.4.1 | 2026-10-03 | Homepage gets the cloud config (public URL + publishable key) for the Get notified form. |
 | 2.4.0 | 2026-10-04 | Homepage at index.html, builder at checklists/index.html; homepage validation. Builds app 1.18. |

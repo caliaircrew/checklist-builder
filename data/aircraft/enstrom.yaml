@@ -1,0 +1,5 @@
+# Aircraft: Enstrom. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 664, id: enstrom-f-28-280-shark, make: Enstrom, model: F-28 / 280 Shark, years: 1965–present, engine: piston, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: Enstrom 280 F28 helicopter}
+  - {seq: 665, id: enstrom-480-480b, make: Enstrom, model: 480 / 480B, years: 1993–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: Enstrom 480 helicopter}

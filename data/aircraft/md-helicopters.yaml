@@ -1,0 +1,8 @@
+# Aircraft: MD Helicopters. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 659, id: md-helicopters-500d-500e, make: MD Helicopters, model: 500D / 500E (369D / E), years: 1976–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: MD500 Hughes 500 369 helicopter}
+  - {seq: 660, id: md-helicopters-520n-notar, make: MD Helicopters, model: 520N NOTAR, years: 1991–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: MD520 NOTAR helicopter}
+  - {seq: 661, id: md-helicopters-530f, make: MD Helicopters, model: 530F, years: 1985–present, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: MD530 helicopter}
+  - {seq: 662, id: md-helicopters-600n, make: MD Helicopters, model: 600N, years: 1997–2008, engine: turboshaft, category: helicopter, twin: false, retractable: false, pressurized: false, search_words: MD600 NOTAR helicopter}
+  - {seq: 663, id: md-helicopters-902-explorer, make: MD Helicopters, model: 902 Explorer, years: 1994–present, engine: turboshaft, category: helicopter, twin: true, retractable: false, pressurized: false, search_words: MD902 Explorer NOTAR EMS helicopter}
