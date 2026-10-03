@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.14 | 2026-10-03 | My checklists library (named, multiple, autosave, duplicate/delete), backup/restore all with merge-by-newest, tail number on the card, single-file open adds a new checklist. Top-of-screen 📁 switcher. Phone-width aircraft search fix. Groundwork for account sync. |
 | 1.13 | 2026-10-03 | 47 airliners: Boeing 707 to 787 (incl. full 777 family), Airbus A300 to A380 (incl. neo family, A350), DC-8, DC-10, MD-11, L-1011, Concorde, C919. Study/flow-practice note applies. Data only. |
 | 1.12 | 2026-10-03 | ~140 more aircraft (~575): regional jets and turboprops (CRJ, ERJ, E-Jets, A220, 717, MD-80/90, BAe 146, ATR, Dash 7/8, Saab, Brasilia, Jetstream 41, Fokker, Dornier), Seminole DX, Cirrus G7+, more variants, LSA, aerobatic, kit, warbirds. Fixed Corvalis/TTx gear flag (fixed, not retractable); MU-2 short-body name. |
 | 1.11 | 2026-10-03 | 220+ more aircraft (~430 total): Cirrus generations, Pilatus PC-12 versions, TBM line, Piper M-class, King Air variants, business jets (Learjet, Global, Gulfstream, Falcon, Hawker, Phenom/Praetor, ACJ/BBJ), aerobatic, training, LSA, warbird, amphibian, kit aircraft. New variants linked to the SR22, 172S and Archer suggested checklists. Data only. |

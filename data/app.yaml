@@ -1,12 +1,19 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.13'
+app_version: '1.14'
 show_drafts: true
 docx:
   version: 9.6.1
   sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
 changelog:
+  - version: '1.14'
+    notes:
+      - "New: 📁 My checklists. Keep as many checklists as you like on each device, each with your own name (tail number, aircraft, club). Switch between them, duplicate one to start a similar airplane, or delete old ones. Everything saves automatically and works offline. A 📁 dropdown at the top of the screen switches between them from anywhere"
+      - "Back up all checklists / Restore: move every checklist and your ★ My items to another device in one file. Restoring adds new checklists and updates older copies, and never deletes anything"
+      - "Tail number field; it prints on the card next to the aircraft type"
+      - "Fixed: the Find your aircraft search box is now full width on phones"
+      - "Opening a single checklist file now adds it as a new checklist instead of replacing the one on screen"
   - version: '1.13'
     notes:
       - "The big jets: Boeing 707, 727, 737 (Original, Classic, NG, MAX 8/9), 747 (-100 through -8), 757, 767, 777 (-200, -200ER, -200LR, -300, -300ER, 777F) and 787-8/9/10; Airbus A300, A310, A318 through A321 and the neo family, A330 and A330neo, A340, A350-900/1000 and A380; plus DC-8, DC-10, MD-11, L-1011 TriStar, Concorde and COMAC C919. Like the regional types, these are for study and flow practice"

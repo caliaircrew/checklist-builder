@@ -22,8 +22,9 @@ main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;pad
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
 .step{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:0 0 8px}
 label.f{display:block;font-size:13px;color:var(--muted);margin-bottom:10px}
-input[type=text]{width:100%;font-size:16px;padding:10px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
-input[type=text]:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+input[type=text],.afind input[type=search]{width:100%;font-size:16px;padding:10px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.afind input[type=search]{display:block;margin-top:4px;-webkit-appearance:none;appearance:none}
+.afind input[type=search]:focus,input[type=text]:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 @media (max-width:600px){.grid3{grid-template-columns:1fr}}
 .sec{border:1px solid var(--line);border-radius:10px;margin-bottom:14px;overflow:hidden;background:var(--card)}
@@ -35,6 +36,13 @@ input[type=text]:focus{outline:2px solid var(--accent);outline-offset:0;border-c
 .row{display:grid;grid-template-columns:34px 46px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
 .row .n{font-size:14px;color:var(--muted);text-align:right}
+.hdrpick{max-width:210px;font-size:14px;padding:7px 8px;border:1px solid var(--line);border-radius:999px;background:var(--chip);color:var(--ink)}
+body[data-mode="end"] .hdrpick{display:none}
+@media (max-width:600px){.hdrpick{max-width:150px}}
+.libtop{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.libtop .f{flex:1;min-width:220px;margin-bottom:8px}
+#libPick{flex:1;min-width:200px}
+.libsaved{font-size:13px;color:var(--muted);margin-bottom:12px;white-space:nowrap}
 .whenrow{display:flex;gap:10px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line)}
 .whenrow input[type=text]{font-style:italic;font-size:15px;padding:7px 10px}
 .plainck{font-size:13px;color:var(--muted);white-space:nowrap;display:flex;gap:6px;align-items:center}
@@ -173,11 +181,18 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 </head>
 <body>
 <header class="top">
-  <h1>✈️ Aircraft Checklist Builder</h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="modeBtn">🎓 CFI endorsements</button>
+  <h1>✈️ Aircraft Checklist Builder</h1><button class="ver" id="verBtn" title="What's new"></button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button>
   <div class="tabs" id="tabs"><button data-v="edit" class="on">1 · Type it in</button><button data-v="preview">2 · See &amp; print</button></div>
 </header>
 <main id="main" data-view="edit">
   <section id="editPane">
+    <div class="card" id="libCard">
+      <p class="step">📁 My checklists</p>
+      <div class="libtop"><label class="f">This checklist's name<input type="text" id="libName" placeholder="e.g. N123AB – Citation XLS"></label><span class="libsaved" id="libSaved">✓ Saved on this device</span></div>
+      <div class="outbar"><select id="libPick" class="esel" aria-label="Open a saved checklist"></select><button class="btn small" id="libNew">＋ New</button><button class="btn small" id="libDup">⧉ Duplicate</button><button class="btn small" id="libDel" style="color:var(--danger)">Delete</button></div>
+      <div class="outbar"><button class="btn small" id="libExport">⬇ Back up all checklists</button><button class="btn small" id="libImport">⬆ Restore / import</button><input type="file" id="libFile" accept=".json,application/json" hidden></div>
+      <p class="help">Every checklist saves automatically as you work. To move them to another iPad or phone, tap <b>Back up all checklists</b>, then <b>Restore / import</b> on the other device. Your ★ My items come along too.</p>
+    </div>
     <div class="card">
       <p class="step">Step 1 · Your aircraft &amp; top of the page</p>
       <div id="aSel"></div>
@@ -187,6 +202,7 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
         <label class="f">Aircraft type<input type="text" id="aircraft" placeholder="e.g. Citation XLS"></label>
         <label class="f">Revision date<input type="text" id="revision" placeholder="MM/DD/YYYY"></label>
       </div>
+      <div class="grid3"><label class="f">Tail number (optional, prints on the card)<input type="text" id="tail" placeholder="e.g. N123AB" autocapitalize="characters"></label></div>
       <div class="vrow"><label class="f">Checklist version<input type="text" id="version" placeholder="1.0" inputmode="decimal"></label><button class="btn small" id="newRev" style="margin-bottom:10px">＋ New revision (bumps version, sets today's date)</button>
       </div>
     </div>
@@ -322,7 +338,14 @@ try{const raw=localStorage.getItem(KEY); S=raw?JSON.parse(raw):null}catch(e){S=n
 if(!S||!Array.isArray(S.sections)){S=EXAMPLE(); S.baseSig=sigOf(S.sections);}
 if(!S.version) S.version="1.0";
 if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true};
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+/* ---------- My checklists library (on this device; ready for account sync later) ---------- */
+const LKEY="acb-library-v1"; let LIBR; try{LIBR=JSON.parse(localStorage.getItem(LKEY)||"null")}catch(e){LIBR=null}
+if(!LIBR||typeof LIBR.items!=="object") LIBR={format:"acb-library",items:{},current:null};
+let libWarned=false;
+const lsave=()=>{try{localStorage.setItem(LKEY,JSON.stringify(LIBR)); return true}catch(e){if(!libWarned){libWarned=true; alert("This device's storage for the builder is full. Back up all checklists, then delete some you no longer need.")} return false}};
+const snap=x=>JSON.parse(JSON.stringify(x));
+function libTouch(){const it=LIBR.items[LIBR.current]; if(!it) return; it.data=snap(S); it.updated=Date.now(); it.acft=S.aircraft||""; lsave()}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} libTouch()};
 /* ---------- My items: personal pick-list lines, kept only on this device ---------- */
 const MYKEY="acb-myitems-v1"; let MY; try{MY=JSON.parse(localStorage.getItem(MYKEY)||"{}")||{}}catch(e){MY={}}
 const mysave=()=>{try{localStorage.setItem(MYKEY,JSON.stringify(MY))}catch(e){}};
@@ -334,7 +357,7 @@ const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 const $=id=>document.getElementById(id);
 
 /* ---------- editor ---------- */
-["operator","aircraft","revision","version"].forEach(k=>{const el=$(k);el.value=S[k]||"";el.addEventListener("input",()=>{S[k]=el.value;changed()})});
+["operator","aircraft","revision","version","tail"].forEach(k=>{const el=$(k);el.value=S[k]||"";el.addEventListener("input",()=>{S[k]=k==="tail"?el.value.toUpperCase():el.value;changed()})});
 function renderChips(){$("chips").innerHTML=COMMON.map(c=>`<button class="chip" data-chip="${esc(c)}">＋ ${esc(c)}</button>`).join("")}
 function renderEditor(focus){
   const box=$("sections");
@@ -499,6 +522,7 @@ $("aQ").addEventListener("input",()=>{const r=searchAcft($("aQ").value), box=$("
   box.hidden=!box.innerHTML;});
 $("aRes").addEventListener("click",e=>{const b=e.target.closest("[data-a]"); if(!b) return; const a=ACFT[+b.dataset.a];
   S.acftId=a.id; S.profile={engine:a.engine,twin:a.twin,retract:a.retract,press:a.press}; S.aircraft=acftName(a); loadHeader();
+  {const it=LIBR.items[LIBR.current]; if(it&&(/^(My checklist|New checklist)( \d+)?$/.test(it.name)||!it.name)){it.name=acftName(a)+(S.tail?" – "+S.tail:""); lsave(); drawLib()}}
   $("aQ").value=""; $("aRes").hidden=true; changed(); drawSel();
   loadDefault(a,true);});
 document.addEventListener("click",e=>{if(!e.target.closest("#aFind")) $("aRes").hidden=true});
@@ -579,7 +603,7 @@ function openPicker(si){
 }
 $("example").onclick=()=>{if(confirm("Replace what you have with the example checklist?")){S=Object.assign(EXAMPLE(),{version:"1.0",profile:S.profile,acftId:S.acftId});loadHeader();renderEditor();changed()}};
 $("blank").onclick=()=>{if(confirm("Clear everything and start a blank checklist?")){S={operator:"",aircraft:"",revision:"",version:"1.0",profile:S.profile,sections:[{id:uid(),title:"PREFLIGHT",rows:[I("","",false)]}]};loadHeader();renderEditor('.row input');changed()}};
-function loadHeader(){["operator","aircraft","revision","version"].forEach(k=>$(k).value=S[k]||"")}
+function loadHeader(){["operator","aircraft","revision","version","tail"].forEach(k=>$(k).value=S[k]||"")}
 
 /* ---------- tabs / size ---------- */
 $("tabs").onclick=e=>{const b=e.target.closest("button"); if(!b) return; $("main").dataset.view=b.dataset.v; [...$("tabs").children].forEach(x=>x.classList.toggle("on",x===b)); if(b.dataset.v==="preview") renderPreview(); window.scrollTo(0,0)};
@@ -606,7 +630,7 @@ function renderPreview(){
   const newPage=()=>{page=Array.from({length:ncol},()=>[]); pages.push(page); col=0; used=0};
   newPage();
   blocks.forEach(b=>{ if(used>0&&used+b.h>colH){ col++; used=0; if(col>=ncol) newPage(); } page[col].push(b.html); used+=b.h; });
-  const head=`<div class="ph"><span>${esc(S.operator)||"[OPERATOR NAME]"}</span><span>NORMAL PROCEDURES</span><span>${esc(S.aircraft)||"[AIRCRAFT TYPE]"}</span></div><div class="rev">Version ${esc(S.version)||"1.0"} · Revision: ${esc(S.revision)||"[MM/DD/YYYY]"}</div>`;
+  const head=`<div class="ph"><span>${esc(S.operator)||"[OPERATOR NAME]"}</span><span>NORMAL PROCEDURES</span><span>${esc(S.aircraft)||"[AIRCRAFT TYPE]"}${S.tail?" · "+esc(S.tail):""}</span></div><div class="rev">Version ${esc(S.version)||"1.0"} · Revision: ${esc(S.revision)||"[MM/DD/YYYY]"}</div>`;
   const host=$("pages");
   host.innerHTML=S.sections.length?pages.map((p,i)=>`<div class="pagewrap"><div class="page">${head}<div class="cols">${p.map(c=>`<div class="col">${c.join("")}</div>`).join("")}</div><div class="pf"><b>BOXED ITEMS = FIRST FLIGHT OF DAY</b><span>Not FAA-approved – verify all items against the approved AFM/POH</span><span>Page ${i+1}</span></div></div></div>`).join(""):'<div class="empty">Add a section to see your checklist here.</div>';
   fitPages();
@@ -651,7 +675,7 @@ function buildDoc(large){
     sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1150,bottom:900,left:720,right:720,header:400,footer:400}},column:large?{count:1}:{count:2,space:432,equalWidth:true}},
       headers:{default:new Header({children:[
         new Paragraph({tabStops:[{type:TabStopType.CENTER,position:5400},{type:TabStopType.RIGHT,position:10800}],border:{bottom:{style:BorderStyle.SINGLE,size:12,color:"000000",space:3}},
-          children:[new TextRun({text:S.operator||"[OPERATOR NAME]",bold:true,size:22}),new TextRun({text:"\tNORMAL PROCEDURES",bold:true,size:22}),new TextRun({text:"\t"+(S.aircraft||"[AIRCRAFT TYPE]"),bold:true,size:22})]}),
+          children:[new TextRun({text:S.operator||"[OPERATOR NAME]",bold:true,size:22}),new TextRun({text:"\tNORMAL PROCEDURES",bold:true,size:22}),new TextRun({text:"\t"+((S.aircraft||"[AIRCRAFT TYPE]")+(S.tail?" · "+S.tail:"")),bold:true,size:22})]}),
         new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:"Version "+(S.version||"1.0")+" · Revision: "+(S.revision||"[MM/DD/YYYY]"),size:16})]})]})},
       footers:{default:new Footer({children:[new Paragraph({tabStops:[{type:TabStopType.CENTER,position:5400},{type:TabStopType.RIGHT,position:10800}],
         children:[new TextRun({text:" BOXED ITEMS = FIRST FLIGHT OF DAY ",bold:true,size:15,border:{style:BorderStyle.SINGLE,size:6,color:"000000",space:1}}),new TextRun({text:"\tNot FAA-approved – verify all items against the approved AFM/POH",size:15}),new TextRun({size:15,children:["\tPage ",PageNumber.CURRENT]})]})]})},
@@ -669,7 +693,7 @@ const fname=ext=>((S.aircraft||"Aircraft").replace(/[\\/:*?"<>|]+/g," ").replace
 $("dlWord").onclick=async()=>{ if(!S.sections.length){status("Add a section first.");return} status("Building Word file…"); try{ const blob=await window.docx.Packer.toBlob(buildDoc(size==="large")); await offer(fname("docx"),blob);}catch(e){status("Something went wrong building the file.")} };
 $("saveJson").onclick=()=>offer(fname("json").replace(/\.json$/," v"+(S.version||"1.0")+".json"),JSON.stringify(Object.assign({builderVersion:APP_VERSION},S,{myItems:MY}),null,1));
 $("openJson").onclick=()=>$("fileIn").click();
-$("fileIn").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().then(t=>{try{const x=JSON.parse(t); if(!Array.isArray(x.sections)) throw 0; const mi=x.myItems; delete x.myItems; if(mi&&typeof mi==="object") for(const k in mi) (mi[k]||[]).forEach(e=>myAdd(k,e)); S=x; if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; loadHeader(); renderEditor(); changed(); drawSel(); status("Opened "+f.name)}catch(_){alert("That file isn't a checklist file from this builder.")}}); e.target.value=""};
+$("fileIn").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().then(t=>{try{const x=JSON.parse(t); if(!Array.isArray(x.sections)) throw 0; const mi=x.myItems; delete x.myItems; if(mi&&typeof mi==="object") for(const k in mi) (mi[k]||[]).forEach(e=>myAdd(k,e)); if(!x.profile) x.profile={engine:"any",twin:true,retract:true,press:true}; libAdd(x,(x.aircraft||f.name.replace(/\.json$/i,"")).trim()); status("Opened "+f.name+" as a new checklist")}catch(_){alert("That file isn't a checklist file from this builder.")}}); e.target.value=""};
 
 {{ENDORSEMENTS}}
 /* ---------- CFI endorsements (AC 61-65K) ---------- */
@@ -740,7 +764,37 @@ function buildEndDoc(){
 }
 $("modeBtn").onclick=()=>{const on=document.body.dataset.mode!=="end"; document.body.dataset.mode=on?"end":""; $("modeBtn").textContent=on?"✈️ Checklists":"🎓 CFI endorsements"; if(on){renderEndList();renderEndSel();} window.scrollTo(0,0)};
 bindEndForm();
-renderChips(); renderEditor(); renderPreview(); drawSel();
+function libSorted(){return Object.values(LIBR.items).sort((a,b)=>(b.updated||0)-(a.updated||0))}
+function drawLib(){const cur=LIBR.items[LIBR.current];
+  $("libName").value=cur?cur.name:"";
+  $("libPick").innerHTML=libSorted().map(it=>`<option value="${esc(it.id)}"${it.id===LIBR.current?" selected":""}>${esc(it.name||"Untitled")}${it.acft&&it.acft!==it.name?" · "+esc(it.acft):""}</option>`).join("");
+  $("libDel").disabled=Object.keys(LIBR.items).length<1;
+  $("hdrPick").innerHTML=`<option value="" disabled>📁 Saved checklists</option>`+libSorted().map(it=>`<option value="${esc(it.id)}"${it.id===LIBR.current?" selected":""}>📁 ${esc(it.name||"Untitled")}</option>`).join("");}
+function libOpen(id){const it=LIBR.items[id]; if(!it) return; libTouch(); LIBR.current=id; S=snap(it.data); if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib(); window.scrollTo(0,0)}
+function libAdd(data,name){libTouch(); const id=uid(); LIBR.items[id]={id,name:name||"New checklist",created:Date.now(),updated:Date.now(),acft:data.aircraft||"",data:snap(data)}; LIBR.current=id; S=snap(data); save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib(); return id}
+function nextName(base){const names=new Set(Object.values(LIBR.items).map(i=>i.name)); if(!names.has(base)) return base; let n=2; while(names.has(base+" "+n)) n++; return base+" "+n}
+// first run with the library: keep whatever is on screen as the first saved checklist
+if(!LIBR.current||!LIBR.items[LIBR.current]){const first=libSorted()[0]; if(first){LIBR.current=first.id; S=snap(first.data)} else {const id=uid(); LIBR.items[id]={id,name:S.aircraft||"My checklist",created:Date.now(),updated:Date.now(),acft:S.aircraft||"",data:snap(S)}; LIBR.current=id} lsave(); loadHeader()}
+$("libName").addEventListener("input",()=>{const it=LIBR.items[LIBR.current]; if(!it) return; it.name=$("libName").value; it.updated=Date.now(); lsave(); const o=$("libPick").querySelector(`option[value="${it.id}"]`); if(o) o.textContent=(it.name||"Untitled")+(it.acft&&it.acft!==it.name?" · "+it.acft:""); const h=$("hdrPick").querySelector(`option[value="${it.id}"]`); if(h) h.textContent="📁 "+(it.name||"Untitled")});
+$("libPick").onchange=e=>libOpen(e.target.value);
+$("hdrPick").onchange=e=>{if(e.target.value) libOpen(e.target.value)};
+$("libNew").onclick=()=>{libAdd({operator:S.operator||"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},nextName("New checklist")); $("libName").select(); status(""); setTimeout(()=>{const q=$("aQ"); if(q&&!q.closest("[hidden]")) q.scrollIntoView({block:"center"})},50)};
+$("libDup").onclick=()=>{const it=LIBR.items[LIBR.current]; libAdd(snap(S),nextName((it&&it.name||"Checklist")+" (copy)")); $("libName").select()};
+$("libDel").onclick=()=>{const it=LIBR.items[LIBR.current]; if(!it) return; if(!confirm(`Delete "${it.name||"Untitled"}" from this device?\n\nTip: Back up all checklists first if you might want it later.`)) return;
+  delete LIBR.items[it.id]; const next=libSorted()[0]; if(next){LIBR.current=next.id; S=snap(next.data); save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib()} else {LIBR.current=null; libAdd({operator:"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},"New checklist")}};
+$("libExport").onclick=()=>{libTouch(); const d=new Date(), ds=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  offer(`Checklists backup ${ds} (${Object.keys(LIBR.items).length}).json`,JSON.stringify({format:"acb-library",builderVersion:APP_VERSION,exported:new Date().toISOString(),items:LIBR.items,myItems:MY},null,1))};
+$("libImport").onclick=()=>$("libFile").click();
+$("libFile").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().then(t=>{let x; try{x=JSON.parse(t)}catch(_){alert("That file isn't a backup or checklist file from this builder.");return}
+  if(x&&x.format==="acb-library"&&x.items&&typeof x.items==="object"){libTouch(); let added=0,updated=0;
+    for(const id in x.items){const inc=x.items[id]; if(!inc||!inc.data||!Array.isArray(inc.data.sections)) continue; const ex=LIBR.items[id];
+      if(!ex){LIBR.items[id]=inc; added++} else if((inc.updated||0)>(ex.updated||0)){LIBR.items[id]=inc; updated++}}
+    if(x.myItems&&typeof x.myItems==="object") for(const k in x.myItems) (x.myItems[k]||[]).forEach(e=>myAdd(k,e));
+    lsave(); const cur=LIBR.items[LIBR.current]; if(cur){S=snap(cur.data); save()} loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib();
+    alert(`Restored: ${added} new checklist${added===1?"":"s"}, ${updated} updated with newer copies. Nothing was deleted.`)}
+  else if(x&&Array.isArray(x.sections)){const mi=x.myItems; delete x.myItems; if(mi&&typeof mi==="object") for(const k in mi) (mi[k]||[]).forEach(e=>myAdd(k,e)); if(!x.profile) x.profile={engine:"any",twin:true,retract:true,press:true}; libAdd(x,nextName((x.aircraft||f.name.replace(/\.json$/i,"")).trim()))}
+  else alert("That file isn't a backup or checklist file from this builder.")}); e.target.value=""};
+renderChips(); renderEditor(); renderPreview(); drawSel(); drawLib();
 })();
 </script>
 </body>
