@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.16 | 2026-10-04 | Sign-in dialog explains link sign-in (Supabase default templates send a link; codes need custom SMTP). |
 | 1.15 | 2026-10-03 | Optional accounts (Supabase): email-code sign-in, optional Microsoft Authenticator (TOTP) two-step, sync of checklists and My items across devices with offline queue and newest-wins merge, delete tombstones, account panel. Database setup in supabase/001_checklists.sql (owner-only RLS + MFA-when-enrolled). |
 | 1.14 | 2026-10-03 | My checklists library (named, multiple, autosave, duplicate/delete), backup/restore all with merge-by-newest, tail number on the card, single-file open adds a new checklist. Top-of-screen 📁 switcher. Phone-width aircraft search fix. Groundwork for account sync. |
 | 1.13 | 2026-10-03 | 47 airliners: Boeing 707 to 787 (incl. full 777 family), Airbus A300 to A380 (incl. neo family, A350), DC-8, DC-10, MD-11, L-1011, Concorde, C919. Study/flow-practice note applies. Data only. |
