@@ -1,0 +1,22 @@
+# Pick list: CRUISE
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: CRUISE
+order: 14
+items:
+  - {item: Power / Throttles, response: SET}
+  - {item: Mixture, response: LEANED, tags: [piston]}
+  - {item: Cowl Flaps, response: CLOSED, tags: [piston]}
+  - {item: Propeller, response: CRUISE RPM, tags: [piston, turboprop]}
+  - {item: Engine Instruments, response: MONITOR}
+  - {item: Fuel Quantity / Burn, response: MONITOR}
+  - {item: Fuel Selector / Crossfeed, response: AS REQUIRED}
+  - {item: Fuel Balance, response: CHECKED}
+  - {item: Pressurization, response: CHECKED / FIELD ELEV SET, tags: [press]}
+  - {item: Oxygen, response: AS REQUIRED}
+  - {item: Anti-Ice / De-Ice, response: AS REQUIRED}
+  - {item: Exterior Lights, response: AS REQUIRED}
+  - {item: Altimeter, response: SET}
+  - {item: Autopilot, response: AS REQUIRED}
+  - {item: Destination Weather, response: CHECKED}
+  - {item: Engine Sync, response: 'ON', tags: [twin]}
+  - {item: Heading Indicator, response: ALIGNED}

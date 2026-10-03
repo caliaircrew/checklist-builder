@@ -1,0 +1,13 @@
+# Pick list: HIGH ALTITUDE OXYGEN
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: HIGH ALTITUDE OXYGEN
+order: 13
+items:
+  - {item: Oxygen Quantity, response: CHECKED}
+  - {item: Cannulas / Masks, response: DISTRIBUTED & CONNECTED}
+  - {item: Oxygen Flow, response: ON / FLOW INDICATED}
+  - {item: Pulse Oximeter, response: CHECKED}
+  - {note: 'CREW O2: ABOVE 12,500'' OVER 30 MIN, ALWAYS ABOVE 14,000'''}
+  - {note: 'PASSENGERS: OXYGEN PROVIDED ABOVE 15,000'''}
+  - {item: Hypoxia Symptoms, response: BRIEFED}
+  - {item: Manifold Pressure / Turbo, response: MONITOR, tags: [piston]}

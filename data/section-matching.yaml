@@ -1,0 +1,51 @@
+# Which pick list a section title opens. First match wins, so keep specific words above general ones.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+matching:
+  - {words: FINAL ITEMS, list: RUNWAY LINE UP}
+  - {words: LINE UP, list: RUNWAY LINE UP}
+  - {words: BELOW 10, list: 'BELOW 10,000 (DESCENT)'}
+  - {words: '10,000', list: 'PASSING 10,000 (CLIMB)'}
+  - {words: '10000', list: 'PASSING 10,000 (CLIMB)'}
+  - {words: RVSM, list: FLIGHT LEVELS / RVSM}
+  - {words: FLIGHT LEVEL, list: FLIGHT LEVELS / RVSM}
+  - {words: OXYGEN, list: HIGH ALTITUDE OXYGEN}
+  - {words: HIGH ALT, list: HIGH ALTITUDE OXYGEN}
+  - {words: TRANSITION LEVEL, list: TRANSITION LEVEL (DESCENT)}
+  - {words: CRUISE CHECK, list: CRUISE CHECK (PERIODIC)}
+  - {words: PERIODIC, list: CRUISE CHECK (PERIODIC)}
+  - {words: GO-AROUND, list: GO-AROUND / MISSED APPROACH}
+  - {words: GO AROUND, list: GO-AROUND / MISSED APPROACH}
+  - {words: MISSED, list: GO-AROUND / MISSED APPROACH}
+  - {words: STABILIZED, list: FINAL / STABILIZED APPROACH}
+  - {words: FINAL, list: FINAL / STABILIZED APPROACH}
+  - {words: QUICK TURN, list: QUICK TURN / THROUGH-FLIGHT}
+  - {words: THROUGH, list: QUICK TURN / THROUGH-FLIGHT}
+  - {words: COLD, list: COLD WEATHER / DEICING}
+  - {words: DEIC, list: COLD WEATHER / DEICING}
+  - {words: DE-IC, list: COLD WEATHER / DEICING}
+  - {words: BRIEF, list: BRIEFINGS}
+  - {words: AFTER START, list: AFTER START}
+  - {words: BEFORE START, list: BEFORE START}
+  - {words: ENGINE START, list: ENGINE START}
+  - {words: START, list: ENGINE START}
+  - {words: BEFORE TAXI, list: BEFORE TAXI}
+  - {words: TAXI, list: TAXI}
+  - {words: LINE UP, list: RUNWAY LINE UP}
+  - {words: LINE-UP, list: RUNWAY LINE UP}
+  - {words: BEFORE TAKEOFF, list: BEFORE TAKEOFF}
+  - {words: RUN-UP, list: BEFORE TAKEOFF}
+  - {words: RUNUP, list: BEFORE TAKEOFF}
+  - {words: AFTER TAKEOFF, list: AFTER TAKEOFF}
+  - {words: CLIMB, list: CLIMB / TRANSITION}
+  - {words: TRANSITION, list: CLIMB / TRANSITION}
+  - {words: CRUISE, list: CRUISE}
+  - {words: DESCENT, list: DESCENT}
+  - {words: APPROACH, list: APPROACH}
+  - {words: BEFORE LANDING, list: BEFORE LANDING}
+  - {words: AFTER LANDING, list: AFTER LANDING}
+  - {words: SHUTDOWN, list: SHUTDOWN}
+  - {words: SHUT DOWN, list: SHUTDOWN}
+  - {words: SECUR, list: SECURING}
+  - {words: PREFLIGHT, list: PREFLIGHT}
+  - {words: PRE-FLIGHT, list: PREFLIGHT}
+  - {words: COCKPIT, list: PREFLIGHT}

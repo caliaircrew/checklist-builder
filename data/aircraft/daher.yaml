@@ -1,0 +1,4 @@
+# Aircraft: Daher. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 115, id: daher-tbm-700-850-900-series, make: Daher, model: TBM 700 / 850 / 900 series, years: 1990–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: Socata TBM 930 940 960}

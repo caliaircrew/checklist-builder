@@ -1,0 +1,9 @@
+# Aircraft: Dassault Falcon. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 128, id: dassault-falcon-10-100, make: Dassault Falcon, model: 10 / 100, years: 1973–1989, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 10}
+  - {seq: 129, id: dassault-falcon-20-200, make: Dassault Falcon, model: 20 / 200, years: 1965–1988, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 20}
+  - {seq: 130, id: dassault-falcon-50, make: Dassault Falcon, model: '50', years: 1979–2008, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 50 trijet}
+  - {seq: 131, id: dassault-falcon-900-series, make: Dassault Falcon, model: 900 series, years: 1986–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 900EX}
+  - {seq: 132, id: dassault-falcon-2000-series, make: Dassault Falcon, model: 2000 series, years: 1995–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 2000}
+  - {seq: 133, id: dassault-falcon-7x-8x, make: Dassault Falcon, model: 7X / 8X, years: 2007–present, engine: jet, twin: true, retractable: true, pressurized: true}

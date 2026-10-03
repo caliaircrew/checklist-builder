@@ -1,0 +1,4 @@
+# Aircraft: Mooney. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 108, id: mooney-m20-series, make: Mooney, model: 'M20 series (M20C–M20V, Ovation, Acclaim)', years: 1955–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Mooney}

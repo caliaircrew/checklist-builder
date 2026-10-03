@@ -1,0 +1,110 @@
+# Suggested checklist: Piper PA-28-181 Archer. SUGGESTIONS ONLY — not FAA-approved; verify every line against the AFM/POH.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+key: PA28A
+order: 6            # position in the app's model list
+name: Piper PA-28-181 Archer
+status: draft          # draft | reviewed | retired
+author: Claude (AI draft)
+reviewed_by: ''
+review_date: ''      # YYYY-MM-DD, required when reviewed
+aircraft:                # aircraft ids from data/aircraft/*.yaml
+  - piper-pa-28-181-archer
+source: 'Follows the PA-28-181 POH Section 4 order (carbureted O-360: primer, electric fuel pump, carburetor heat). Run-up limits are left to the POH.'
+sections:
+  - title: PREFLIGHT (COCKPIT)
+    items:
+      - {item: Control Wheel, response: RELEASE BELTS}
+      - {item: Avionics, response: 'OFF'}
+      - {item: Master Switch, response: 'ON'}
+      - {item: Fuel Gauges, response: CHECKED}
+      - {item: Master Switch, response: 'OFF'}
+      - {item: Magnetos, response: 'OFF'}
+      - {item: Fuel Sumps, response: DRAINED / CHECKED}
+      - {item: Exterior Inspection, response: COMPLETE}
+  - title: BEFORE STARTING ENGINE
+    items:
+      - {item: Preflight, response: COMPLETE}
+      - {item: Seats, response: ADJUSTED}
+      - {item: Seat Belts / Harnesses, response: FASTENED}
+      - {item: Fuel Selector, response: DESIRED TANK}
+      - {item: Radios, response: 'OFF'}
+      - {item: Brakes, response: SET}
+      - {item: Circuit Breakers, response: IN}
+      - {item: Carburetor Heat, response: FULL COLD}
+  - title: STARTING ENGINE
+    items:
+      - {item: Throttle, response: 1/2 INCH OPEN}
+      - {item: Master Switch, response: 'ON'}
+      - {item: Electric Fuel Pump, response: 'ON'}
+      - {item: Mixture, response: FULL RICH}
+      - {item: Primer, response: AS REQUIRED}
+      - {item: Propeller Area, response: CLEAR}
+      - {item: Starter, response: ENGAGE}
+      - {item: Throttle, response: ADJUST}
+      - {item: Oil Pressure, response: CHECKED}
+      - {note: NO OIL PRESSURE IN 30 SEC → SHUT DOWN}
+      - {item: Avionics, response: 'ON'}
+  - title: BEFORE TAKEOFF
+    items:
+      - {divider: RUN-UP}
+      - {item: Throttle, response: 2000 RPM}
+      - {item: Magnetos, response: CHECKED}
+      - {item: Vacuum, response: CHECKED}
+      - {item: Carburetor Heat, response: CHECKED}
+      - {item: Oil Temp / Pressure, response: CHECKED}
+      - {divider: FINAL ITEMS}
+      - {item: Master Switch, response: 'ON'}
+      - {item: Flight Instruments, response: CHECKED}
+      - {item: Fuel Selector, response: PROPER TANK}
+      - {item: Electric Fuel Pump, response: 'ON'}
+      - {item: Engine Gauges, response: CHECKED}
+      - {item: Carburetor Heat, response: 'OFF'}
+      - {item: Seat Backs, response: ERECT}
+      - {item: Mixture, response: SET}
+      - {item: Primer, response: LOCKED}
+      - {item: Belts / Harnesses, response: FASTENED}
+      - {item: Empty Seats, response: BELTS FASTENED}
+      - {item: Flaps, response: SET}
+      - {item: Trim, response: SET}
+      - {item: Controls, response: FREE}
+      - {item: Doors, response: LATCHED}
+  - title: AFTER TAKEOFF / CLIMB
+    items:
+      - {item: Flaps, response: UP}
+      - {item: Electric Fuel Pump, response: OFF (AT SAFE ALTITUDE)}
+      - {item: Climb Power, response: SET}
+      - {item: Mixture, response: AS REQUIRED}
+  - title: CRUISE
+    items:
+      - {item: Power, response: SET}
+      - {item: Mixture, response: LEANED}
+      - {item: Fuel Selector, response: SWITCH TANKS PER PLAN}
+  - title: DESCENT
+    items:
+      - {item: Mixture, response: ENRICH AS REQUIRED}
+      - {item: Carburetor Heat, response: AS REQUIRED}
+      - {item: Altimeter, response: SET}
+  - title: BEFORE LANDING
+    items:
+      - {item: Seat Backs, response: ERECT}
+      - {item: Belts / Harnesses, response: FASTENED}
+      - {item: Fuel Selector, response: PROPER TANK}
+      - {item: Electric Fuel Pump, response: 'ON'}
+      - {item: Mixture, response: SET}
+      - {item: Flaps, response: AS REQUIRED}
+      - {item: Landing Light, response: 'ON'}
+  - title: AFTER LANDING
+    items:
+      - {item: Flaps, response: UP}
+      - {item: Carburetor Heat, response: 'OFF'}
+      - {item: Electric Fuel Pump, response: 'OFF'}
+  - title: SHUTDOWN
+    items:
+      - {item: Radios / Electrical, response: 'OFF'}
+      - {item: Throttle, response: IDLE}
+      - {item: Mixture, response: IDLE CUTOFF}
+      - {item: Magnetos, response: 'OFF'}
+      - {item: Master Switch, response: 'OFF'}
+      - {item: Parking Brake, response: SET}
+      - {item: Control Wheel, response: SECURED WITH BELTS}
+      - {item: Tie-downs / Chocks, response: SECURED}

@@ -1,0 +1,21 @@
+# Pick list: TAXI
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: TAXI
+order: 6
+items:
+  - {item: Parking Brake, response: RELEASED}
+  - {item: Taxi Clearance / Route, response: RECEIVED & CONFIRMED}
+  - {item: Brakes, response: CHECKED}
+  - {item: Steering, response: CHECKED}
+  - {item: Flight Instruments, response: CHECKED}
+  - {item: Heading Indicator, response: CHECKED}
+  - {item: Turn Coordinator, response: CHECKED}
+  - {item: Attitude Indicator, response: STEADY}
+  - {item: Compass, response: SWINGING FREELY}
+  - {item: Anti-Skid, response: ON / CHECKED, tags: [jet]}
+  - {item: Rudder Bias, response: CHECKED, tags: [jet]}
+  - {note: RUDDER BIAS FAIL → NO DISPATCH, tags: [jet]}
+  - {item: Thrust Reversers, response: CHECKED / STOWED, tags: [jet]}
+  - {item: Taxi Light, response: 'ON'}
+  - {item: Hot Spots, response: BRIEFED}
+  - {item: Weather Radar, response: AS REQUIRED, tags: [turbine]}

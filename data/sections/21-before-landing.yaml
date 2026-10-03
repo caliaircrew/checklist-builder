@@ -1,0 +1,22 @@
+# Pick list: BEFORE LANDING
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: BEFORE LANDING
+order: 21
+items:
+  - {item: Landing Gear, response: 'DOWN, 3 GREEN', tags: [retract]}
+  - {item: Flaps, response: AS REQUIRED}
+  - {item: Fuel Selector, response: FULLEST TANK, tags: [piston]}
+  - {item: Fuel Pump, response: 'ON', tags: [piston]}
+  - {item: Mixture, response: RICH, tags: [piston]}
+  - {item: Propeller, response: HIGH RPM, tags: [piston, turboprop]}
+  - {item: Carburetor Heat, response: AS REQUIRED, tags: [piston]}
+  - {item: Landing Lights, response: 'ON'}
+  - {item: Speedbrakes, response: RETRACTED, tags: [jet]}
+  - {item: Autopilot / Yaw Damper, response: 'OFF'}
+  - {item: Ignition, response: AS REQUIRED, tags: [turbine]}
+  - {item: Anti-Skid, response: 'ON', tags: [jet]}
+  - {item: Seats / Belts, response: SECURE}
+  - {item: Passenger Safety Switch, response: 'ON', tags: [turbine]}
+  - {item: Engine Sync, response: 'OFF', tags: [twin]}
+  - {item: Annunciators, response: CHECKED}
+  - {item: Landing Clearance, response: RECEIVED}

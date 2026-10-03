@@ -1,0 +1,126 @@
+# Suggested checklist: Cessna 172S Skyhawk. SUGGESTIONS ONLY — not FAA-approved; verify every line against the AFM/POH.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+key: C172S
+order: 4            # position in the app's model list
+name: Cessna 172S Skyhawk
+status: draft          # draft | reviewed | retired
+author: Claude (AI draft)
+reviewed_by: ''
+review_date: ''      # YYYY-MM-DD, required when reviewed
+aircraft:                # aircraft ids from data/aircraft/*.yaml
+  - cessna-172r-172s-skyhawk
+source: 'Follows the Cessna 172S POH Section 4 order (fuel-injected IO-360: fuel pump and mixture start, no carburetor heat).'
+sections:
+  - title: PREFLIGHT (CABIN)
+    items:
+      - {item: Pitot Tube Cover, response: REMOVED}
+      - {item: POH, response: AVAILABLE IN AIRPLANE}
+      - {item: Documents (ARROW), response: ON BOARD}
+      - {item: Weight & Balance, response: CHECKED}
+      - {item: Parking Brake, response: SET}
+      - {item: Control Wheel Lock, response: REMOVED}
+      - {item: Magnetos, response: 'OFF'}
+      - {item: Avionics Switch, response: 'OFF'}
+      - {item: Master Switch, response: 'ON'}
+      - {item: Fuel Quantity, response: CHECKED}
+      - {item: Low Fuel Annunciators, response: CHECKED}
+      - {item: Master Switch, response: 'OFF'}
+      - {item: Fuel Selector Valve, response: BOTH}
+      - {item: Fuel Shutoff Valve, response: ON (PUSH FULL IN)}
+      - {item: Exterior Inspection, response: COMPLETE}
+  - title: BEFORE STARTING ENGINE
+    items:
+      - {item: Preflight Inspection, response: COMPLETE}
+      - {item: Passenger Briefing, response: COMPLETE}
+      - {item: Seats / Belts / Harnesses, response: ADJUST & LOCK}
+      - {item: Brakes, response: TEST & SET}
+      - {item: Circuit Breakers, response: CHECK IN}
+      - {item: Electrical Equipment, response: 'OFF'}
+      - {item: Avionics Switch, response: 'OFF'}
+      - {item: Fuel Selector Valve, response: BOTH}
+      - {item: Fuel Shutoff Valve, response: 'ON'}
+  - title: STARTING ENGINE
+    items:
+      - {item: Throttle, response: OPEN 1/4 INCH}
+      - {item: Mixture, response: IDLE CUTOFF}
+      - {item: Propeller Area, response: CLEAR}
+      - {item: Master Switch, response: 'ON'}
+      - {item: Beacon, response: 'ON'}
+      - {item: Fuel Pump, response: 'ON'}
+      - {item: Mixture, response: 'RICH UNTIL FUEL FLOW, THEN CUTOFF'}
+      - {item: Fuel Pump, response: 'OFF'}
+      - {item: Magnetos, response: START}
+      - {item: Mixture, response: ADVANCE TO RICH}
+      - {item: Oil Pressure, response: CHECK}
+      - {note: NO OIL PRESSURE IN 30 SEC → SHUT DOWN}
+      - {item: Amps / Volts, response: CHECK}
+      - {item: Avionics Switch, response: 'ON'}
+      - {item: Navigation Lights, response: AS REQUIRED}
+      - {item: Flaps, response: RETRACT}
+  - title: BEFORE TAKEOFF
+    items:
+      - {item: Parking Brake, response: SET}
+      - {item: Seats / Belts, response: SECURE}
+      - {item: Cabin Doors, response: CLOSED & LOCKED}
+      - {item: Flight Controls, response: FREE & CORRECT}
+      - {item: Flight Instruments, response: CHECKED & SET}
+      - {item: Fuel Quantity, response: CHECKED}
+      - {item: Mixture, response: RICH}
+      - {item: Fuel Selector Valve, response: BOTH}
+      - {item: Elevator Trim, response: SET FOR TAKEOFF}
+      - {item: Throttle, response: 1800 RPM}
+      - {item: Magnetos, response: CHECKED}
+      - {item: Engine Indicators, response: CHECKED}
+      - {item: Amps / Volts, response: CHECKED}
+      - {item: Annunciators, response: CHECKED}
+      - {item: Throttle, response: 'CHECK IDLE, THEN 1000 RPM'}
+      - {item: Throttle Friction, response: ADJUST}
+      - {item: Strobe Lights, response: 'ON'}
+      - {item: Radios / Avionics, response: SET}
+      - {item: Autopilot, response: 'OFF'}
+      - {item: Wing Flaps, response: UP – 10°}
+      - {item: Cabin Windows, response: CLOSED & LOCKED}
+  - title: AFTER TAKEOFF / CLIMB
+    items:
+      - {item: Wing Flaps, response: UP (AT SAFE ALTITUDE)}
+      - {item: Climb Power, response: FULL THROTTLE}
+      - {item: Mixture, response: 'RICH / LEAN ABOVE 3,000 FT'}
+      - {item: Engine Instruments, response: MONITOR}
+  - title: CRUISE
+    items:
+      - {item: Power, response: SET}
+      - {item: Elevator Trim, response: ADJUST}
+      - {item: Mixture, response: LEAN}
+      - {item: Fuel Quantity, response: MONITOR}
+  - title: DESCENT
+    items:
+      - {item: Power, response: AS DESIRED}
+      - {item: Mixture, response: ADJUST}
+      - {item: Altimeter, response: SET}
+      - {item: Fuel Selector Valve, response: BOTH}
+      - {item: Wing Flaps, response: AS DESIRED}
+  - title: BEFORE LANDING
+    items:
+      - {item: Seats / Belts, response: SECURE}
+      - {item: Fuel Selector Valve, response: BOTH}
+      - {item: Mixture, response: RICH}
+      - {item: Landing / Taxi Lights, response: 'ON'}
+      - {item: Autopilot, response: 'OFF'}
+  - title: AFTER LANDING
+    items:
+      - {item: Wing Flaps, response: UP}
+      - {item: Strobe Lights, response: 'OFF'}
+      - {item: Landing Light, response: 'OFF'}
+      - {item: Transponder, response: AS REQUIRED}
+  - title: SECURING AIRPLANE
+    items:
+      - {item: Parking Brake, response: SET}
+      - {item: Throttle, response: IDLE}
+      - {item: Electrical Equipment, response: 'OFF'}
+      - {item: Avionics Switch, response: 'OFF'}
+      - {item: Mixture, response: IDLE CUTOFF}
+      - {item: Magnetos, response: 'OFF'}
+      - {item: Master Switch, response: 'OFF'}
+      - {item: Control Lock, response: INSTALLED}
+      - {item: Fuel Selector Valve, response: LEFT OR RIGHT}
+      - {item: Hobbs / Tach, response: RECORDED}

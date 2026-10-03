@@ -1,0 +1,40 @@
+# App settings and the What's New list (newest first; the top entry must equal app_version).
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+app_name: Aircraft Checklist Builder
+app_version: '1.06'
+show_drafts: true
+docx:
+  version: 9.6.1
+  sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
+changelog:
+  - version: '1.06'
+    notes:
+      - 'New: CFI endorsements. All 96 sample endorsements from FAA AC 61-65K (Nov 14, 2025) plus the § 61.195(h) recommending-instructor statement'
+      - Fill in instructor and pilot once; names, certificate numbers, make/model and dates drop into each endorsement; type the remaining blanks in place
+      - Shows how long solo, flight review and similar endorsements stay valid; downloads a Word file with signature lines in the AC format (RE or Exp. date)
+  - version: '1.05'
+    notes:
+      - '11 new section lists: Passing 10,000 (climb), Flight levels / RVSM, High-altitude oxygen, Cruise check (periodic), Transition level (descent), Below 10,000 (descent), Final / stabilized approach, Go-around / missed approach, Quick turn / through-flight, Cold weather / deicing, Briefings'
+  - version: '1.04'
+    notes:
+      - 'Aircraft list expanded to about 150 models: Piper, Beechcraft, Cirrus, Mooney, Diamond, Pilatus, Daher, Kodiak, Embraer, Gulfstream, Falcon, Learjet, Global, Hawker, HondaJet, Eclipse, Avanti, MU-2, Twin Commander'
+      - 'New suggested checklists (draft): Cirrus SR22 / SR22T and Piper PA-28-181 Archer'
+      - Each suggested checklist now shows its review status (Draft or Reviewed by / date)
+  - version: '1.03'
+    notes:
+      - Suggested model checklists (⭐) for the Challenger 605, Citation XLS/XLS+, Citation CJ3/CJ3+ and Cessna 172S — load the whole checklist in one tap, or pick items section by section
+      - Suggested items are clearly marked as suggestions, not FAA-approved; first-flight-of-day items come pre-boxed
+  - version: '1.02'
+    notes:
+      - 'Find your aircraft: search Cessna, Citation and Challenger models from 1950 on; picking one fills in the aircraft name and sets the pick lists to match (piston/turboprop/jet, twin, gear, pressurization)'
+  - version: '1.01'
+    notes:
+      - Version number shown on the builder, with this What's New list
+      - Checklist version field and a New revision button (bumps the version and sets today's date); the version prints in the page header
+      - 'Easier reordering: drag a line by its ⠿ handle, or tap its number and type a new one'
+  - version: '1.00'
+    notes:
+      - Pick items from ready-made lists for every section, filtered by aircraft type
+      - Add your own lines and sections
+      - Standard (two sections across) and Large print layouts
+      - Download as a Word file; save and open checklist files

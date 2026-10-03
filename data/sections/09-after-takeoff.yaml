@@ -1,0 +1,23 @@
+# Pick list: AFTER TAKEOFF
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: AFTER TAKEOFF
+order: 9
+items:
+  - {item: Positive Rate, response: GEAR UP, tags: [retract]}
+  - {item: Landing Gear, response: 'UP, LIGHTS OUT', tags: [retract]}
+  - {item: Flaps, response: UP}
+  - {item: Yaw Damper, response: ENGAGE, tags: [turbine]}
+  - {item: Climb Power, response: SET}
+  - {item: Throttles, response: CLIMB DETENT, tags: [jet]}
+  - {item: Propeller, response: CLIMB RPM, tags: [piston, turboprop]}
+  - {item: Mixture, response: AS REQUIRED, tags: [piston]}
+  - {item: Fuel Pump, response: OFF / AS REQUIRED, tags: [piston]}
+  - {item: Cowl Flaps, response: AS REQUIRED, tags: [piston]}
+  - {item: Ignition, response: NORM / OFF, tags: [turbine]}
+  - {item: Engine Sync, response: 'ON', tags: [twin]}
+  - {item: Landing Lights, response: AS REQUIRED}
+  - {item: Pressurization, response: CHECKED, tags: [press]}
+  - {item: Anti-Ice / De-Ice, response: AS REQUIRED}
+  - {item: Autopilot, response: AS REQUIRED}
+  - {item: Engine Instruments, response: CHECKED}
+  - {item: Passenger Safety Switch, response: SEAT BELT / OFF, tags: [turbine]}

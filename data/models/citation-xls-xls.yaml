@@ -1,0 +1,175 @@
+# Suggested checklist: Citation XLS / XLS+. SUGGESTIONS ONLY — not FAA-approved; verify every line against the AFM/POH.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+key: XLS
+order: 2            # position in the app's model list
+name: Citation XLS / XLS+
+status: draft          # draft | reviewed | retired
+author: Claude (AI draft)
+reviewed_by: ''
+review_date: ''      # YYYY-MM-DD, required when reviewed
+aircraft:                # aircraft ids from data/aircraft/*.yaml
+  - citation-560xl-citation-xls
+  - citation-560xl-citation-xls-xls-gen2
+source: Based on the two Citation XLS cards provided (operator normal-procedures cards), with descent, landing and shutdown items added from typical CE-560XL practice.
+sections:
+  - title: COCKPIT PREPARATION
+    items:
+      - {item: Preflight, response: TEXTRON CHECKLIST}
+      - {item: Torque Link Pin, response: CONNECTED}
+      - {item: Pass Oxy Selector, response: AUTO}
+      - {item: Mic Selectors, response: MIC / HEADSET}
+      - {item: Crew Oxygen Masks, response: CHECKED / SET 100%}
+      - {item: Circuit Breakers / Switches, response: CHECKED IN / SET}
+      - {item: Gen Switches, response: ON / OFF FOR GPU}
+      - {item: Standby Power Switch, response: TESTED / ON}
+      - {item: Batt Switch, response: 'ON, 24 VOLTS MIN'}
+      - {item: Emergency Lights, response: 'ON, CHECKED, ARM'}
+      - {item: Anti-Skid INOP / LO BRK PRESS, response: 'OFF'}
+      - {item: Parking Brake, response: SET}
+      - {item: APU (if equipped), response: AS REQUIRED}
+      - {item: AC Fans (if equipped), response: ON / AS REQUIRED}
+      - {item: Avionics Power / FMS, response: 'ON'}
+      - {item: Engine Instruments, response: NO FLAGS}
+      - {item: Annunciators, response: CHECKED}
+      - {item: Landing Gear Handle, response: DOWN (3 GREEN)}
+      - {item: Warning Systems Rotary Test, response: CHECK / OFF, first_flight: true}
+      - {note: FIRE WARNING SYSTEM FAIL → NO DISPATCH}
+      - {item: CVR / TCAS / EGPWS, response: TEST, first_flight: true}
+      - {item: EFIS, response: CHECK, first_flight: true}
+      - {item: Radar, response: TEST, first_flight: true}
+      - {item: Autopilot / Yaw Damper / Trim Disconnects, response: TEST, first_flight: true}
+      - {note: 'AUTOPILOT TEST FAIL → LIMITED TO 14,500'''}
+      - {item: ATIS / Clearance / FMS / Flt ID, response: OBTAIN / SET}
+      - {item: Avionics / Flight Instruments, response: CHECKED / SET}
+      - {item: Altimeters (RVSM), response: CONFIRMED}
+      - {item: Pressurization, response: CHECK / SET LANDING ELEV}
+      - {item: Press Source Selector, response: NORMAL}
+      - {item: AMDL on Board, response: CONFIRMED}
+  - title: BEFORE STARTING ENGINES
+    items:
+      - {item: Trip Release, response: CONFIRMED}
+      - {item: Cabin Door, response: 'CLOSED / LOCKED, LIGHTS OUT'}
+      - {item: Passenger Briefing, response: COMPLETE}
+      - {item: Parking Brake, response: SET}
+      - {item: Chocks, response: REMOVED}
+      - {item: Seats / Belts / Harnesses / Pedals, response: SET}
+      - {item: Windows, response: CLOSED / LOCKED}
+      - {item: Flood Lights, response: AS REQUIRED}
+      - {item: Fuel Quantity / Balance, response: CHECKED}
+      - {item: Gnd Rec / Nav Switches, response: 'ON'}
+      - {item: Passenger Safety Switch, response: PASS SAFETY ON}
+      - {item: APU Bleed (if equipped), response: AS REQUIRED}
+      - {item: Annunciator Panel, response: CHECKED}
+  - title: ENGINE START
+    items:
+      - {item: Cabin / Baggage Doors, response: ANNUNCIATORS OUT}
+      - {item: Annunciators, response: AS EXPECTED}
+      - {note: NO ITT IN 10 SEC / NO N1 BY 25% N2 → ABORT START}
+      - {item: Engines, response: START}
+      - {item: Engine Instruments, response: ALL GREEN}
+      - {item: External Power, response: DISCONNECT}
+      - {item: Gen Switches, response: 'ON'}
+  - title: BEFORE TAXI
+    items:
+      - {item: DC Amps / Volts, response: CHECKED}
+      - {item: Engine Anti-Ice, response: AS REQUIRED}
+      - {item: Avionics Power / FMS, response: 'ON'}
+      - {item: Engine Instruments, response: NO FLAGS}
+      - {item: Annunciator Panel, response: CHECKED}
+      - {item: Flight Controls, response: CHECKED}
+      - {item: Trims, response: 3 SET}
+      - {item: Speedbrakes, response: 'TESTED, RETRACTED'}
+      - {item: Flaps, response: 'PLANNED, SET, INDICATING'}
+      - {item: Flight Director, response: 'HDG, GO AROUND'}
+      - {item: Flight Instruments, response: CHECKED}
+      - {item: V-Speeds and Takeoff N1, response: SET}
+      - {item: Transponder / TCAS, response: 'FLT ID, TA/RA'}
+      - {item: Lavatory Door, response: LATCHED OPEN}
+      - {item: Taxi Brief, response: COMPLETE}
+  - title: TAXI
+    items:
+      - {item: Parking Brake, response: RELEASED}
+      - {item: Taxi Clearance / Runway, response: RECEIVED & SET}
+      - {item: Exterior Lights, response: RECOG / TAXI}
+      - {item: Brakes (L & R), response: CHECKED}
+      - {item: Steering, response: CHECKED}
+      - {item: Rudder Bias System, response: CHECKED}
+      - {note: RUDDER BIAS FAIL → NO DISPATCH}
+      - {item: Thrust Reversers, response: CHECKED, first_flight: true}
+      - {item: Anti-Ice / Deice Systems, response: CHECKED, first_flight: true}
+      - {item: Takeoff Briefing, response: COMPLETE}
+  - title: BEFORE TAKEOFF
+    items:
+      - {item: Anti-Ice / Deice, response: AS REQUIRED}
+      - {item: FATS, response: 'FLAPS, AIRBRAKE, TRIMS, SPEEDS'}
+      - {item: Fuel, response: QTY CONFIRMED / BALANCED}
+      - {item: Engine Instruments, response: CHECKED}
+      - {item: Annunciator Panel, response: CHECKED / CLEAR}
+      - {item: Radar, response: AS REQUIRED}
+      - {item: Transponder, response: TA/RA}
+      - {divider: RUNWAY LINE UP}
+      - {item: Final and Runway, response: CLEAR}
+      - {item: Parking Brake, response: RELEASED}
+      - {item: Exterior Lights, response: AS REQUIRED}
+      - {item: Ignition Switches, response: 'ON'}
+      - {item: Pitot / Static Switch, response: 'ON'}
+      - {item: Runway, response: 'VERIFIED, HDG AGREES'}
+  - title: AFTER TAKEOFF
+    items:
+      - {item: Landing Gear, response: 'UP, LIGHTS OUT'}
+      - {item: Flaps, response: (400') UP}
+      - {item: Landing Lights, response: RECOG / TAXI}
+      - {item: Yaw Damper, response: ENGAGE}
+      - {item: Throttles, response: CLIMB DETENT}
+      - {item: Engine Sync Knob, response: 'ON'}
+      - {item: Ignition Switches, response: NORM}
+      - {item: Pressurization, response: CHECKED}
+      - {item: Anti-Ice / Deice, response: AS REQUIRED}
+  - title: TRANSITION ALTITUDE (18,000')
+    items:
+      - {item: Altimeters, response: '29.92'}
+      - {item: APU, response: CONFIRM SHUTDOWN}
+      - {item: Anti-Ice / Deice, response: AS REQUIRED}
+  - title: CRUISE
+    items:
+      - {item: Throttles, response: SET}
+      - {item: Pressurization, response: FIELD ELEV CONFIRMED}
+      - {item: Anti-Ice / Deice, response: AS REQUIRED}
+      - {item: Fuel Crossfeed, response: AS REQUIRED}
+      - {item: Exterior Lights, response: AS REQUIRED}
+  - title: DESCENT
+    items:
+      - {item: ATIS / Weather, response: RECEIVED}
+      - {item: Pressurization, response: LANDING ELEV SET}
+      - {item: Approach Briefing, response: COMPLETE}
+      - {item: Landing Data / VREF, response: SET}
+      - {item: Altimeters (at transition level), response: SET / CROSS-CHECKED}
+      - {item: Anti-Ice / Deice, response: AS REQUIRED}
+      - {item: Passenger Safety Switch, response: PASS SAFETY}
+  - title: BEFORE LANDING
+    items:
+      - {item: Landing Gear, response: 'DOWN, 3 GREEN'}
+      - {item: Flaps, response: SET FOR LANDING}
+      - {item: Speedbrakes, response: RETRACTED}
+      - {item: Engine Sync, response: 'OFF'}
+      - {item: Landing Lights, response: 'ON'}
+      - {item: Anti-Skid, response: 'ON'}
+      - {item: Autopilot / Yaw Damper, response: 'OFF'}
+  - title: AFTER LANDING
+    items:
+      - {item: Thrust Reversers, response: STOWED}
+      - {item: Speedbrakes, response: RETRACTED}
+      - {item: Flaps, response: UP}
+      - {item: Ignition, response: NORM}
+      - {item: Transponder, response: STBY}
+      - {item: Exterior Lights, response: TAXI}
+      - {item: Pitot / Static Heat, response: 'OFF'}
+  - title: SHUTDOWN
+    items:
+      - {item: Parking Brake, response: SET}
+      - {item: Throttles, response: CUTOFF AFTER COOL-DOWN}
+      - {item: Avionics, response: 'OFF'}
+      - {item: Passenger Safety Switch, response: 'OFF'}
+      - {item: Emergency Lights, response: 'OFF'}
+      - {item: Beacon, response: 'OFF'}
+      - {item: Batt Switch, response: 'OFF'}

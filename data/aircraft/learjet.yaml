@@ -1,0 +1,9 @@
+# Aircraft: Learjet. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 134, id: learjet-23-24-25-28, make: Learjet, model: 23 / 24 / 25 / 28, years: 1964–1982, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 25}
+  - {seq: 135, id: learjet-35-36, make: Learjet, model: 35 / 36, years: 1973–1994, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 35}
+  - {seq: 136, id: learjet-31, make: Learjet, model: '31', years: 1990–2003, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 31}
+  - {seq: 137, id: learjet-55, make: Learjet, model: '55', years: 1981–1990, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 138, id: learjet-60, make: Learjet, model: '60', years: 1993–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 60}
+  - {seq: 139, id: learjet-40-45-70-75, make: Learjet, model: 40 / 45 / 70 / 75, years: 1998–2022, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 45}

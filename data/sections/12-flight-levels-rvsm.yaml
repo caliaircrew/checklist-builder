@@ -1,0 +1,18 @@
+# Pick list: FLIGHT LEVELS / RVSM
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: FLIGHT LEVELS / RVSM
+order: 12
+items:
+  - {item: Altimeters (passing FL180), response: '29.92 SET, ALL'}
+  - {item: Primary Altimeters, response: 'CROSS-CHECKED, WITHIN 200''', tags: [turbine]}
+  - {item: Standby Altimeter, response: CHECKED, tags: [turbine]}
+  - {item: Autopilot / Altitude Hold, response: ENGAGED, tags: [turbine]}
+  - {item: Transponder, response: ALT REPORTING ON, tags: [turbine]}
+  - {item: RVSM Equipment, response: OPERATIVE, tags: [turbine]}
+  - {note: RVSM EQUIPMENT FAILURE → ADVISE ATC, tags: [turbine]}
+  - {item: Altitude Alerter, response: SET, tags: [turbine]}
+  - {item: Cabin Altitude / Differential, response: CHECKED, tags: [press]}
+  - {item: Crew Oxygen Masks, response: QUICK-DONNING READY, tags: [press]}
+  - {note: 'ABOVE FL250, IF ONE PILOT LEAVES SEAT → OTHER PILOT ON OXYGEN', tags: [press]}
+  - {item: Fuel Temperature, response: MONITOR, tags: [jet]}
+  - {item: Mach / Airspeed, response: MONITOR, tags: [turbine]}

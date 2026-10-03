@@ -1,0 +1,30 @@
+# Pick list: ENGINE START
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: ENGINE START
+order: 3
+items:
+  - {item: Propeller Area, response: CLEAR (CALL "CLEAR"), tags: [piston, turboprop]}
+  - {item: Engine Area, response: CLEAR, tags: [jet]}
+  - {item: Beacon, response: 'ON'}
+  - {item: Battery / Master, response: 'ON'}
+  - {item: Fuel Pump, response: ON / PRIME AS REQUIRED, tags: [piston]}
+  - {item: Primer, response: AS REQUIRED, tags: [piston]}
+  - {item: Mixture, response: RICH, tags: [piston]}
+  - {item: Throttle, response: OPEN 1/4 INCH, tags: [piston]}
+  - {item: Magnetos / Starter, response: START, tags: [piston]}
+  - {note: NO OIL PRESSURE IN 30 SEC → SHUT DOWN, tags: [piston]}
+  - {item: Starter, response: ENGAGE, tags: [turbine]}
+  - {item: Starter Annunciator, response: OUT, tags: [turbine]}
+  - {item: Ignition, response: ON / AUTO, tags: [turbine]}
+  - {item: Fuel / Condition Lever, response: INTRODUCE AT AFM N2 / NG, tags: [turbine]}
+  - {item: ITT, response: MONITOR, tags: [turbine]}
+  - {item: N1 Rotation, response: CONFIRMED, tags: [jet]}
+  - {note: HOT / HUNG / NO LIGHT-OFF → ABORT START, tags: [turbine]}
+  - {item: Oil Pressure, response: RISING}
+  - {item: Engine Instruments, response: IN THE GREEN}
+  - {item: Generator(s), response: ON / CHECKED}
+  - {item: External Power, response: DISCONNECTED, tags: [turbine]}
+  - {item: Ammeter / Volts, response: CHECKED}
+  - {item: Second Engine, response: START, tags: [twin]}
+  - {item: Hydraulic Pressure, response: CHECKED, tags: [turbine]}
+  - {item: Annunciators, response: AS EXPECTED}

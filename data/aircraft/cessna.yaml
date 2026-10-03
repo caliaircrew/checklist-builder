@@ -1,0 +1,46 @@
+# Aircraft: Cessna. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 0, id: cessna-140a, make: Cessna, model: 140A, years: 1949–1951, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 1, id: cessna-150, make: Cessna, model: '150', years: 1959–1977, engine: piston, twin: false, retractable: false, pressurized: false, search_words: 150M Commuter Aerobat}
+  - {seq: 2, id: cessna-152, make: Cessna, model: '152', years: 1977–1985, engine: piston, twin: false, retractable: false, pressurized: false, search_words: 152 II Aerobat}
+  - {seq: 3, id: cessna-162-skycatcher, make: Cessna, model: 162 Skycatcher, years: 2009–2013, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA}
+  - {seq: 4, id: cessna-170-170a-170b, make: Cessna, model: 170 / 170A / 170B, years: 1948–1956, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 5, id: cessna-172-skyhawk, make: Cessna, model: '172 Skyhawk (early, 172–172Q)', years: 1956–1986, engine: piston, twin: false, retractable: false, pressurized: false, search_words: 172N 172M 172P 172Q Cutlass}
+  - {seq: 6, id: cessna-172r-172s-skyhawk, make: Cessna, model: 172R / 172S Skyhawk (restart), years: 1996–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: 172SP G1000 Skyhawk SP}
+  - {seq: 7, id: cessna-172rg-cutlass-rg, make: Cessna, model: 172RG Cutlass RG, years: 1980–1985, engine: piston, twin: false, retractable: true, pressurized: false}
+  - {seq: 8, id: cessna-175-skylark, make: Cessna, model: 175 Skylark, years: 1958–1962, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 9, id: cessna-177-cardinal, make: Cessna, model: 177 Cardinal, years: 1968–1978, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 10, id: cessna-177rg-cardinal-rg, make: Cessna, model: 177RG Cardinal RG, years: 1971–1978, engine: piston, twin: false, retractable: true, pressurized: false}
+  - {seq: 11, id: cessna-180-skywagon, make: Cessna, model: 180 Skywagon, years: 1953–1981, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 12, id: cessna-182-skylane, make: Cessna, model: '182 Skylane (early, 182–182R)', years: 1956–1986, engine: piston, twin: false, retractable: false, pressurized: false, search_words: 182P 182Q 182R}
+  - {seq: 13, id: cessna-182s-182t-t182t-skylane, make: Cessna, model: 182S / 182T / T182T Skylane (restart), years: 1997–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: turbo skylane G1000}
+  - {seq: 14, id: cessna-r182-tr182-skylane-rg, make: Cessna, model: R182 / TR182 Skylane RG, years: 1978–1986, engine: piston, twin: false, retractable: true, pressurized: false, search_words: 182RG}
+  - {seq: 15, id: cessna-185-skywagon, make: Cessna, model: 185 Skywagon, years: 1961–1985, engine: piston, twin: false, retractable: false, pressurized: false, search_words: A185F}
+  - {seq: 16, id: cessna-188-agwagon-agtruck-aghusky, make: Cessna, model: 188 AgWagon / AgTruck / AgHusky, years: 1966–1983, engine: piston, twin: false, retractable: false, pressurized: false, search_words: ag}
+  - {seq: 17, id: cessna-190-195-businessliner, make: Cessna, model: 190 / 195 Businessliner, years: 1947–1954, engine: piston, twin: false, retractable: false, pressurized: false, search_words: radial}
+  - {seq: 18, id: cessna-205, make: Cessna, model: '205', years: 1962–1964, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 19, id: cessna-206-super-skywagon-stationair, make: Cessna, model: 206 Super Skywagon / Stationair (early), years: 1964–1986, engine: piston, twin: false, retractable: false, pressurized: false, search_words: U206 P206 TU206}
+  - {seq: 20, id: cessna-206h-t206h-stationair, make: Cessna, model: 206H / T206H Stationair (restart), years: 1998–present, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 21, id: cessna-207-skywagon-stationair-7-8, make: Cessna, model: 207 Skywagon / Stationair 7 & 8, years: 1969–1984, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 22, id: cessna-210-centurion, make: Cessna, model: 210 Centurion, years: 1957–1986, engine: piston, twin: false, retractable: true, pressurized: false, search_words: T210 turbo centurion}
+  - {seq: 23, id: cessna-p210-pressurized-centurion, make: Cessna, model: P210 Pressurized Centurion, years: 1978–1986, engine: piston, twin: false, retractable: true, pressurized: true}
+  - {seq: 24, id: cessna-350-400-corvalis, make: Cessna, model: 350 / 400 Corvalis (TTx), years: 2007–2018, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Columbia TTx T240}
+  - {seq: 25, id: cessna-303-crusader, make: Cessna, model: 303 Crusader, years: 1982–1985, engine: piston, twin: true, retractable: true, pressurized: false, search_words: T303}
+  - {seq: 26, id: cessna-310, make: Cessna, model: '310', years: 1954–1980, engine: piston, twin: true, retractable: true, pressurized: false, search_words: T310}
+  - {seq: 27, id: cessna-320-skyknight, make: Cessna, model: 320 Skyknight, years: 1962–1968, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 28, id: cessna-335, make: Cessna, model: '335', years: 1979–1980, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 29, id: cessna-340-340a, make: Cessna, model: 340 / 340A, years: 1971–1984, engine: piston, twin: true, retractable: true, pressurized: true}
+  - {seq: 30, id: cessna-336-skymaster, make: Cessna, model: 336 Skymaster, years: 1963–1964, engine: piston, twin: true, retractable: false, pressurized: false, search_words: push pull}
+  - {seq: 31, id: cessna-337-super-skymaster, make: Cessna, model: 337 Super Skymaster, years: 1965–1980, engine: piston, twin: true, retractable: true, pressurized: false, search_words: push pull O-2}
+  - {seq: 32, id: cessna-p337-pressurized-skymaster, make: Cessna, model: P337 Pressurized Skymaster, years: 1973–1977, engine: piston, twin: true, retractable: true, pressurized: true}
+  - {seq: 33, id: cessna-401-402-businessliner-utiliner, make: Cessna, model: 401 / 402 Businessliner / Utiliner, years: 1966–1985, engine: piston, twin: true, retractable: true, pressurized: false, search_words: 402B 402C}
+  - {seq: 34, id: cessna-404-titan, make: Cessna, model: 404 Titan, years: 1976–1982, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 35, id: cessna-411, make: Cessna, model: '411', years: 1965–1968, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 36, id: cessna-414-414a-chancellor, make: Cessna, model: 414 / 414A Chancellor, years: 1968–1985, engine: piston, twin: true, retractable: true, pressurized: true}
+  - {seq: 37, id: cessna-421-golden-eagle-executive-commuter, make: Cessna, model: 421 Golden Eagle / Executive Commuter, years: 1967–1985, engine: piston, twin: true, retractable: true, pressurized: true, search_words: 421B 421C}
+  - {seq: 38, id: cessna-208-caravan, make: Cessna, model: 208 Caravan, years: 1985–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Caravan 675 amphibian}
+  - {seq: 39, id: cessna-208b-grand-caravan-grand-caravan-ex, make: Cessna, model: 208B Grand Caravan / Grand Caravan EX, years: 1990–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: cargomaster}
+  - {seq: 40, id: cessna-408-skycourier, make: Cessna, model: 408 SkyCourier, years: 2022–present, engine: turboprop, twin: true, retractable: false, pressurized: false}
+  - {seq: 41, id: cessna-425-conquest-i-corsair, make: Cessna, model: 425 Conquest I / Corsair, years: 1981–1986, engine: turboprop, twin: true, retractable: true, pressurized: true}
+  - {seq: 42, id: cessna-441-conquest-ii, make: Cessna, model: 441 Conquest II, years: 1977–1986, engine: turboprop, twin: true, retractable: true, pressurized: true}

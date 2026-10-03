@@ -1,0 +1,4 @@
+# Aircraft: Eclipse. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 144, id: eclipse-500-550, make: Eclipse, model: 500 / 550, years: 2006 on, engine: jet, twin: true, retractable: true, pressurized: true}

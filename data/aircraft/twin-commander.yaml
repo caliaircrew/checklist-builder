@@ -1,0 +1,4 @@
+# Aircraft: Twin Commander. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 147, id: twin-commander-690-840-900-1000, make: Twin Commander, model: 690 / 840 / 900 / 1000, years: 1971–1986, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Aero Commander Jetprop}

@@ -1,0 +1,122 @@
+# Suggested checklist: Cirrus SR22 / SR22T. SUGGESTIONS ONLY — not FAA-approved; verify every line against the AFM/POH.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+key: SR22
+order: 5            # position in the app's model list
+name: Cirrus SR22 / SR22T
+status: draft          # draft | reviewed | retired
+author: Claude (AI draft)
+reviewed_by: ''
+review_date: ''      # YYYY-MM-DD, required when reviewed
+aircraft:                # aircraft ids from data/aircraft/*.yaml
+  - cirrus-sr22-sr22t
+source: Follows the Cirrus SR22 pilot's checklist structure (CAPS pin, dual battery/alternator, boost/prime fuel pump, 50% flap takeoff). Some responses are from general type knowledge.
+sections:
+  - title: PREFLIGHT (CABIN)
+    items:
+      - {item: Pitot Tube Cover, response: REMOVED}
+      - {item: Documents (ARROW), response: ON BOARD}
+      - {item: Avionics Power Switch, response: 'OFF'}
+      - {item: BAT 2 Master, response: 'ON'}
+      - {item: Voltage, response: CHECKED}
+      - {item: BAT 1 Master, response: 'ON'}
+      - {item: Fuel Quantity, response: CHECKED}
+      - {item: Exterior Lights, response: CHECKED}
+      - {item: All Switches, response: 'OFF'}
+      - {item: Engine Oil, response: CHECKED (6 QT MIN)}
+      - {item: Fuel Caps, response: SECURE}
+      - {item: Exterior Inspection, response: COMPLETE}
+  - title: BEFORE STARTING ENGINE
+    items:
+      - {item: Preflight Inspection, response: COMPLETE}
+      - {item: Weight & Balance, response: VERIFIED}
+      - {item: Passenger Briefing (incl. CAPS), response: COMPLETE}
+      - {item: Seats / Belts / Harnesses, response: ADJUSTED & SECURE}
+      - {item: Cabin Doors, response: CLOSED & LATCHED}
+      - {item: CAPS Handle, response: PIN REMOVED}
+      - {item: Brakes, response: HOLD}
+      - {item: Circuit Breakers, response: IN}
+  - title: STARTING ENGINE
+    items:
+      - {item: BAT / ALT Master Switches, response: 'ON'}
+      - {item: Strobe / Beacon, response: 'ON'}
+      - {item: Mixture, response: FULL RICH}
+      - {item: Power Lever, response: OPEN 1/4 INCH}
+      - {item: Fuel Pump, response: 'PRIME AS REQUIRED, THEN BOOST'}
+      - {item: Propeller Area, response: CLEAR}
+      - {item: Ignition Switch, response: START}
+      - {note: 'NO START IN 10 SEC → RELEASE STARTER, LET COOL'}
+      - {item: Power Lever, response: 1000 RPM}
+      - {item: Oil Pressure, response: CHECKED}
+      - {item: Engine Parameters, response: CHECKED}
+      - {item: Avionics Power Switch, response: 'ON'}
+  - title: BEFORE TAXIING
+    items:
+      - {item: Flaps, response: AS REQUIRED}
+      - {item: Radios / Avionics, response: SET}
+      - {item: Altimeter, response: SET}
+      - {item: Fuel Selector, response: FULLEST TANK}
+      - {item: Brakes, response: RELEASE / CHECK ON TAXI}
+  - title: BEFORE TAKEOFF
+    items:
+      - {item: Doors, response: LATCHED}
+      - {item: CAPS Handle, response: PIN REMOVED}
+      - {item: Seat Belts / Harnesses, response: CHECKED}
+      - {item: Fuel Quantity, response: CONFIRMED}
+      - {item: Fuel Selector, response: FULLEST TANK}
+      - {item: Fuel Pump, response: BOOST}
+      - {item: Mixture, response: SET}
+      - {item: Flaps, response: 50%}
+      - {item: Transponder, response: ALT}
+      - {item: Autopilot, response: PREFLIGHT TEST / OFF}
+      - {item: Flight Controls, response: FREE & CORRECT}
+      - {item: Trim, response: SET FOR TAKEOFF}
+      - {item: Brakes, response: HOLD}
+      - {divider: RUN-UP}
+      - {item: Power Lever, response: 1700 RPM}
+      - {item: Alternators / Voltage, response: CHECKED}
+      - {item: Ignition (Magnetos), response: CHECKED}
+      - {item: Engine Parameters, response: CHECKED}
+      - {item: Power Lever, response: 'IDLE CHECK, THEN 1000 RPM'}
+      - {item: Pitot Heat, response: AS REQUIRED}
+  - title: AFTER TAKEOFF / CLIMB
+    items:
+      - {item: Flaps, response: UP (AT SAFE ALTITUDE)}
+      - {item: Fuel Pump, response: AS REQUIRED}
+      - {item: Mixture, response: AS REQUIRED}
+      - {item: Engine Parameters, response: MONITOR}
+  - title: CRUISE
+    items:
+      - {item: Power, response: SET}
+      - {item: Mixture, response: LEANED}
+      - {item: Fuel Pump, response: AS REQUIRED}
+      - {item: Fuel Balance, response: MONITOR}
+  - title: DESCENT
+    items:
+      - {item: Altimeter, response: SET}
+      - {item: Mixture, response: AS REQUIRED}
+      - {item: Fuel Selector, response: FULLEST TANK}
+      - {item: Approach Briefing, response: COMPLETE}
+  - title: BEFORE LANDING
+    items:
+      - {item: Seat Belts / Harnesses, response: SECURE}
+      - {item: Fuel Pump, response: BOOST}
+      - {item: Mixture, response: AS REQUIRED}
+      - {item: Flaps, response: AS REQUIRED}
+      - {item: Autopilot, response: 'OFF'}
+      - {item: Landing Light, response: 'ON'}
+  - title: AFTER LANDING
+    items:
+      - {item: Flaps, response: UP}
+      - {item: Fuel Pump, response: 'OFF'}
+      - {item: Transponder, response: AS REQUIRED}
+      - {item: Exterior Lights, response: AS REQUIRED}
+  - title: SHUTDOWN
+    items:
+      - {item: Fuel Pump, response: 'OFF'}
+      - {item: Avionics Power Switch, response: 'OFF'}
+      - {item: Mixture, response: CUTOFF}
+      - {item: Ignition Switch, response: 'OFF'}
+      - {item: BAT / ALT Master Switches, response: 'OFF'}
+      - {item: CAPS Handle, response: PIN INSTALLED}
+      - {item: Hobbs / Tach, response: RECORDED}
+      - {item: Tie-downs / Chocks, response: SECURED}

@@ -1,0 +1,114 @@
+# Suggested checklist: Citation CJ3 / CJ3+. SUGGESTIONS ONLY — not FAA-approved; verify every line against the AFM/POH.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+key: CJ3
+order: 3            # position in the app's model list
+name: Citation CJ3 / CJ3+
+status: draft          # draft | reviewed | retired
+author: Claude (AI draft)
+reviewed_by: ''
+review_date: ''      # YYYY-MM-DD, required when reviewed
+aircraft:                # aircraft ids from data/aircraft/*.yaml
+  - citation-525b-citation-cj3-cj3
+source: Compiled from Citation 525-series normal procedures structure and Citation Jet Pilots Association SOP practices; single-pilot, no APU.
+sections:
+  - title: COCKPIT ITEMS
+    items:
+      - {item: Exterior Inspection, response: COMPLETE}
+      - {item: Oxygen System / Smoke Goggles, response: CHECKED}
+      - {item: Circuit Breakers, response: IN}
+      - {item: Parking Brake, response: SET}
+      - {item: Throttles, response: CUTOFF}
+      - {item: Battery Switch, response: 'BATT, VOLTAGE CHECKED'}
+      - {item: Warning Systems Test, response: COMPLETE, first_flight: true}
+      - {note: FIRE WARNING TEST FAIL → NO DISPATCH}
+      - {item: Fuel Quantity, response: CHECKED / BALANCED}
+      - {item: Avionics, response: 'OFF'}
+      - {item: Emergency Lights, response: ARMED}
+      - {item: Passenger Briefing, response: COMPLETE}
+  - title: BEFORE STARTING ENGINES
+    items:
+      - {item: Cabin Door, response: 'LOCKED, LIGHT OUT'}
+      - {item: Seats / Belts / Harnesses, response: ADJUSTED / SECURE}
+      - {item: Passenger Safety Switch, response: SEAT BELT}
+      - {item: Beacon, response: 'ON'}
+      - {item: GPU, response: AS REQUIRED}
+  - title: ENGINE START
+    items:
+      - {item: Engine Start Button, response: PRESS}
+      - {item: ITT, response: CHECK FOR RISE}
+      - {item: N1 Rotation, response: CONFIRMED}
+      - {note: NO LIGHT-OFF / HOT START → ABORT PER AFM}
+      - {item: Oil Pressure, response: RISING}
+      - {item: Engine Indications, response: STABLE AT IDLE}
+      - {item: Opposite Engine, response: START}
+      - {item: External Power, response: DISCONNECTED}
+  - title: BEFORE TAXI
+    items:
+      - {item: Avionics, response: 'ON'}
+      - {item: Generators, response: BOTH ON / CHECKED}
+      - {item: Climate Control / Pressurization, response: NORM / SET}
+      - {item: Engine Anti-Ice, response: AS REQUIRED}
+      - {item: 'Altimeters (pilot, standby, copilot)', response: SET & COMPARE}
+      - {item: FMS / Takeoff Data, response: CONFIRMED}
+      - {item: Flaps, response: SET FOR TAKEOFF}
+      - {item: Trims, response: SET FOR TAKEOFF}
+      - {item: Speed Brakes, response: RETRACTED}
+      - {item: CAS / PFD Messages, response: CHECKED}
+      - {item: Taxi Light, response: 'ON'}
+  - title: TAXI
+    items:
+      - {item: Brakes, response: CHECKED ON FIRST MOVEMENT}
+      - {item: Steering, response: CHECKED}
+      - {item: Flight Instruments, response: CHECKED}
+      - {note: NO CHECKLISTS OR AVIONICS SETUP WHILE TAXIING}
+  - title: BEFORE TAKEOFF
+    items:
+      - {item: Takeoff Briefing, response: COMPLETE}
+      - {item: Flaps / Trims, response: SET FOR TAKEOFF}
+      - {item: Speed Brakes, response: RETRACTED}
+      - {item: Anti-Ice, response: AS REQUIRED}
+      - {item: Pitot / Static Heat, response: 'ON'}
+      - {item: Transponder, response: ALT / TA/RA}
+      - {item: Exterior Lights, response: 'ON'}
+      - {item: Passenger Safety Switch, response: PASS SAFETY}
+      - {item: CAS Messages, response: CHECKED}
+      - {item: Runway, response: 'VERIFIED, HDG AGREES'}
+  - title: AFTER TAKEOFF / CLIMB
+    items:
+      - {item: Landing Gear, response: UP}
+      - {item: Flaps, response: UP}
+      - {item: Yaw Damper, response: 'ON'}
+      - {item: Throttles, response: CLIMB DETENT}
+      - {item: Pressurization, response: CHECKED}
+      - {item: Passenger Safety Switch, response: AS REQUIRED}
+      - {item: Altimeters (at transition), response: 29.92 SET}
+  - title: DESCENT
+    items:
+      - {item: Pressurization, response: LANDING ELEV SET}
+      - {item: Altimeters, response: SET & COMPARE}
+      - {item: Approach Briefing, response: COMPLETE}
+      - {item: Landing Data / VREF, response: SET}
+      - {item: Anti-Ice, response: AS REQUIRED}
+  - title: BEFORE LANDING
+    items:
+      - {item: Landing Gear, response: 'DOWN, 3 GREEN'}
+      - {item: Flaps, response: SET FOR LANDING}
+      - {item: Speed Brakes, response: RETRACTED}
+      - {item: Passenger Safety Switch, response: PASS SAFETY}
+      - {item: Landing Lights, response: 'ON'}
+      - {item: Autopilot / Yaw Damper, response: 'OFF'}
+  - title: AFTER LANDING
+    items:
+      - {item: Flaps, response: UP}
+      - {item: Speed Brakes, response: RETRACTED}
+      - {item: Pitot / Static Heat, response: 'OFF'}
+      - {item: Transponder, response: STBY}
+      - {item: Exterior Lights, response: TAXI}
+  - title: SHUTDOWN
+    items:
+      - {item: Parking Brake, response: SET}
+      - {item: Throttles, response: CUTOFF AFTER COOL-DOWN}
+      - {item: Avionics, response: 'OFF'}
+      - {item: Passenger Safety Switch, response: 'OFF'}
+      - {item: Emergency Lights, response: 'OFF'}
+      - {item: Battery Switch, response: 'OFF'}

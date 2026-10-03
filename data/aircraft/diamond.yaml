@@ -1,0 +1,7 @@
+# Aircraft: Diamond. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 109, id: diamond-da20-katana-eclipse, make: Diamond, model: DA20 Katana / Eclipse, years: 1993–present, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 110, id: diamond-da40-diamond-star, make: Diamond, model: DA40 Diamond Star, years: 2000–present, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 111, id: diamond-da42-twin-star, make: Diamond, model: DA42 Twin Star, years: 2004–present, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 112, id: diamond-da62, make: Diamond, model: DA62, years: 2015–present, engine: piston, twin: true, retractable: true, pressurized: false}

@@ -1,0 +1,24 @@
+# Aircraft: Cessna Citation. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 43, id: citation-500-citation-citation-i, make: Cessna Citation, model: 500 Citation / Citation I, years: 1971–1985, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Citation 1 501 I/SP}
+  - {seq: 44, id: citation-550-citation-ii, make: Cessna Citation, model: 550 Citation II, years: 1978–1994, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Citation 2 551 II/SP}
+  - {seq: 45, id: citation-s550-citation-s-ii, make: Cessna Citation, model: S550 Citation S/II, years: 1984–1988, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 46, id: citation-550-citation-bravo, make: Cessna Citation, model: 550 Citation Bravo, years: 1997–2006, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 47, id: citation-560-citation-v, make: Cessna Citation, model: 560 Citation V, years: 1989–1994, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Citation 5}
+  - {seq: 48, id: citation-560-citation-ultra, make: Cessna Citation, model: 560 Citation Ultra, years: 1994–1999, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 49, id: citation-560-citation-encore-encore, make: Cessna Citation, model: 560 Citation Encore / Encore+, years: 2000–2009, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 50, id: citation-560xl-citation-excel, make: Cessna Citation, model: 560XL Citation Excel, years: 1998–2004, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CE560XL}
+  - {seq: 51, id: citation-560xl-citation-xls, make: Cessna Citation, model: 560XL Citation XLS, years: 2004–2008, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CE560XL XLS}
+  - {seq: 52, id: citation-560xl-citation-xls-xls-gen2, make: Cessna Citation, model: 560XL Citation XLS+ / XLS Gen2, years: 2008–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CE560XL XLS plus}
+  - {seq: 53, id: citation-650-citation-iii-vi-vii, make: Cessna Citation, model: 650 Citation III / VI / VII, years: 1983–2000, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Citation 3 6 7}
+  - {seq: 54, id: citation-510-citation-mustang, make: Cessna Citation, model: 510 Citation Mustang, years: 2006–2017, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 55, id: citation-525-citationjet-cj1-cj1, make: Cessna Citation, model: 525 CitationJet / CJ1 / CJ1+, years: 1993–2010, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CJ}
+  - {seq: 56, id: citation-525-citation-m2-m2-gen2, make: Cessna Citation, model: 525 Citation M2 / M2 Gen2, years: 2013–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 57, id: citation-525a-citation-cj2-cj2, make: Cessna Citation, model: 525A Citation CJ2 / CJ2+, years: 2000–2016, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 58, id: citation-525b-citation-cj3-cj3, make: Cessna Citation, model: 525B Citation CJ3 / CJ3+, years: 2004–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 59, id: citation-525c-citation-cj4-cj4-gen2, make: Cessna Citation, model: 525C Citation CJ4 / CJ4 Gen2, years: 2010–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 60, id: citation-680-citation-sovereign-sovereign, make: Cessna Citation, model: 680 Citation Sovereign / Sovereign+, years: 2004–2021, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 61, id: citation-680a-citation-latitude, make: Cessna Citation, model: 680A Citation Latitude, years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 62, id: citation-700-citation-longitude, make: Cessna Citation, model: 700 Citation Longitude, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 63, id: citation-750-citation-x-x, make: Cessna Citation, model: 750 Citation X / X+, years: 1996–2018, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Citation 10 ten}

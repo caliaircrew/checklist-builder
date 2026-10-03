@@ -1,0 +1,4 @@
+# Aircraft: Quest / Daher. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 116, id: quest-daher-kodiak-100, make: Quest / Daher, model: Kodiak 100, years: 2007–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Kodiak}

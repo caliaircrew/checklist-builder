@@ -1,0 +1,12 @@
+# Aircraft: Bombardier Challenger. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 64, id: challenger-600, make: Bombardier Challenger, model: 600 (Canadair CL-600), years: 1980–1982, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Canadair CL600}
+  - {seq: 65, id: challenger-601-1a-601-3a-601-3r, make: Bombardier Challenger, model: 601-1A / 601-3A / 601-3R, years: 1983–1996, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Canadair CL601}
+  - {seq: 66, id: challenger-604, make: Bombardier Challenger, model: '604', years: 1996–2006, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CL604}
+  - {seq: 67, id: challenger-605, make: Bombardier Challenger, model: '605', years: 2007–2015, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CL605}
+  - {seq: 68, id: challenger-650, make: Bombardier Challenger, model: '650', years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CL650}
+  - {seq: 69, id: challenger-300, make: Bombardier Challenger, model: '300', years: 2004–2014, engine: jet, twin: true, retractable: true, pressurized: true, search_words: BD-100 CL300}
+  - {seq: 70, id: challenger-350, make: Bombardier Challenger, model: '350', years: 2014–2023, engine: jet, twin: true, retractable: true, pressurized: true, search_words: BD-100 CL350}
+  - {seq: 71, id: challenger-3500, make: Bombardier Challenger, model: '3500', years: 2021–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: BD-100}
+  - {seq: 72, id: challenger-850-870-890, make: Bombardier Challenger, model: 850 / 870 / 890 (CRJ-based), years: 2006–2015, engine: jet, twin: true, retractable: true, pressurized: true, search_words: CRJ200 SE}

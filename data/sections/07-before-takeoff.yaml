@@ -1,0 +1,36 @@
+# Pick list: BEFORE TAKEOFF
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: BEFORE TAKEOFF
+order: 7
+items:
+  - {item: Parking Brake, response: SET}
+  - {item: Doors / Windows, response: LATCHED}
+  - {item: Seats / Belts, response: SECURE}
+  - {item: Flight Controls, response: FREE & CORRECT}
+  - {item: Fuel Selector, response: PROPER TANK, tags: [piston]}
+  - {item: Fuel Quantity / Balance, response: CHECKED}
+  - {item: Mixture, response: RICH / SET FOR ELEVATION, tags: [piston]}
+  - {item: Run-up, response: COMPLETE, tags: [piston]}
+  - {item: Magnetos, response: CHECKED, tags: [piston]}
+  - {item: Carburetor Heat, response: CHECKED, tags: [piston]}
+  - {item: Propeller, response: CYCLED, tags: [piston]}
+  - {item: Propeller Feather Check, response: CHECKED, tags: [turboprop]}
+  - {item: Propeller Feather (each engine), response: CHECKED, tags: [twin, piston]}
+  - {item: Suction, response: CHECKED, tags: [piston]}
+  - {item: Engine Instruments, response: CHECKED}
+  - {item: Annunciators, response: CLEAR}
+  - {item: Autopilot, response: 'OFF'}
+  - {item: Trims, response: SET FOR TAKEOFF}
+  - {item: Flaps, response: SET FOR TAKEOFF}
+  - {item: Speedbrakes, response: RETRACTED, tags: [jet]}
+  - {item: 'FATS (Flaps, Airbrakes, Trims, Speeds)', response: CHECKED, tags: [jet]}
+  - {item: Anti-Ice / De-Ice, response: AS REQUIRED}
+  - {item: Pitot Heat, response: AS REQUIRED}
+  - {item: Weather Radar, response: AS REQUIRED, tags: [turbine]}
+  - {item: Transponder, response: ALT / TA/RA}
+  - {item: Avionics / Nav, response: SET}
+  - {item: FMS, response: VERIFIED}
+  - {item: Cowl Flaps, response: OPEN, tags: [piston]}
+  - {item: Pressurization, response: SET, tags: [press]}
+  - {item: Bleed Air, response: AS REQUIRED, tags: [press]}
+  - {item: Takeoff Briefing, response: COMPLETE}

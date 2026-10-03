@@ -1,0 +1,793 @@
+# CFI logbook endorsements — FAA AC 61-65K (11/14/2025), Appendix A.
+# status: faa = checked word-for-word against the AC; draft = from earlier AC revisions, compare before signing;
+#         none = no wording stored (instructor pastes it in the app). validity: 90d | 24cm | 2cm | flight | none
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+source: FAA AC 61-65K, Certification - Pilots and Flight and Ground Instructors, 11/14/2025
+endorsements:
+  - id: A.1
+    category: Prerequisites for the practical test
+    title: Prerequisites for practical test
+    regulation: 14 CFR § 61.39(a)(6)(i) and (ii)
+    ac_page: A-7
+    status: faa
+    validity: 2cm
+    text: I certify that [First name, MI, Last name] has received and logged training time within 2 calendar months
+      preceding the month of application in preparation for the practical test and they are prepared for the required
+      practical test for the issuance of [applicable] certificate.
+  - id: A.2
+    category: Prerequisites for the practical test
+    title: Review of deficiencies identified on airman knowledge test
+    regulation: 14 CFR § 61.39(a)(6)(iii), as required
+    ac_page: A-7
+    status: faa
+    validity: none
+    text: I certify that [First name, MI, Last name] has demonstrated satisfactory knowledge of the subject areas
+      in which they were deficient on the [applicable] airman knowledge test.
+  - id: A.3
+    category: Student pilot
+    title: Pre-solo aeronautical knowledge
+    regulation: 14 CFR § 61.87(b)
+    ac_page: A-7
+    status: faa
+    validity: none
+    text: I certify that [First name, MI, Last name] has satisfactorily completed the pre-solo knowledge test of 14
+      CFR § 61.87(b) for the [make and model (M/M)] aircraft.
+  - id: A.4
+    category: Student pilot
+    title: Pre-solo flight training
+    regulation: 14 CFR § 61.87(c)(1) and (2)
+    ac_page: A-8
+    status: faa
+    validity: none
+    text: I certify that [First name, MI, Last name] has received and logged pre-solo flight training for the maneuvers
+      and procedures that are appropriate to the [M/M] aircraft. I have determined they have demonstrated satisfactory
+      proficiency and safety on the maneuvers and procedures required by 14 CFR § 61.87 in this or similar make and
+      model of aircraft to be flown.
+  - id: A.5
+    category: Student pilot
+    title: Pre-solo flight training at night
+    regulation: 14 CFR § 61.87(o)
+    ac_page: A-8
+    status: faa
+    validity: 90d
+    text: I certify that [First name, MI, Last name] has received flight training at night on night flying procedures
+      that include takeoffs, approaches, landings, and go-arounds at night at the [airport name] airport where the
+      solo flight will be conducted; navigation training at night in the vicinity of the [airport name] airport where
+      the solo flight will be conducted. This endorsement expires 90 calendar days from the date the flight training
+      at night was received.
+  - id: A.6
+    category: Student pilot
+    title: Solo flight (first 90-calendar-day period)
+    regulation: 14 CFR § 61.87(n)
+    ac_page: A-8
+    status: faa
+    validity: 90d
+    text: I certify that [First name, MI, Last name] has received the required training to qualify for solo flying.
+      I have determined they meet the applicable requirements of 14 CFR § 61.87(n) and are proficient to make solo
+      flights in [M/M].
+  - id: A.7
+    category: Student pilot
+    title: Solo flight (each additional 90-calendar-day period)
+    regulation: 14 CFR § 61.87(p)
+    ac_page: A-8
+    status: faa
+    validity: 90d
+    text: I certify that [First name, MI, Last name] has received the required training to qualify for solo flying.
+      I have determined that they meet the applicable requirements of 14 CFR § 61.87(p) and are proficient to make
+      solo flights in [M/M].
+  - id: A.8
+    category: Student pilot
+    title: Solo takeoffs and landings at another airport within 25 NM
+    regulation: 14 CFR § 61.93(b)(1)
+    ac_page: A-8
+    status: draft
+    validity: none
+    text: 'I certify that [First name, MI, Last name] has received the required training of 14 CFR § 61.93(b)(1).
+      I have determined that they are proficient to practice solo takeoffs and landings at [airport name]. The takeoffs
+      and landings at [airport name] are subject to the following conditions: [list any applicable conditions or limitations].'
+  - id: A.9
+    category: Student pilot
+    title: Solo cross-country flight
+    regulation: 14 CFR § 61.93(c)(1) and (2)
+    ac_page: A-8
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required solo cross-country training. I have
+      determined that they meet the applicable requirements of 14 CFR § 61.93 and are proficient to make solo cross-country
+      flights in a [M/M] aircraft, [aircraft category].
+  - id: A.10
+    category: Student pilot
+    title: Solo cross-country flight (each flight)
+    regulation: 14 CFR § 61.93(c)(3)
+    ac_page: A-8
+    status: draft
+    validity: flight
+    text: I have reviewed the cross-country planning of [First name, MI, Last name]. I find the planning and preparation
+      to be correct to make the solo flight from [departure airport] to [destination airport] via [route of flight]
+      with landings at [names of airports] in a [M/M] aircraft on [date]. [List any applicable conditions or limitations.]
+  - id: A.11
+    category: Student pilot
+    title: Repeated solo cross-country flights not more than 50 NM from the point of departure
+    regulation: 14 CFR § 61.93(b)(2)
+    ac_page: A-9
+    status: draft
+    validity: none
+    text: 'I certify that [First name, MI, Last name] has received the required training in both directions between
+      and at both [airport names]. I have determined that they are proficient of 14 CFR § 61.93(b)(2) to conduct repeated
+      solo cross-country flights over that route, subject to the following conditions: [list any applicable conditions
+      or limitations].'
+  - id: A.12
+    category: Student pilot
+    title: Solo flight in Class B airspace
+    regulation: 14 CFR § 61.95(a)
+    ac_page: A-9
+    status: draft
+    validity: 90d
+    text: I certify that [First name, MI, Last name] has received the required training of 14 CFR § 61.95(a). I have
+      determined they are proficient to conduct solo flights in [name of Class B] airspace. [List any applicable conditions
+      or limitations.]
+  - id: A.13
+    category: Student pilot
+    title: Solo flight to, from, or at an airport located in Class B airspace
+    regulation: 14 CFR §§ 61.95(b) and 91.131(b)(1)
+    ac_page: A-9
+    status: draft
+    validity: 90d
+    text: I certify that [First name, MI, Last name] has received the required training of 14 CFR § 61.95(b)(1). I
+      have determined that they are proficient to conduct solo flight operations at [name of airport]. [List any applicable
+      conditions or limitations.]
+  - id: A.14
+    category: Student pilot
+    title: Endorsement of U.S. citizenship recommended by the TSA
+    regulation: 49 CFR § 1552.15(c)
+    ac_page: A-9
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has presented me a [type of document presented, such as a U.S.
+      birth certificate or U.S. passport, and the relevant control or sequential number on the document, if any] establishing
+      that they are a U.S. citizen or national in accordance with 49 CFR § 1552.15(c).
+  - id: A.15
+    category: Student pilot (sport / recreational)
+    title: Solo flight in Class B, C, and D airspace
+    regulation: 14 CFR § 61.94(a)
+    ac_page: A-9
+    status: none
+    validity: none
+  - id: A.16
+    category: Student pilot (sport / recreational)
+    title: Solo flight to, from, or at an airport in Class B, C, or D airspace or with an operational control tower
+    regulation: 14 CFR §§ 61.94(a) and 91.131(b)(1)
+    ac_page: A-10
+    status: none
+    validity: none
+  - id: A.17
+    category: Sport pilot
+    title: Aeronautical knowledge test
+    regulation: 14 CFR §§ 61.35(a)(1) and 61.309
+    ac_page: A-10
+    status: none
+    validity: none
+  - id: A.18
+    category: Sport pilot
+    title: Taking flight proficiency check for different category or class of aircraft
+    regulation: 14 CFR §§ 61.309 and 61.311
+    ac_page: A-10
+    status: none
+    validity: none
+  - id: A.19
+    category: Sport pilot
+    title: Passing flight proficiency check for different category or class of aircraft
+    regulation: 14 CFR §§ 61.309 and 61.311
+    ac_page: A-10
+    status: none
+    validity: none
+  - id: A.20
+    category: Sport pilot
+    title: Taking sport pilot practical test
+    regulation: 14 CFR §§ 61.309, 61.311, and 61.313
+    ac_page: A-10
+    status: none
+    validity: none
+  - id: A.21
+    category: Sport pilot
+    title: Passing a sport pilot practical test
+    regulation: 14 CFR §§ 61.309, 61.311, and 61.313
+    ac_page: A-11
+    status: none
+    validity: none
+  - id: A.22
+    category: Sport pilot
+    title: Passing a sport pilot practical test with a simplified flight controls limitation
+    regulation: 14 CFR § 61.45(g)(4)(ii)
+    ac_page: A-11
+    status: none
+    validity: none
+  - id: A.23
+    category: Sport pilot
+    title: Class B, C, or D airspace, or an airport with an operational control tower
+    regulation: 14 CFR § 61.325
+    ac_page: A-11
+    status: none
+    validity: none
+  - id: A.24
+    category: Sport pilot
+    title: Aircraft with VH less than or equal to 87 KCAS
+    regulation: 14 CFR § 61.327
+    ac_page: A-11
+    status: none
+    validity: none
+  - id: A.25
+    category: Sport pilot
+    title: Aircraft with VH greater than 87 KCAS
+    regulation: 14 CFR § 61.327
+    ac_page: A-11
+    status: none
+    validity: none
+  - id: A.26
+    category: Sport pilot
+    title: Flight training at night
+    regulation: 14 CFR § 61.329
+    ac_page: A-12
+    status: none
+    validity: none
+  - id: A.27
+    category: Sport pilot
+    title: To act as PIC in an aircraft with retractable landing gear
+    regulation: 14 CFR § 61.331(a)
+    ac_page: A-12
+    status: none
+    validity: none
+  - id: A.28
+    category: Sport pilot
+    title: To act as PIC in an airplane with a manual controllable pitch propeller
+    regulation: 14 CFR § 61.331(b)
+    ac_page: A-12
+    status: none
+    validity: none
+  - id: A.29
+    category: Recreational pilot
+    title: Aeronautical knowledge test
+    regulation: 14 CFR §§ 61.35(a)(1), 61.96(b)(3), and 61.97(b)
+    ac_page: A-12
+    status: none
+    validity: none
+  - id: A.30
+    category: Recreational pilot
+    title: Flight proficiency/practical test
+    regulation: 14 CFR §§ 61.96(b)(5), 61.98(a) and (b), and 61.99
+    ac_page: A-12
+    status: none
+    validity: none
+  - id: A.31
+    category: Recreational pilot
+    title: Operate within 50 NM of the airport where training was received
+    regulation: 14 CFR § 61.101(b)
+    ac_page: A-12
+    status: none
+    validity: none
+  - id: A.32
+    category: Recreational pilot
+    title: Act as PIC on a flight that exceeds 50 NM of the departure airport
+    regulation: 14 CFR § 61.101(c)
+    ac_page: A-13
+    status: none
+    validity: none
+  - id: A.33
+    category: Recreational pilot
+    title: Less than 400 flight hours and no logged PIC time within the preceding 180 days
+    regulation: 14 CFR § 61.101(g)
+    ac_page: A-13
+    status: none
+    validity: none
+  - id: A.34
+    category: Recreational pilot
+    title: Solo flights for an additional certificate or rating under instructor supervision
+    regulation: 14 CFR § 61.101(j)
+    ac_page: A-13
+    status: none
+    validity: none
+  - id: A.35
+    category: Recreational pilot
+    title: Class B, C, or D airspace, or an airport with an operational control tower
+    regulation: 14 CFR § 61.101(d)
+    ac_page: A-13
+    status: none
+    validity: none
+  - id: A.36
+    category: Private pilot
+    title: Aeronautical knowledge test
+    regulation: 14 CFR §§ 61.35(a)(1), 61.103(d), and 61.105
+    ac_page: A-13
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training in accordance with 14 CFR
+      § 61.105. I have determined they are prepared for the [name of] knowledge test.
+  - id: A.37
+    category: Private pilot
+    title: Flight proficiency/practical test
+    regulation: 14 CFR §§ 61.103(f), 61.107(b), and 61.109
+    ac_page: A-14
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training in accordance with 14 CFR
+      §§ 61.107 and 61.109. I have determined they are prepared for the [name of] practical test.
+  - id: A.38
+    category: Commercial pilot
+    title: Aeronautical knowledge test
+    regulation: 14 CFR §§ 61.35(a)(1), 61.123(c), and 61.125
+    ac_page: A-14
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training in accordance with 14 CFR
+      § 61.125. I have determined that they are prepared for the [name of] knowledge test.
+  - id: A.39
+    category: Commercial pilot
+    title: Flight proficiency/practical test
+    regulation: 14 CFR §§ 61.123(e), 61.127, and 61.129
+    ac_page: A-14
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training in accordance with 14 CFR
+      §§ 61.127 and 61.129. I have determined they are prepared for the [name of] practical test.
+  - id: A.40
+    category: Airline transport pilot
+    title: Restricted privileges ATP certificate, AMEL rating
+    regulation: 14 CFR § 61.160
+    ac_page: A-14
+    status: none
+    validity: none
+  - id: A.41
+    category: Airline transport pilot
+    title: ATP Certification Training Program (CTP)
+    regulation: 14 CFR § 61.153(e)
+    ac_page: A-14
+    status: none
+    validity: none
+  - id: A.42
+    category: Instrument rating
+    title: Aeronautical knowledge test
+    regulation: 14 CFR §§ 61.35(a)(1) and 61.65(a) and (b)
+    ac_page: A-15
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training in accordance with 14 CFR
+      § 61.65(b). I have determined that they are prepared for the Instrument–[airplane, helicopter, or powered-lift]
+      knowledge test.
+  - id: A.43
+    category: Instrument rating
+    title: Flight proficiency/practical test
+    regulation: 14 CFR § 61.65(a)(6)
+    ac_page: A-15
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training in accordance with 14 CFR
+      § 61.65(c) and (d). I have determined they are prepared for the Instrument–[airplane, helicopter, or powered-lift]
+      practical test.
+  - id: A.44
+    category: Instrument rating
+    title: Prerequisites for instrument practical tests
+    regulation: 14 CFR § 61.39(a)
+    ac_page: A-15
+    status: draft
+    validity: 2cm
+    text: I certify that [First name, MI, Last name] has received and logged the required flight time/training of
+      14 CFR § 61.39(a) in preparation for the practical test within 2 calendar months preceding the date of the test
+      and has satisfactory knowledge of the subject areas in which they were shown to be deficient by the FAA airman
+      knowledge test report. I have determined they are prepared for the Instrument–[airplane, helicopter, or powered-lift]
+      practical test.
+  - id: A.45
+    category: Flight instructor
+    title: Fundamentals of instructing knowledge test
+    regulation: 14 CFR § 61.183(d)
+    ac_page: A-15
+    status: faa
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required fundamentals of instruction training
+      of 14 CFR § 61.185(a)(1). I have determined that they are prepared for the Fundamentals of Instructing knowledge
+      test.
+  - id: A.46
+    category: Flight instructor
+    title: Flight instructor aeronautical knowledge test
+    regulation: 14 CFR § 61.183(f)
+    ac_page: A-15
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training of 14 CFR § 61.185(a)(2) or
+      (3) (as appropriate to the flight instructor rating sought). I have determined that they are prepared for the
+      [name of] knowledge test.
+  - id: A.47
+    category: Flight instructor
+    title: Flight instructor ground and flight proficiency/practical test
+    regulation: 14 CFR § 61.183(g)
+    ac_page: A-15
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training of 14 CFR § 61.187(b). I have
+      determined that they are prepared for the CFI–[aircraft category and class] practical test.
+  - id: A.48
+    category: Flight instructor
+    title: Flight instructor certificate with instrument (category/class) rating practical test
+    regulation: 14 CFR §§ 61.183(g) and 61.187(a) and (b)(7)
+    ac_page: A-16
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required certified flight instructor–instrument
+      training of 14 CFR § 61.187(b)(7). I have determined they are prepared for the certified flight instructor–instrument–[airplane,
+      helicopter, or powered-lift] practical test.
+  - id: A.49
+    category: Flight instructor
+    title: Spin training
+    regulation: 14 CFR § 61.183(i)(1)
+    ac_page: A-16
+    status: faa
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the required training of 14 CFR § 61.183(i) in [an
+      airplane, a glider]. I have determined that they are competent and possess instructional proficiency in stall
+      awareness, spin entry, spins, and spin recovery procedures.
+  - id: A.50
+    category: Flight instructor
+    title: Helicopter touchdown autorotation
+    regulation: FAA-S-8081-7
+    ac_page: A-16
+    status: none
+    validity: none
+  - id: A.51
+    category: Flight instructor (sport pilot rating)
+    title: Fundamentals of instructing knowledge test
+    regulation: 14 CFR § 61.405(a)(1)
+    ac_page: A-16
+    status: none
+    validity: none
+  - id: A.52
+    category: Flight instructor (sport pilot rating)
+    title: Sport pilot flight instructor aeronautical knowledge test
+    regulation: 14 CFR §§ 61.35(a)(1) and 61.405(a)
+    ac_page: A-16
+    status: none
+    validity: none
+  - id: A.53
+    category: Flight instructor (sport pilot rating)
+    title: Flight proficiency check for additional category/class
+    regulation: 14 CFR §§ 61.409 and 61.419
+    ac_page: A-17
+    status: none
+    validity: none
+  - id: A.54
+    category: Flight instructor (sport pilot rating)
+    title: Proficiency check completion for additional category or class privilege
+    regulation: 14 CFR §§ 61.409 and 61.419
+    ac_page: A-17
+    status: none
+    validity: none
+  - id: A.55
+    category: Flight instructor (sport pilot rating)
+    title: Practical test endorsement
+    regulation: 14 CFR §§ 61.409 and 61.411
+    ac_page: A-17
+    status: none
+    validity: none
+  - id: A.56
+    category: Flight instructor (sport pilot rating)
+    title: Practical test completion endorsement
+    regulation: 14 CFR §§ 61.409 and 61.411
+    ac_page: A-17
+    status: none
+    validity: none
+  - id: A.57
+    category: Flight instructor (sport pilot rating)
+    title: Train sport pilots on flight by reference to instruments
+    regulation: 14 CFR § 61.412
+    ac_page: A-17
+    status: none
+    validity: none
+  - id: A.58
+    category: Flight instructor (sport pilot rating)
+    title: Spin training
+    regulation: 14 CFR § 61.405(b)(1)(ii)
+    ac_page: A-18
+    status: none
+    validity: none
+  - id: A.59
+    category: Ground instructor
+    title: Ground instructor who does not meet the recent experience requirements
+    regulation: 14 CFR § 61.217(d)
+    ac_page: A-18
+    status: none
+    validity: none
+  - id: A.60
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: R-22/R-44 ground training
+    regulation: SFAR 73, section 2(a)(1) or (2)
+    ac_page: A-18
+    status: none
+    validity: none
+  - id: A.61
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: R-22 solo endorsement
+    regulation: SFAR 73, section 2(b)(3)
+    ac_page: A-18
+    status: none
+    validity: none
+  - id: A.62
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: R-22 PIC endorsement
+    regulation: SFAR 73, section 2(b)(1)(ii)
+    ac_page: A-19
+    status: none
+    validity: none
+  - id: A.63
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: R-22 flight instructor endorsement
+    regulation: SFAR 73, section 2(b)(5)(iv)
+    ac_page: A-19
+    status: none
+    validity: none
+  - id: A.64
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: Flight review in an R-22 helicopter
+    regulation: SFAR 73, section 2(c)(1) and (3)
+    ac_page: A-19
+    status: none
+    validity: none
+  - id: A.65
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: R-44 solo endorsement
+    regulation: SFAR 73, section 2(b)(4)
+    ac_page: A-19
+    status: none
+    validity: none
+  - id: A.66
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: R-44 PIC endorsement
+    regulation: SFAR 73, section 2(b)(2)(ii)
+    ac_page: A-19
+    status: none
+    validity: none
+  - id: A.67
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: R-44 flight instructor endorsement
+    regulation: SFAR 73, section 2(b)(5)(iv)
+    ac_page: A-19
+    status: none
+    validity: none
+  - id: A.68
+    category: SFAR 73 (Robinson R-22 / R-44)
+    title: Flight review in an R-44 helicopter
+    regulation: SFAR 73, section 2(c)(2) and (3)
+    ac_page: A-20
+    status: none
+    validity: none
+  - id: A.69
+    category: Additional endorsements
+    title: Completion of a flight review
+    regulation: 14 CFR § 61.56(a) and (c)
+    ac_page: A-20
+    status: faa
+    validity: 24cm
+    text: I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has satisfactorily
+      completed a flight review of 14 CFR § 61.56(a) on [date].
+  - id: A.70
+    category: Additional endorsements
+    title: Completion of any phase of the WINGS pilot proficiency program
+    regulation: 14 CFR § 61.56(e)
+    ac_page: A-20
+    status: draft
+    validity: 24cm
+    text: 'I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has satisfactorily
+      completed Level: [Basic/Advanced/Master], Phase No. [phase number] of a WINGS program on [date].'
+  - id: A.71
+    category: Additional endorsements
+    title: Completion of an instrument proficiency check (IPC)
+    regulation: 14 CFR § 61.57(d)
+    ac_page: A-20
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has satisfactorily
+      completed the instrument proficiency check of 14 CFR § 61.57(d) in a [M/M] on [date].
+  - id: A.72
+    category: Additional endorsements
+    title: To act as PIC in a complex airplane
+    regulation: 14 CFR § 61.31(e)
+    ac_page: A-20
+    status: faa
+    validity: none
+    text: I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has received
+      the required training of 14 CFR § 61.31(e) in a [M/M] complex airplane. I have determined that they are proficient
+      in the operation and systems of a complex airplane.
+  - id: A.73
+    category: Additional endorsements
+    title: To act as PIC in a high-performance airplane
+    regulation: 14 CFR § 61.31(f)
+    ac_page: A-21
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has received
+      the required training of 14 CFR § 61.31(f) in a [M/M] high-performance airplane. I have determined that they
+      are proficient in the operation and systems of a high-performance airplane.
+  - id: A.74
+    category: Additional endorsements
+    title: To act as PIC in a pressurized aircraft capable of high-altitude operations
+    regulation: 14 CFR § 61.31(g)
+    ac_page: A-21
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has received
+      the required training of 14 CFR § 61.31(g) in a [M/M] pressurized aircraft. I have determined that they are
+      proficient in the operation and systems of a pressurized aircraft.
+  - id: A.75
+    category: Additional endorsements
+    title: To act as PIC in a tailwheel airplane
+    regulation: 14 CFR § 61.31(i)
+    ac_page: A-21
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has received
+      the required training of 14 CFR § 61.31(i) in a [M/M] tailwheel airplane. I have determined that they are proficient
+      in the operation of a tailwheel airplane.
+  - id: A.76
+    category: Additional endorsements
+    title: Solo PIC without an appropriate category/class rating
+    regulation: 14 CFR § 61.31(d)(2)
+    ac_page: A-21
+    status: draft
+    validity: none
+    text: 'I certify that [First name, MI, Last name] has received the training as required by 14 CFR § 61.31(d)(2)
+      to serve as PIC in a [specific category and class] of aircraft. I have determined that they are prepared to
+      serve as PIC in that [M/M] aircraft. Limitations: [optional].'
+  - id: A.77
+    category: Additional endorsements
+    title: Retesting after failure of a knowledge or practical test
+    regulation: 14 CFR § 61.49
+    ac_page: A-21
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name] has received the additional [flight and/or ground] training as
+      required by 14 CFR § 61.49. I have determined that they are proficient to pass the [name of] knowledge/practical
+      test.
+  - id: A.78
+    category: Additional endorsements
+    title: Additional aircraft category or class rating (other than ATP)
+    regulation: 14 CFR § 61.63(b) or (c)
+    ac_page: A-21
+    status: draft
+    validity: none
+    text: I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has received
+      the required training for an additional [name of] rating. I have determined that they are prepared for the [name
+      of] practical test for the addition of a [name of] [category/class] rating.
+  - id: A.79
+    category: Additional endorsements
+    title: Type rating only, already holds category/class rating (other than ATP)
+    regulation: 14 CFR § 61.63(d)(2)
+    ac_page: A-22
+    status: none
+    validity: none
+  - id: A.80
+    category: Additional endorsements
+    title: Type rating concurrently with an additional category or class rating (other than ATP)
+    regulation: 14 CFR § 61.63(d)(2)
+    ac_page: A-22
+    status: none
+    validity: none
+  - id: A.81
+    category: Additional endorsements
+    title: Type rating only, already holds category/class rating (ATP level)
+    regulation: 14 CFR § 61.157(b)(2)
+    ac_page: A-22
+    status: none
+    validity: none
+  - id: A.82
+    category: Additional endorsements
+    title: Type rating concurrently with an additional category or class rating (ATP level)
+    regulation: 14 CFR § 61.157(b)(2)
+    ac_page: A-22
+    status: none
+    validity: none
+  - id: A.83
+    category: Additional endorsements
+    title: Launch procedures for operating a glider
+    regulation: 14 CFR § 61.31(j)
+    ac_page: A-22
+    status: none
+    validity: none
+  - id: A.84
+    category: Additional endorsements
+    title: Glider and unpowered ultralight vehicle towing experience
+    regulation: 14 CFR § 61.69(a)(5)
+    ac_page: A-22
+    status: none
+    validity: none
+  - id: A.85
+    category: Additional endorsements
+    title: Glider and unpowered ultralight vehicle towing ground and flight
+    regulation: 14 CFR § 61.69(a)(3)
+    ac_page: A-23
+    status: none
+    validity: none
+  - id: A.86
+    category: Additional endorsements
+    title: Review of a home-study curriculum
+    regulation: 14 CFR § 61.35(a)(1)
+    ac_page: A-23
+    status: draft
+    validity: none
+    text: I certify that I have reviewed the home-study curriculum of [First name, MI, Last name]. I have determined
+      they are prepared for the [name of] knowledge test.
+  - id: A.87
+    category: Additional endorsements
+    title: Aeronautical experience credit — ultralight vehicles
+    regulation: 14 CFR § 61.52
+    ac_page: A-23
+    status: none
+    validity: none
+  - id: A.88
+    category: Night vision goggle operations
+    title: Ground training to act as PIC using night vision goggles
+    regulation: 14 CFR § 61.31(k)(1)
+    ac_page: A-23
+    status: none
+    validity: none
+  - id: A.89
+    category: Night vision goggle operations
+    title: Flight training and statement of proficiency to act as PIC using NVG
+    regulation: 14 CFR § 61.31(k)(2)
+    ac_page: A-23
+    status: none
+    validity: none
+  - id: A.90
+    category: Night vision goggle operations
+    title: Endorsement required to provide training for NVG operations
+    regulation: 14 CFR § 61.195(k)(7)
+    ac_page: A-24
+    status: none
+    validity: none
+  - id: A.91
+    category: Enhanced flight vision system (EFVS)
+    title: EFVS ground training
+    regulation: 14 CFR § 61.66(a)
+    ac_page: A-24
+    status: none
+    validity: none
+  - id: A.92
+    category: Enhanced flight vision system (EFVS)
+    title: EFVS flight training
+    regulation: 14 CFR § 61.66(b)
+    ac_page: A-24
+    status: none
+    validity: none
+  - id: A.93
+    category: Enhanced flight vision system (EFVS)
+    title: EFVS ground and flight training
+    regulation: 14 CFR § 61.66(a) and (b)
+    ac_page: A-24
+    status: none
+    validity: none
+  - id: A.94
+    category: Enhanced flight vision system (EFVS)
+    title: EFVS supplementary training
+    regulation: 14 CFR § 61.66(c)
+    ac_page: A-24
+    status: none
+    validity: none
+  - id: A.95
+    category: Simplified flight controls
+    title: To act as PIC in an aircraft with a simplified flight controls designation
+    regulation: 14 CFR §§ 61.31(l) and 61.45(h)(1)
+    ac_page: A-25
+    status: none
+    validity: none
+  - id: A.96
+    category: Simplified flight controls
+    title: Initial cadre training in an aircraft with simplified flight controls
+    regulation: 14 CFR § 61.195(n)
+    ac_page: A-25
+    status: none
+    validity: none
+  - id: X.1
+    category: Flight instructor
+    title: Recommending instructor qualification for a first-time CFI applicant (not in AC 61-65K)
+    regulation: 14 CFR § 61.195(h)
+    ac_page: —
+    status: draft
+    validity: none
+    text: I certify that I meet the requirements of 14 CFR § 61.195(h) to provide the training and endorsement for
+      a first-time flight instructor applicant, [First name, MI, Last name], under [§ 61.195(h)(2)(i), (ii), or (iii)].

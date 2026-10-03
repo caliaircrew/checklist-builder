@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aircraft Checklist Builder</title>
+<style>
+:root{--bg:#f4f4f2;--card:#fff;--ink:#1a1a1a;--muted:#6b6b6b;--line:#d9d9d6;--accent:#0b5cad;--accent-ink:#fff;--danger:#b3261e;--chip:#eceae6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161616;--card:#222;--ink:#eee;--muted:#a3a3a3;--line:#3a3a3a;--accent:#5aa2ef;--accent-ink:#0b1a2a;--danger:#ff8a80;--chip:#2e2e2e}}
+:root[data-theme="dark"]{--bg:#161616;--card:#222;--ink:#eee;--muted:#a3a3a3;--line:#3a3a3a;--accent:#5aa2ef;--accent-ink:#0b1a2a;--danger:#ff8a80;--chip:#2e2e2e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+header.top h1{font-size:18px;margin:0;flex:1;min-width:180px}
+.tabs{display:none;gap:4px;background:var(--chip);border-radius:10px;padding:3px}
+.tabs button{border:0;background:transparent;color:var(--ink);padding:8px 14px;border-radius:8px;font-size:15px}
+.tabs button.on{background:var(--card);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:16px;max-width:1500px;margin:0 auto}
+@media (max-width:980px){main{grid-template-columns:minmax(0,1fr)}.tabs{display:flex}main[data-view="edit"] #previewPane{display:none}main[data-view="preview"] #editPane{display:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.step{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:0 0 8px}
+label.f{display:block;font-size:13px;color:var(--muted);margin-bottom:10px}
+input[type=text]{width:100%;font-size:16px;padding:10px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+input[type=text]:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media (max-width:600px){.grid3{grid-template-columns:1fr}}
+.sec{border:1px solid var(--line);border-radius:10px;margin-bottom:14px;overflow:hidden;background:var(--card)}
+.sechead{display:flex;gap:6px;align-items:center;background:#111;padding:8px}
+.sechead input{flex:1;background:#111;color:#fff;border:1px solid #444;font-weight:700;text-transform:uppercase;text-align:center}
+.icon{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;min-width:40px;height:40px;font-size:17px;cursor:pointer}
+.sechead .icon{background:#222;color:#fff;border-color:#444}
+.rows{padding:6px 8px}
+.row{display:grid;grid-template-columns:34px 46px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .n{font-size:14px;color:var(--muted);text-align:right}
+.row.ff{background:color-mix(in srgb,var(--accent) 10%,transparent);border-radius:6px}
+.row.ff .n::after{content:"";}
+.row .resp{text-transform:uppercase;font-weight:600}
+.row.note,.row.divider{grid-template-columns:34px 46px minmax(0,1fr) 40px}
+.grip{touch-action:none;cursor:grab;border:0;background:transparent;color:var(--muted);font-size:22px;height:40px;width:34px;padding:0;user-select:none;-webkit-user-select:none}
+.row input.pos{text-align:center;padding:9px 2px;font-weight:600;color:var(--muted)}
+.row.dragging{background:var(--card);box-shadow:0 6px 18px rgba(0,0,0,.25);border-radius:8px;position:relative;z-index:3}
+body.dragmode{user-select:none;-webkit-user-select:none}
+.ver{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .box{background:var(--card);color:var(--ink);border-radius:14px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:18px 20px}
+.modal h2{margin:0 0 10px;font-size:19px}.modal h3{margin:14px 0 4px;font-size:16px}.modal ul{margin:0;padding-left:20px}.modal li{margin:3px 0}
+.vrow{display:flex;gap:8px;align-items:flex-end}.vrow label{flex:1}
+.row.note input{font-style:italic;font-weight:700;text-align:center;background:color-mix(in srgb,var(--muted) 18%,var(--card));text-transform:uppercase}
+.row.divider input{font-weight:700;text-align:center;text-transform:uppercase;border-bottom:2px solid var(--ink)}
+.tag{font-size:11px;color:var(--muted);text-align:right}
+.adds{display:flex;gap:8px;flex-wrap:wrap;padding:8px;border-top:1px solid var(--line)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:10px 14px;font-size:15px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.small{padding:8px 11px;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{border:1px dashed var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:8px 13px;font-size:14px;cursor:pointer}
+.menu{position:fixed;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);padding:6px;min-width:230px}
+.menu button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--ink);padding:11px 12px;font-size:15px;border-radius:7px;cursor:pointer}
+.menu button:hover{background:var(--chip)}
+.menu button.del{color:var(--danger)}
+.seg{display:inline-flex;background:var(--chip);border-radius:10px;padding:3px;gap:3px}
+.seg button{border:0;background:transparent;color:var(--ink);padding:9px 14px;border-radius:8px;font-size:15px;cursor:pointer}
+.seg button.on{background:var(--card);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.outbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+#status{font-size:14px;color:var(--muted);min-height:20px}
+.help{font-size:14px;color:var(--muted);margin:6px 0 0}
+#pages{display:flex;flex-direction:column;gap:14px;align-items:center}
+.pagewrap{width:100%;max-width:100%;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.18);background:#fff}
+/* paper — always white, 96px per inch */
+.page{width:816px;height:1056px;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;padding:77px 48px 60px;position:relative;transform-origin:0 0}
+.page .ph{display:flex;justify-content:space-between;font-weight:700;font-size:14.7px;border-bottom:2px solid #000;padding-bottom:3px;position:absolute;top:27px;left:48px;right:48px}
+.page .rev{position:absolute;top:50px;right:48px;font-size:10.7px}
+.page .pf{position:absolute;bottom:27px;left:48px;right:48px;display:flex;justify-content:space-between;align-items:center;font-size:10px}
+.page .pf b{border:1px solid #000;padding:1px 3px}
+.cols{display:flex;gap:28.8px;height:100%}
+.col{flex:1;min-width:0}
+.cs{border:1px solid #000;margin-bottom:13px}
+.cs .bar{background:#000;color:#fff;font-weight:700;text-align:center;padding:3px 4px}
+.cs .r{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #bfbfbf;min-height:1.9em;align-items:center}
+.cs .bar + .r{border-top:0}
+.cs .r .a{display:flex;align-items:baseline;padding:3px 0 3px 5px;overflow:hidden;white-space:nowrap}
+.cs .r .a .num{width:2.1em;flex:none}
+.cs .r .a .txt{flex:none;max-width:calc(100% - 2.1em - 4px);white-space:normal}
+.cs .r .a .dots{flex:1;overflow:hidden;white-space:nowrap;margin:0 6px 0 2px}
+.cs .r .a .dots::after{content:"................................................................................................................................................................................"}
+.cs .r .b{font-weight:700;padding:3px 5px}
+.cs .r.ff{border-left:3px solid #000;border-right:3px solid #000;margin:0 -1px}
+.cs .r.ff.ffs{border-top:3px solid #000}
+.cs .r.ff.ffe{border-bottom:3px solid #000}
+.cs .note{background:#d9d9d9;font-weight:700;font-style:italic;text-align:center;padding:3px 4px;border-top:1px solid #bfbfbf}
+.cs .div{font-weight:700;text-align:center;padding:5px 4px 3px;border-bottom:2px solid #000;border-top:1px solid #bfbfbf}
+
+#endPane{display:none;padding:16px;max-width:1500px;margin:0 auto}
+body[data-mode="end"] #endPane{display:block}
+body[data-mode="end"] #main,body[data-mode="end"] #tabs{display:none}
+.egrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:980px){.egrid{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:981px){.epanel{position:sticky;top:64px;align-self:start;max-height:calc(100vh - 76px);overflow:auto}}
+.esel{font-size:16px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:100%}
+.pk-tools .esel{width:auto;max-width:48%}
+.elist{max-height:60vh;overflow:auto;margin-top:8px;border-top:1px solid var(--line)}
+.ei{display:flex;gap:12px;align-items:flex-start;padding:10px 6px;border-bottom:1px solid var(--line);cursor:pointer}
+.ei input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--accent)}
+.ei.on{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.eit small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.eb{font-size:12px;font-weight:600;border-radius:6px;padding:1px 6px;white-space:nowrap}
+.eb.ok{background:color-mix(in srgb,#2e7d32 18%,transparent);color:var(--ink)}
+.eb.dr{background:#f5c542;color:#2a2000}
+.eb.no{background:color-mix(in srgb,var(--muted) 25%,transparent);color:var(--ink)}
+.ecard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.ehead{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.ereg{font-size:13px;color:var(--muted);margin:4px 0 6px}
+.etx{line-height:1.9;margin:6px 0}
+.ein{font-size:15px;padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--muted) 14%,var(--card));color:var(--ink);max-width:100%}
+mark.eg{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--ink);border-radius:4px;padding:0 3px}
+mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
+.esig{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;border-top:1px dashed var(--line);padding-top:6px;margin-top:4px;overflow-x:auto;white-space:nowrap}
+.evalid{font-size:13px;color:var(--muted);margin-top:4px}
+.epaste{width:100%;font-size:15px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);margin:6px 0}
+.picker{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+@media (min-width:700px){.picker{align-items:center}}
+.pk{background:var(--card);color:var(--ink);width:100%;max-width:720px;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (min-width:700px){.pk{border-radius:16px}}
+.pk-head{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.pk-head h2{margin:0 0 8px;font-size:19px}
+.pk-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pk-tools select,.pk-tools input{font-size:16px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.pk-tools input{flex:1;min-width:140px}
+.prof{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center;font-size:14px;color:var(--muted)}
+.tg{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:14px;cursor:pointer}
+.tg.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.pk-list{overflow:auto;padding:4px 8px;flex:1;-webkit-overflow-scrolling:touch}
+.pi{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--line);cursor:pointer}
+.pi input{width:22px;height:22px;flex:none;accent-color:var(--accent)}
+.pi .it{flex:1;min-width:0}
+.pi .rs{font-weight:700;font-size:14px;text-align:right;color:var(--muted);max-width:45%}
+.pi.nt .it{font-style:italic;font-weight:700}
+.pi.on{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.pk-own{padding:10px 16px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.pk-own input{font-size:16px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-width:0}
+.pk-foot{padding:10px 16px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;border-top:1px solid var(--line)}
+.pk-foot .cnt{font-size:14px;color:var(--muted)}
+.pk-empty{padding:30px 10px;text-align:center;color:var(--muted)}
+.afind{position:relative;margin-bottom:12px}
+.afind input{font-size:16px}
+.ares{position:absolute;left:0;right:0;top:100%;z-index:12;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 26px rgba(0,0,0,.2);max-height:340px;overflow:auto;margin-top:4px}
+.ares button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);padding:10px 12px;font-size:15px;cursor:pointer}
+.ares button:hover,.ares button:focus{background:var(--chip)}
+.ares small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.asel{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:color-mix(in srgb,var(--accent) 10%,transparent);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:15px}
+.asel .x{margin-left:auto}
+.sugg{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed color-mix(in srgb,var(--accent) 40%,transparent)}
+.disc{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.35}
+.badge{display:inline-block;font-size:12px;font-weight:600;background:#f5c542;color:#2a2000;border-radius:6px;padding:1px 6px;margin-left:6px}
+#measure{position:absolute;left:-9999px;top:0;visibility:hidden}
+.empty{color:#888;font-style:italic;text-align:center;padding:40px}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>✈️ Aircraft Checklist Builder</h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="modeBtn">🎓 CFI endorsements</button>
+  <div class="tabs" id="tabs"><button data-v="edit" class="on">1 · Type it in</button><button data-v="preview">2 · See &amp; print</button></div>
+</header>
+<main id="main" data-view="edit">
+  <section id="editPane">
+    <div class="card">
+      <p class="step">Step 1 · Your aircraft &amp; top of the page</p>
+      <div id="aSel"></div>
+      <div class="afind" id="aFind"><label class="f" style="margin-bottom:0">Find your aircraft<input type="search" id="aQ" placeholder="e.g. 182, Archer, SR22, King Air, Phenom 300" autocomplete="off"></label><div class="ares" id="aRes" hidden></div></div>
+      <div class="grid3">
+        <label class="f">Operator / owner<input type="text" id="operator" placeholder="e.g. Pacific Coast Jet"></label>
+        <label class="f">Aircraft type<input type="text" id="aircraft" placeholder="e.g. Citation XLS"></label>
+        <label class="f">Revision date<input type="text" id="revision" placeholder="MM/DD/YYYY"></label>
+      </div>
+      <div class="vrow"><label class="f">Checklist version<input type="text" id="version" placeholder="1.0" inputmode="decimal"></label><button class="btn small" id="newRev" style="margin-bottom:10px">＋ New revision (bumps version, sets today's date)</button>
+      </div>
+    </div>
+    <div class="card">
+      <p class="step">Step 2 · Sections and lines</p>
+      <p class="help">Tap <b>📋 Pick items from list</b> in any section to tick the items you want from a ready-made list. Use <b>＋ My own line</b> for anything that's not on the list. Type the item on the left and the response on the right. Press <b>Return</b> to jump to the next box — at the end of a line it makes a new line for you. To move a line, <b>drag the ⠿ handle</b>, or <b>tap its number and type a new one</b> (change 11 to 8 and it jumps to 8). Tap <b>⋯</b> to delete a line or mark it as a first-flight-of-day item.</p>
+    </div>
+    <div id="sections"></div>
+    <div class="card">
+      <p class="step">Add a section</p>
+      <button class="btn primary" id="addSec">＋ New section</button>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="card">
+      <p class="step">Your checklist file</p>
+      <div class="outbar">
+        <button class="btn small" id="saveJson">Save checklist file</button>
+        <button class="btn small" id="openJson">Open checklist file</button>
+        <button class="btn small" id="example">Load example</button>
+        <button class="btn small" id="blank" style="color:var(--danger)">Start blank</button>
+        <input type="file" id="fileIn" accept=".json,application/json" hidden>
+      </div>
+      <p class="help">Your work is kept on this device automatically. "Save checklist file" lets you reopen it later or on another device.</p>
+    </div>
+  </section>
+  <section id="previewPane">
+    <div class="card">
+      <p class="step">Step 3 · Print it</p>
+      <div class="outbar">
+        <div class="seg" id="sizeSeg"><button data-s="std" class="on">Standard (2 per page)</button><button data-s="large">Large print</button></div>
+        <button class="btn primary" id="dlWord">⬇ Download Word file</button>
+      </div>
+      <div id="status"></div>
+      <p class="help">Open the Word file and print at 100%, letter size.</p>
+    </div>
+    <div id="pages"></div>
+  </section>
+</main>
+<section id="endPane">
+  <div class="egrid">
+    <div>
+      <div class="card">
+        <p class="step">Instructor (kept on this device)</p>
+        <div class="grid3">
+          <label class="f">Instructor name<input type="text" id="eiName" placeholder="e.g. J. J. Jones"></label>
+          <label class="f">CFI certificate number<input type="text" id="eiCert" placeholder="e.g. 987654321"></label>
+          <label class="f">Date type<select id="eiKind" class="esel"><option value="RE">RE (recent experience end)</option><option value="Exp">Exp. (older certificate)</option></select></label>
+        </div>
+        <label class="f">RE end date or expiration date<input type="text" id="eiDate" placeholder="MM-DD-YYYY"></label>
+      </div>
+      <div class="card">
+        <p class="step">Pilot / student</p>
+        <div class="grid3">
+          <label class="f">Full name (First, MI, Last)<input type="text" id="epName"></label>
+          <label class="f">Grade of certificate<input type="text" id="epGrade" placeholder="e.g. Private pilot"></label>
+          <label class="f">Certificate number<input type="text" id="epCert"></label>
+        </div>
+        <div class="grid3">
+          <label class="f">Make & model<input type="text" id="epMM" placeholder="e.g. Cessna 172S"></label>
+          <label class="f">Date of endorsement<input type="text" id="epDate" placeholder="MM/DD/YYYY"></label>
+          <div class="f" style="display:flex;align-items:flex-end"><button class="btn small" id="eNewPilot">New pilot</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <p class="step">Pick endorsements (FAA AC 61-65K, Nov 2025)</p>
+        <div class="pk-tools"><select id="eCat" class="esel"></select><input id="eQ" type="search" placeholder="Search, e.g. solo, tailwheel, IPC"></div>
+        <div class="elist" id="eList"></div>
+      </div>
+    </div>
+    <div class="epanel">
+      <div class="card">
+        <p class="step">Selected endorsements (<span id="eCount">0</span>)</p>
+        <div class="outbar"><button class="btn primary" id="eWord">⬇ Download Word file</button><label class="f" style="margin:0"><input type="checkbox" id="eTitles"> Include titles</label><button class="btn small" id="eClear">Clear</button></div>
+        <div id="eStatus" class="help"></div>
+        <p class="disc">Grey boxes are blanks to type in. Highlighted words come from the pilot details. "✓ AC 61-65K text" is the FAA's recommended wording; "✎ Draft" wording must be compared with the AC page shown before signing. The instructor remains responsible for every endorsement.</p>
+      </div>
+      <div id="eSel"></div>
+    </div>
+  </div>
+</section>
+<div id="measure"></div>
+<script>
+<<<DOCX_LIB>>>
+</script>
+<script>
+(function(){
+/* Item library. Line format: Item|RESPONSE|tags   tags: piston turboprop jet turbine(=turboprop+jet) twin retract press   note: prefix = caution note */
+{{LIB_RAW}}
+const LIB={}; for(const k in LIB_RAW){ LIB[k]=LIB_RAW[k].split("\n").map(l=>{const [a,b,t]=l.split("|"); const note=a.startsWith("note:"); return {item:note?a.slice(5):a, resp:b||"", tags:(t||"").split(/\s+/).filter(Boolean), note}}) }
+const LIB_KEYS=Object.keys(LIB);
+function libFor(title){const t=(title||"").toUpperCase();
+  const map={{SECTION_MATCH}};
+  for(const [k,v] of map) if(t.includes(k)) return v; return null}
+
+/* Aircraft list — make|model|years (approx.)|engine|flags (t=twin r=retractable p=pressurized)|search aliases */
+{{ACFT_RAW}}
+const ACFT=ACFT_RAW.split("\n").map((l,i)=>{const [make,model,years,engine,f,alias]=l.split("|");return {id:i,make,model,years,engine,twin:f.includes("t"),retract:f.includes("r"),press:f.includes("p"),alias:alias||""}});
+const acftName=a=>((a.make==="Cessna Citation"?"Cessna":a.make)+" "+a.model.replace(/\s*\(.*?\)/,"")).trim();
+
+/* Suggested model checklists. "## TITLE" starts a section; "*" = first flight of day; note: / div: lines */
+{{MODELS}}
+for(const k in MODELS){const m=MODELS[k]; m.sections=[]; let cur=null;
+  m.text.split("\n").forEach(l=>{ if(l.startsWith("## ")){cur={title:l.slice(3),rows:[]};m.sections.push(cur);return}
+    if(l.startsWith("note:")) cur.rows.push({type:"note",text:l.slice(5)});
+    else if(l.startsWith("div:")) cur.rows.push({type:"divider",text:l.slice(4)});
+    else {const ff=l.startsWith("*"); const [a,b]=(ff?l.slice(1):l).split("|"); cur.rows.push({type:"item",item:a,resp:b||"",ff});} });}
+const modelFor=a=>{if(!a) return null; for(const k in MODELS) if((MODELS[k].status==="reviewed"||(SHOW_DRAFTS&&MODELS[k].status==="draft"))&&MODELS[k].match(a)) return k; return null};
+const statusText=m=>m.status==="reviewed"?`Reviewed by ${m.reviewed_by} on ${m.review_date}.`:"DRAFT — not yet reviewed by a type-rated pilot.";
+
+const KEY="acb-checklist-v1";
+const uid=()=>Math.random().toString(36).slice(2,9);
+const nice=k=>k.split(" ").map((w,i)=>/^(RVSM|ATIS|VREF|FL\d+)$/.test(w)?w:(i?w.toLowerCase():w.charAt(0)+w.slice(1).toLowerCase())).join(" ");
+const COMMON=LIB_KEYS.map(nice);
+const I=(item,resp,ff)=>({id:uid(),type:"item",item,resp,ff:!!ff});
+const EXAMPLE=()=>({operator:"",aircraft:"",revision:"",sections:[
+ {id:uid(),title:"PREFLIGHT",rows:[I("Exterior Inspection","COMPLETE"),I("Documents (ARROW)","ON BOARD"),I("Weight & Balance","COMPUTED"),I("Fuel Quantity","CHECKED"),I("Parking Brake","SET"),I("Circuit Breakers","IN"),I("Battery Switch","ON"),I("Avionics","OFF"),I("Warning Systems Test","CHECKED",1),I("Stall Warning","TEST",1)]},
+ {id:uid(),title:"BEFORE START",rows:[I("Passenger Briefing","COMPLETE"),I("Seats / Belts","SECURE"),I("Doors / Windows","CLOSED & LOCKED"),I("Fuel Selector","BOTH / ON"),I("Beacon","ON"),I("ATIS / Clearance","RECEIVED")]},
+ {id:uid(),title:"ENGINE START",rows:[I("Propeller Area","CLEAR"),I("Throttle / Mixture","SET FOR START"),I("Starter","ENGAGE"),{id:uid(),type:"note",text:"NO OIL PRESSURE IN 30 SEC → SHUT DOWN"},I("Engine Instruments","IN THE GREEN"),I("Avionics","ON")]},
+ {id:uid(),title:"BEFORE TAXI",rows:[I("Flight Instruments","SET"),I("Altimeter","SET"),I("Flight Controls","FREE & CORRECT"),I("Trim","SET FOR TAKEOFF"),I("Taxi Brief","COMPLETE")]},
+ {id:uid(),title:"TAXI",rows:[I("Brakes","CHECKED"),I("Steering","CHECKED"),I("Flight Instruments","CHECKED")]},
+ {id:uid(),title:"BEFORE TAKEOFF",rows:[I("Run-up","COMPLETE"),I("Flaps","SET FOR TAKEOFF"),I("Takeoff Briefing","COMPLETE"),{id:uid(),type:"divider",text:"RUNWAY LINE UP"},I("Final & Runway","CLEAR"),I("Transponder","ALT"),I("Exterior Lights","ON"),I("Runway Heading","VERIFIED")]},
+ {id:uid(),title:"AFTER TAKEOFF",rows:[I("Positive Rate","GEAR UP"),I("Flaps","UP"),I("Climb Power","SET"),I("Landing Lights","AS REQUIRED")]},
+ {id:uid(),title:"CRUISE",rows:[I("Power","SET"),I("Fuel","MONITOR"),I("Altimeter","SET")]},
+ {id:uid(),title:"DESCENT / APPROACH",rows:[I("ATIS","RECEIVED"),I("Altimeter","SET"),I("Approach Brief","COMPLETE"),I("Fuel","CHECKED")]},
+ {id:uid(),title:"BEFORE LANDING",rows:[I("Landing Gear","DOWN, 3 GREEN"),I("Flaps","AS REQUIRED"),I("Landing Lights","ON")]},
+ {id:uid(),title:"AFTER LANDING",rows:[I("Flaps","UP"),I("Transponder","STBY"),I("Lights","AS REQUIRED")]},
+ {id:uid(),title:"SHUTDOWN",rows:[I("Parking Brake","SET"),I("Avionics","OFF"),I("Engine","CUTOFF"),I("Battery / Magnetos","OFF")]}]});
+let S, size="std";
+try{const raw=localStorage.getItem(KEY); S=raw?JSON.parse(raw):null}catch(e){S=null}
+if(!S||!Array.isArray(S.sections)) S=EXAMPLE();
+if(!S.version) S.version="1.0";
+if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=id=>document.getElementById(id);
+
+/* ---------- editor ---------- */
+["operator","aircraft","revision","version"].forEach(k=>{const el=$(k);el.value=S[k]||"";el.addEventListener("input",()=>{S[k]=el.value;changed()})});
+function renderChips(){$("chips").innerHTML=COMMON.map(c=>`<button class="chip" data-chip="${esc(c)}">＋ ${esc(c)}</button>`).join("")}
+function renderEditor(focus){
+  const box=$("sections");
+  box.innerHTML=S.sections.map((s,si)=>{
+    let n=0;
+    const rows=s.rows.map((r,ri)=>{
+      if(r.type==="note") return `<div class="row note" data-s="${si}" data-r="${ri}"><button class="grip" data-grip aria-label="Drag to move" tabindex="-1">⠿</button><span class="tag">note</span><input type="text" data-f="text" value="${esc(r.text)}" placeholder="Caution / no-go note"><button class="icon" data-menu>⋯</button></div>`;
+      if(r.type==="divider") return `<div class="row divider" data-s="${si}" data-r="${ri}"><button class="grip" data-grip aria-label="Drag to move" tabindex="-1">⠿</button><span class="tag">sub</span><input type="text" data-f="text" value="${esc(r.text)}" placeholder="Sub-heading"><button class="icon" data-menu>⋯</button></div>`;
+      n++;
+      return `<div class="row${r.ff?" ff":""}" data-s="${si}" data-r="${ri}"><button class="grip" data-grip aria-label="Drag to move" tabindex="-1">⠿</button><input type="text" class="pos" data-pos inputmode="numeric" value="${n}" aria-label="Line number — type a new number to move it"><input type="text" data-f="item" value="${esc(r.item)}" placeholder="Item" enterkeyhint="next"><input type="text" class="resp" data-f="resp" value="${esc(r.resp)}" placeholder="RESPONSE" enterkeyhint="next" autocapitalize="characters"><button class="icon" data-menu title="More">⋯</button></div>`;
+    }).join("");
+    return `<div class="sec" data-s="${si}">
+      <div class="sechead"><input type="text" data-title value="${esc(s.title)}" placeholder="SECTION NAME" autocapitalize="characters"><button class="icon" data-smove="-1" title="Move up">↑</button><button class="icon" data-smove="1" title="Move down">↓</button><button class="icon" data-sdel title="Delete section">🗑</button></div>
+      <div class="rows">${rows||'<p class="help" style="padding:6px">No lines yet.</p>'}</div>
+      <div class="adds"><button class="btn small primary" data-pick>📋 Pick items from list</button><button class="btn small" data-add="item">＋ My own line</button><button class="btn small" data-add="note">＋ Caution note</button><button class="btn small" data-add="divider">＋ Sub-heading</button></div></div>`;
+  }).join("");
+  if(focus){const el=box.querySelector(focus); if(el){el.focus({preventScroll:false}); el.scrollIntoView({block:"nearest"})}}
+}
+const sections=$("sections");
+sections.addEventListener("input",e=>{
+  const t=e.target; const sec=t.closest(".sec"); if(!sec) return;
+  const s=S.sections[+sec.dataset.s];
+  if(t.hasAttribute("data-title")){s.title=t.value.toUpperCase();changed();return}
+  const row=t.closest(".row"); if(!row||t.hasAttribute("data-pos")) return;
+  const r=s.rows[+row.dataset.r]; const f=t.dataset.f;
+  r[f]=(f==="resp"||f==="text")?t.value.toUpperCase():t.value; changed();
+});
+sections.addEventListener("keydown",e=>{
+  if(e.key!=="Enter") return; const t=e.target; if(t.tagName!=="INPUT") return; e.preventDefault();
+  if(t.hasAttribute("data-pos")){t.blur();return}
+  const row=t.closest(".row"); const sec=t.closest(".sec");
+  if(t.hasAttribute("data-title")){const first=sec.querySelector(".row input"); if(first) first.focus(); else addRow(+sec.dataset.s,"item",-1); return}
+  if(t.dataset.f==="item"){row.querySelector('[data-f="resp"]').focus();return}
+  const si=+row.dataset.s, ri=+row.dataset.r;
+  const next=sections.querySelector(`.row[data-s="${si}"][data-r="${ri+1}"] input`);
+  if(next) next.focus(); else addRow(si,"item",ri);
+});
+sections.addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  const sec=b.closest(".sec"); const si=+sec.dataset.s;
+  if(b.dataset.add){addRow(si,b.dataset.add,S.sections[si].rows.length-1);return}
+  if(b.hasAttribute("data-pick")){openPicker(si);return}
+  if(b.dataset.smove){const j=si+(+b.dataset.smove); if(j<0||j>=S.sections.length) return; const a=S.sections; [a[si],a[j]]=[a[j],a[si]]; renderEditor(`.sec[data-s="${j}"] [data-title]`); changed(); return}
+  if(b.hasAttribute("data-sdel")){if(confirm(`Delete the whole "${S.sections[si].title||"untitled"}" section?`)){S.sections.splice(si,1);renderEditor();changed()}return}
+  if(b.hasAttribute("data-menu")){openMenu(b,si,+b.closest(".row").dataset.r)}
+});
+function addRow(si,type,after){
+  const r=type==="item"?I("","",false):{id:uid(),type,text:""};
+  S.sections[si].rows.splice(after+1,0,r);
+  renderEditor(`.row[data-s="${si}"][data-r="${after+1}"] input`); changed();
+}
+let menuEl=null;
+function closeMenu(){if(menuEl){menuEl.remove();menuEl=null}}
+function openMenu(btn,si,ri){
+  closeMenu(); const r=S.sections[si].rows[ri];
+  const opts=[];
+  if(r.type==="item") opts.push(["ff",r.ff?"☐ Not a first-flight item":"☑ First flight of day (boxed)"]);
+  opts.push(["up","↑ Move up"],["down","↓ Move down"],["ins","＋ Insert line below"],["del","🗑 Delete this line"]);
+  menuEl=document.createElement("div"); menuEl.className="menu";
+  menuEl.innerHTML=opts.map(([k,l])=>`<button data-k="${k}" class="${k==="del"?"del":""}">${l}</button>`).join("");
+  document.body.appendChild(menuEl);
+  const rc=btn.getBoundingClientRect(); const mw=menuEl.offsetWidth, mh=menuEl.offsetHeight;
+  menuEl.style.left=Math.max(8,Math.min(rc.right-mw,innerWidth-mw-8))+"px";
+  menuEl.style.top=(rc.bottom+mh+8>innerHeight?Math.max(8,rc.top-mh-4):rc.bottom+4)+"px";
+  menuEl.addEventListener("click",ev=>{
+    const k=ev.target.closest("button")?.dataset.k; if(!k) return; const rows=S.sections[si].rows; let fi=ri;
+    if(k==="ff") r.ff=!r.ff;
+    if(k==="up"&&ri>0){[rows[ri-1],rows[ri]]=[rows[ri],rows[ri-1]];fi=ri-1}
+    if(k==="down"&&ri<rows.length-1){[rows[ri+1],rows[ri]]=[rows[ri],rows[ri+1]];fi=ri+1}
+    if(k==="ins"){closeMenu();addRow(si,"item",ri);return}
+    if(k==="del"){rows.splice(ri,1);fi=-1}
+    closeMenu(); renderEditor(fi>=0?`.row[data-s="${si}"][data-r="${fi}"] input`:null); changed();
+  });
+  setTimeout(()=>document.addEventListener("click",function h(ev){if(menuEl&&!menuEl.contains(ev.target)){closeMenu();document.removeEventListener("click",h)}}),0);
+}
+$("addSec").onclick=()=>newSection("");
+$("chips").onclick=e=>{const c=e.target.closest("[data-chip]"); if(c) newSection(c.dataset.chip)};
+function newSection(title){
+  const fromList=title&&libFor(title);
+  S.sections.push({id:uid(),title:title.toUpperCase(),rows:fromList?[]:[I("","",false)]});
+  const si=S.sections.length-1;
+  renderEditor(fromList?null:(title?`.row[data-s="${si}"][data-r="0"] input`:`.sec[data-s="${si}"] [data-title]`)); changed();
+  document.querySelector(`.sec[data-s="${si}"]`).scrollIntoView({block:"start"});
+  if(fromList) openPicker(si);
+}
+/* ---------- reorder: type a number ---------- */
+sections.addEventListener("focusin",e=>{if(e.target.hasAttribute&&e.target.hasAttribute("data-pos")) setTimeout(()=>e.target.select(),0)});
+sections.addEventListener("change",e=>{
+  const t=e.target; if(!t.hasAttribute("data-pos")) return;
+  const row=t.closest(".row"); const si=+row.dataset.s, ri=+row.dataset.r; const rows=S.sections[si].rows;
+  const itemIdx=rows.map((r,i)=>r.type==="item"?i:-1).filter(i=>i>=0);
+  let want=parseInt(t.value,10); const cur=itemIdx.indexOf(ri)+1;
+  if(!want||want===cur){t.value=cur;return}
+  want=Math.max(1,Math.min(itemIdx.length,want));
+  const [moved]=rows.splice(ri,1);
+  const after=rows.map((r,i)=>r.type==="item"?i:-1).filter(i=>i>=0);
+  const dest=want>after.length?(after.length?after[after.length-1]+1:rows.length):after[want-1];
+  rows.splice(dest,0,moved);
+  renderEditor(); changed(); flash(si,dest);
+});
+function flash(si,ri){const el=sections.querySelector(`.row[data-s="${si}"][data-r="${ri}"]`); if(!el) return; el.scrollIntoView({block:"nearest"}); el.animate([{background:"color-mix(in srgb, var(--accent) 30%, transparent)"},{background:"transparent"}],{duration:900})}
+/* ---------- reorder: drag handle (finger or mouse) ---------- */
+let drag=null;
+sections.addEventListener("pointerdown",e=>{
+  const g=e.target.closest("[data-grip]"); if(!g) return; e.preventDefault();
+  const row=g.closest(".row"); const box=row.parentElement;
+  drag={row,box,si:+row.dataset.s,y:e.clientY,id:e.pointerId,scroll:null};
+  row.classList.add("dragging"); document.body.classList.add("dragmode");
+});
+document.addEventListener("pointermove",e=>{
+  if(!drag||e.pointerId!==drag.id) return; e.preventDefault();
+  const {row,box}=drag; const y=e.clientY;
+  const sibs=[...box.querySelectorAll(".row")].filter(r=>r!==row);
+  let placed=false;
+  for(const s of sibs){const rc=s.getBoundingClientRect(); if(y<rc.top+rc.height/2){ if(s.previousElementSibling!==row) box.insertBefore(row,s); placed=true; break; }}
+  if(!placed&&box.lastElementChild!==row) box.appendChild(row);
+  const edge=70; clearInterval(drag.scroll);
+  if(y<edge+60) drag.scroll=setInterval(()=>scrollBy(0,-12),16); else if(y>innerHeight-edge) drag.scroll=setInterval(()=>scrollBy(0,12),16);
+});
+function endDrag(e){
+  if(!drag||e.pointerId!==drag.id) return; clearInterval(drag.scroll);
+  const {box,si}=drag; const order=[...box.querySelectorAll(".row")].map(r=>+r.dataset.r);
+  const old=S.sections[si].rows; const moved=+drag.row.dataset.r;
+  S.sections[si].rows=order.map(i=>old[i]);
+  document.body.classList.remove("dragmode"); drag=null;
+  renderEditor(); changed(); flash(si,order.indexOf(moved));
+}
+document.addEventListener("pointerup",endDrag); document.addEventListener("pointercancel",endDrag);
+/* ---------- versions ---------- */
+{{VERSION_AND_CHANGELOG}}
+$("verBtn").textContent="v"+APP_VERSION;
+$("verBtn").onclick=()=>{const m=document.createElement("div"); m.className="modal";
+  m.innerHTML=`<div class="box"><h2>What's new · Builder v${APP_VERSION}</h2>${CHANGELOG.map(([v,l])=>`<h3>Version ${v}</h3><ul>${l.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`).join("")}<div style="text-align:right;margin-top:14px"><button class="btn primary">Close</button></div></div>`;
+  document.body.appendChild(m); m.onclick=e=>{if(e.target===m||e.target.tagName==="BUTTON") m.remove()}};
+function bump(v){v=String(v||"1.0").trim(); const m=v.match(/^(.*?)(\d+)$/); if(!m) return v+".1"; const n=String(+m[2]+1).padStart(m[2].length,"0"); return m[1]+n}
+$("newRev").onclick=()=>{S.version=bump(S.version); const d=new Date(); S.revision=String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0")+"/"+d.getFullYear(); loadHeader(); changed(); status("")};
+/* ---------- aircraft finder ---------- */
+const tagsOf=a=>[a.engine==="piston"?"Piston":a.engine==="turboprop"?"Turboprop":"Jet",a.twin?"Twin":"Single",a.retract?"Retractable gear":"Fixed gear",a.press?"Pressurized":"Unpressurized"];
+function drawSel(){
+  const a=S.acftId!=null?ACFT[S.acftId]:null;
+  $("aSel").innerHTML=a?`<div class="asel"><span>✓ <b>${esc(acftName(a))}</b> · ${esc(a.years)} · ${tagsOf(a).join(" · ")}<br><small style="color:var(--muted)">Pick lists now show only items for this kind of aircraft.</small></span><button class="btn small x" id="aClr">Change</button>${modelFor(a)?`<div class="sugg" style="width:100%"><span>⭐ <b>Suggested checklist available</b> for the ${esc(MODELS[modelFor(a)].name)} (${MODELS[modelFor(a)].sections.length} sections).</span><button class="btn small primary" id="aLoad">Load suggested checklist</button><div class="disc"><b>${esc(statusText(MODELS[modelFor(a)]))}</b> Suggestions only — not FAA-approved and not the manufacturer's checklist. ${esc(MODELS[modelFor(a)].src)} Verify every item against your AFM/POH before use.</div></div>`:""}</div>`:"";
+  $("aFind").hidden=!!a;
+  if(a&&modelFor(a)) $("aLoad").onclick=()=>{const m=MODELS[modelFor(a)];
+    if(S.sections.length&&!confirm(`Replace your current sections with the suggested ${m.name} checklist? (Save a checklist file first if you want to keep what you have.)`)) return;
+    S.sections=m.sections.map(s=>({id:uid(),title:s.title,rows:s.rows.map(r=>r.type==="item"?I(r.item,r.resp,r.ff):{id:uid(),type:r.type,text:r.text})}));
+    renderEditor(); changed(); status(""); document.querySelector('.sec')?.scrollIntoView({block:"start"});};
+  if(a) $("aClr").onclick=()=>{S.acftId=null;S.profile={engine:"any",twin:true,retract:true,press:true};changed();drawSel();$("aQ").focus()};
+}
+function searchAcft(q){
+  const words=q.toUpperCase().replace(/[-–]/g," ").split(/\s+/).filter(Boolean); if(!words.length) return [];
+  return ACFT.filter(a=>{const hay=(a.make+" "+a.model+" "+a.alias+" "+a.engine).toUpperCase().replace(/[-–]/g," "); return words.every(w=>hay.includes(w))}).slice(0,25);
+}
+$("aQ").addEventListener("input",()=>{const r=searchAcft($("aQ").value), box=$("aRes");
+  box.innerHTML=r.length?r.map(a=>`<button data-a="${a.id}">${esc(acftName(a))}${modelFor(a)?'<span class="badge">⭐ suggested checklist</span>':""}<small>${esc(a.years)} · ${tagsOf(a).join(" · ")}</small></button>`).join(""):($("aQ").value.trim()?'<div style="padding:12px;color:var(--muted)">No match yet — that model is not on the list. You can still type any aircraft name in "Aircraft type" below.</div>':"");
+  box.hidden=!box.innerHTML;});
+$("aRes").addEventListener("click",e=>{const b=e.target.closest("[data-a]"); if(!b) return; const a=ACFT[+b.dataset.a];
+  S.acftId=a.id; S.profile={engine:a.engine,twin:a.twin,retract:a.retract,press:a.press}; S.aircraft=acftName(a); loadHeader();
+  $("aQ").value=""; $("aRes").hidden=true; changed(); drawSel();});
+document.addEventListener("click",e=>{if(!e.target.closest("#aFind")) $("aRes").hidden=true});
+/* ---------- picker ---------- */
+const ENG={piston:["piston"],turboprop:["turboprop","turbine"],jet:["jet","turbine"]};
+function fits(e){const p=S.profile;
+  const eng=e.tags.filter(t=>["piston","turboprop","jet","turbine"].includes(t));
+  if(p.engine!=="any"&&eng.length&&!eng.some(t=>ENG[p.engine].includes(t))) return false;
+  if(e.tags.includes("twin")&&!p.twin) return false;
+  if(e.tags.includes("retract")&&!p.retract) return false;
+  if(e.tags.includes("press")&&!p.press) return false;
+  return true}
+const norm=s=>(s||"").trim().toUpperCase();
+function findRow(sec,e){return sec.rows.findIndex(r=>e.note?(r.type==="note"&&norm(r.text)===norm(e.item)):(r.type==="item"&&norm(r.item)===norm(e.item)))}
+function modelLists(){const mk=S.acftId!=null?modelFor(ACFT[S.acftId]):null; if(!mk) return [];
+  return MODELS[mk].sections.map((s,i)=>({key:"M:"+mk+":"+i,label:"⭐ "+MODELS[mk].name+" – "+nice(s.title),title:s.title,
+    items:s.rows.filter(r=>r.type!=="divider").map(r=>({item:r.type==="note"?r.text:r.item,resp:r.resp||"",tags:[],note:r.type==="note",ff:!!r.ff}))}));}
+function getList(key){if(key.startsWith("M:")){const m=modelLists().find(x=>x.key===key); return m?m.items:[]} return LIB[key]||[]}
+function openPicker(si){
+  closeMenu(); const sec=S.sections[si]; const ML=modelLists(); let q="";
+  let key=(ML.find(m=>norm(m.title)===norm(sec.title))||ML.find(m=>libFor(m.title)&&libFor(m.title)===libFor(sec.title))||{}).key||libFor(sec.title)||LIB_KEYS[0];
+  const ov=document.createElement("div"); ov.className="picker";
+  ov.innerHTML=`<div class="pk" role="dialog" aria-modal="true">
+   <div class="pk-head"><h2>Pick items for ${esc(sec.title)||"this section"}</h2>
+    <div class="pk-tools"><select id="pkLib" aria-label="List">${ML.length?`<optgroup label="Suggested for this model">${ML.map(m=>`<option value="${esc(m.key)}">${esc(m.label)}</option>`).join("")}</optgroup><optgroup label="General lists (all aircraft)">`:""}${LIB_KEYS.map(k=>`<option value="${esc(k)}">${esc(nice(k))} list</option>`).join("")}${ML.length?"</optgroup>":""}</select><input id="pkQ" type="search" placeholder="Search…"></div>
+    <div class="prof">${S.acftId!=null?`Set for <b style="color:var(--ink)">${esc(acftName(ACFT[S.acftId]))}</b> — `:""}Show items for: <button class="tg" data-eng="any">Any aircraft</button><button class="tg" data-eng="piston">Piston</button><button class="tg" data-eng="turboprop">Turboprop</button><button class="tg" data-eng="jet">Jet</button>
+     <span style="width:100%;height:0"></span>Has: <button class="tg" data-f="twin">Two engines</button><button class="tg" data-f="retract">Retractable gear</button><button class="tg" data-f="press">Pressurized</button></div></div>
+   <div class="disc" id="pkDisc" style="padding:6px 16px 0;margin:0"></div><div class="pk-list" id="pkList"></div>
+   <div class="pk-own"><input id="ownI" placeholder="My own item"><input id="ownR" placeholder="RESPONSE" autocapitalize="characters"><button class="btn small" id="ownAdd">＋ Add</button></div>
+   <div class="pk-foot"><span class="cnt" id="pkCnt"></span><button class="btn primary" id="pkDone">Done</button></div></div>`;
+  document.body.appendChild(ov); document.body.style.overflow="hidden";
+  const lst=ov.querySelector("#pkList");
+  ov.querySelector("#pkLib").value=key;
+  function draw(){
+    ov.querySelectorAll("[data-eng]").forEach(b=>b.classList.toggle("on",b.dataset.eng===S.profile.engine));
+    ov.querySelectorAll("[data-f]").forEach(b=>b.classList.toggle("on",!!S.profile[b.dataset.f]));
+    const isM=key.startsWith("M:"); ov.querySelector(".prof").style.display=isM?"none":"";
+    ov.querySelector("#pkDisc").textContent=isM?"⭐ Suggested items for this model — not FAA-approved. Verify against your AFM/POH. ★ = first flight of the day.":"";
+    const items=getList(key).map((e,i)=>({e,i})).filter(({e})=>fits(e)&&(!q||(e.item+" "+e.resp).toUpperCase().includes(q.toUpperCase())));
+    lst.innerHTML=items.length?items.map(({e,i})=>{const on=findRow(sec,e)>=0;return `<label class="pi${on?" on":""}${e.note?" nt":""}"><input type="checkbox" data-i="${i}"${on?" checked":""}><span class="it">${e.note?"⚠ ":""}${e.ff?"★ ":""}${esc(e.item)}</span><span class="rs">${e.note?"caution note":esc(e.resp)}</span></label>`}).join(""):'<div class="pk-empty">Nothing matches. Try another list or turn on more aircraft options.</div>';
+    const n=sec.rows.filter(r=>r.type!=="divider").length;
+    ov.querySelector("#pkCnt").textContent=`${n} line${n===1?"":"s"} in this section`;
+  }
+  ov.querySelector("#pkLib").onchange=e=>{key=e.target.value;draw();lst.scrollTop=0};
+  ov.querySelector("#pkQ").oninput=e=>{q=e.target.value;draw()};
+  ov.querySelector(".prof").onclick=e=>{const b=e.target.closest("button");if(!b)return; if(b.dataset.eng)S.profile.engine=b.dataset.eng; else S.profile[b.dataset.f]=!S.profile[b.dataset.f]; save(); draw()};
+  lst.onchange=e=>{const cb=e.target; if(!cb.dataset.i)return; const ent=getList(key)[+cb.dataset.i]; const at=findRow(sec,ent);
+    if(cb.checked&&at<0) sec.rows.push(ent.note?{id:uid(),type:"note",text:ent.item.toUpperCase()}:I(ent.item,ent.resp,!!ent.ff));
+    if(!cb.checked&&at>=0) sec.rows.splice(at,1);
+    sec.rows=sec.rows.filter(r=>!(r.type==="item"&&!r.item&&!r.resp));
+    cb.closest(".pi").classList.toggle("on",cb.checked); changed(); draw()};
+  const own=()=>{const a=ov.querySelector("#ownI"),b=ov.querySelector("#ownR"); if(!a.value.trim())return a.focus();
+    sec.rows=sec.rows.filter(r=>!(r.type==="item"&&!r.item&&!r.resp)); sec.rows.push(I(a.value.trim(),b.value.trim().toUpperCase(),false)); a.value="";b.value=""; a.focus(); changed(); draw()};
+  ov.querySelector("#ownAdd").onclick=own;
+  ov.querySelector("#ownI").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();ov.querySelector("#ownR").focus()}};
+  ov.querySelector("#ownR").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();own()}};
+  const close=()=>{ov.remove();document.body.style.overflow="";renderEditor();changed();const el=document.querySelector(`.sec[data-s="${si}"]`); if(el) el.scrollIntoView({block:"nearest"})};
+  ov.querySelector("#pkDone").onclick=close;
+  ov.onclick=e=>{if(e.target===ov)close()};
+  draw();
+}
+$("example").onclick=()=>{if(confirm("Replace what you have with the example checklist?")){S=Object.assign(EXAMPLE(),{version:"1.0",profile:S.profile,acftId:S.acftId});loadHeader();renderEditor();changed()}};
+$("blank").onclick=()=>{if(confirm("Clear everything and start a blank checklist?")){S={operator:"",aircraft:"",revision:"",version:"1.0",profile:S.profile,sections:[{id:uid(),title:"PREFLIGHT",rows:[I("","",false)]}]};loadHeader();renderEditor('.row input');changed()}};
+function loadHeader(){["operator","aircraft","revision","version"].forEach(k=>$(k).value=S[k]||"")}
+
+/* ---------- tabs / size ---------- */
+$("tabs").onclick=e=>{const b=e.target.closest("button"); if(!b) return; $("main").dataset.view=b.dataset.v; [...$("tabs").children].forEach(x=>x.classList.toggle("on",x===b)); if(b.dataset.v==="preview") renderPreview(); window.scrollTo(0,0)};
+$("sizeSeg").onclick=e=>{const b=e.target.closest("button"); if(!b) return; size=b.dataset.s; [...$("sizeSeg").children].forEach(x=>x.classList.toggle("on",x===b)); renderPreview()};
+
+/* ---------- preview (paginated like the printed page) ---------- */
+function secHTML(s,fs){
+  let n=0; const rows=s.rows;
+  const body=rows.map((r,i)=>{
+    if(r.type==="note") return `<div class="note">${esc(r.text)||"&nbsp;"}</div>`;
+    if(r.type==="divider") return `<div class="div">${esc(r.text)||"&nbsp;"}</div>`;
+    n++;
+    const ff=r.ff?` ff${!(rows[i-1]&&rows[i-1].ff)?" ffs":""}${!(rows[i+1]&&rows[i+1].ff)?" ffe":""}`:"";
+    return `<div class="r${ff}"><div class="a"><span class="num">${n}.</span><span class="txt">${esc(r.item)}</span><span class="dots"></span></div><div class="b">${esc(r.resp)}</div></div>`;
+  }).join("");
+  return `<div class="cs" style="font-size:${fs}px"><div class="bar" style="font-size:${fs+1}px">${esc(s.title)||"&nbsp;"}</div>${body}</div>`;
+}
+function renderPreview(){
+  const large=size==="large", fs=large?21.3:12, colW=large?720:345.6, colH=1056-77-60-6;
+  const meas=$("measure"); meas.style.width=colW+"px";
+  const blocks=S.sections.map(s=>{meas.innerHTML=secHTML(s,fs); const h=meas.firstChild.offsetHeight+13; return {html:meas.innerHTML,h}});
+  meas.innerHTML="";
+  const ncol=large?1:2, pages=[]; let page=null, col=0, used=0;
+  const newPage=()=>{page=Array.from({length:ncol},()=>[]); pages.push(page); col=0; used=0};
+  newPage();
+  blocks.forEach(b=>{ if(used>0&&used+b.h>colH){ col++; used=0; if(col>=ncol) newPage(); } page[col].push(b.html); used+=b.h; });
+  const head=`<div class="ph"><span>${esc(S.operator)||"[OPERATOR NAME]"}</span><span>NORMAL PROCEDURES</span><span>${esc(S.aircraft)||"[AIRCRAFT TYPE]"}</span></div><div class="rev">Version ${esc(S.version)||"1.0"} · Revision: ${esc(S.revision)||"[MM/DD/YYYY]"}</div>`;
+  const host=$("pages");
+  host.innerHTML=S.sections.length?pages.map((p,i)=>`<div class="pagewrap"><div class="page">${head}<div class="cols">${p.map(c=>`<div class="col">${c.join("")}</div>`).join("")}</div><div class="pf"><b>BOXED ITEMS = FIRST FLIGHT OF DAY</b><span>Not FAA-approved – verify all items against the approved AFM/POH</span><span>Page ${i+1}</span></div></div></div>`).join(""):'<div class="empty">Add a section to see your checklist here.</div>';
+  fitPages();
+}
+function fitPages(){document.querySelectorAll(".pagewrap").forEach(w=>{const sc=Math.min(1,w.parentElement.clientWidth/816); const p=w.firstChild; p.style.transform=`scale(${sc})`; w.style.width=816*sc+"px"; w.style.height=1056*sc+"px"})}
+addEventListener("resize",fitPages);
+let t=null; function changed(){save(); clearTimeout(t); t=setTimeout(renderPreview,250)}
+
+/* ---------- Word export ---------- */
+function buildDoc(large){
+  const d=window.docx; const {Document,Paragraph,TextRun,AlignmentType,TabStopType,LeaderType,BorderStyle,ShadingType,Header,Footer,PageNumber,LevelFormat,Table,TableRow,TableCell,WidthType,VerticalAlign}=d;
+  const W=large?10800:5184, HALF=W/2, FS=large?32:18;
+  const none={style:BorderStyle.NONE,size:0,color:"FFFFFF"}, thin={style:BorderStyle.SINGLE,size:4,color:"BFBFBF"}, out={style:BorderStyle.SINGLE,size:8,color:"000000"}, heavy={style:BorderStyle.SINGLE,size:24,color:"000000"};
+  const margins={top:50,bottom:50,left:80,right:80};
+  const cell=(children,width,o={})=>new TableCell({children,width:{size:width,type:WidthType.DXA},margins,verticalAlign:VerticalAlign.CENTER,columnSpan:o.span,shading:o.fill?{type:ShadingType.CLEAR,fill:o.fill,color:"auto"}:undefined,borders:o.borders});
+  const body=[];
+  S.sections.forEach((s,i)=>{
+    const rows=[new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"SectionBar",text:s.title||" "})],W,{span:2,fill:"000000",borders:{top:none,left:none,right:none,bottom:none}})]})];
+    s.rows.forEach((r,idx)=>{
+      const end=idx===s.rows.length-1;
+      if(r.type==="note"){rows.push(new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"CautionNote",text:r.text||" "})],W,{span:2,fill:"D9D9D9",borders:{top:none,bottom:end?out:thin,left:out,right:out}})]}));return}
+      if(r.type==="divider"){rows.push(new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"PhaseDivider",text:r.text||" "})],W,{span:2,borders:{top:none,left:out,right:out,bottom:heavy}})]}));return}
+      const prevFF=s.rows[idx-1]&&s.rows[idx-1].type==="item"&&s.rows[idx-1].ff, nextFF=s.rows[idx+1]&&s.rows[idx+1].type==="item"&&s.rows[idx+1].ff;
+      const top=r.ff&&!prevFF?heavy:none; const bottom=r.ff&&!nextFF?heavy:(end?out:thin);
+      rows.push(new TableRow({cantSplit:true,children:[
+        cell([new Paragraph({style:"ChecklistItem",numbering:{reference:"ck",level:0,instance:i+1},children:[new TextRun(r.item||""),new TextRun("\t")]})],HALF,{borders:{top,bottom,left:r.ff?heavy:out,right:none}}),
+        cell([new Paragraph({style:"Response",text:r.resp||""})],HALF,{borders:{top,bottom,left:none,right:r.ff?heavy:out}})]}));
+    });
+    body.push(new Table({layout:d.TableLayoutType.FIXED,width:{size:W,type:WidthType.DXA},columnWidths:[HALF,HALF],rows}));
+    body.push(new Paragraph({spacing:{before:0,after:0,line:200,lineRule:d.LineRuleType.EXACT},children:[new TextRun({text:"",size:8})]}));
+  });
+  return new Document({
+    styles:{default:{document:{run:{font:"Arial",size:FS}}},paragraphStyles:[
+      {id:"SectionBar",name:"Section Bar",basedOn:"Normal",quickFormat:true,run:{bold:true,color:"FFFFFF",size:FS+1},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:0,after:0}}},
+      {id:"ChecklistItem",name:"Checklist Item",basedOn:"Normal",quickFormat:true,paragraph:{keepNext:true,spacing:{before:0,after:0},tabStops:[{type:TabStopType.RIGHT,position:HALF-160,leader:LeaderType.DOT}]}},
+      {id:"Response",name:"Response",basedOn:"Normal",quickFormat:true,run:{bold:true},paragraph:{keepNext:true,spacing:{before:0,after:0}}},
+      {id:"CautionNote",name:"Caution Note",basedOn:"Normal",quickFormat:true,run:{bold:true,italics:true,size:FS-1},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:0,after:0}}},
+      {id:"PhaseDivider",name:"Phase Divider",basedOn:"Normal",quickFormat:true,run:{bold:true},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:80,after:0}}}]},
+    numbering:{config:[{reference:"ck",levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:large?560:340,hanging:large?560:340}}}}]}]},
+    sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1150,bottom:900,left:720,right:720,header:400,footer:400}},column:large?{count:1}:{count:2,space:432,equalWidth:true}},
+      headers:{default:new Header({children:[
+        new Paragraph({tabStops:[{type:TabStopType.CENTER,position:5400},{type:TabStopType.RIGHT,position:10800}],border:{bottom:{style:BorderStyle.SINGLE,size:12,color:"000000",space:3}},
+          children:[new TextRun({text:S.operator||"[OPERATOR NAME]",bold:true,size:22}),new TextRun({text:"\tNORMAL PROCEDURES",bold:true,size:22}),new TextRun({text:"\t"+(S.aircraft||"[AIRCRAFT TYPE]"),bold:true,size:22})]}),
+        new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:"Version "+(S.version||"1.0")+" · Revision: "+(S.revision||"[MM/DD/YYYY]"),size:16})]})]})},
+      footers:{default:new Footer({children:[new Paragraph({tabStops:[{type:TabStopType.CENTER,position:5400},{type:TabStopType.RIGHT,position:10800}],
+        children:[new TextRun({text:" BOXED ITEMS = FIRST FLIGHT OF DAY ",bold:true,size:15,border:{style:BorderStyle.SINGLE,size:6,color:"000000",space:1}}),new TextRun({text:"\tNot FAA-approved – verify all items against the approved AFM/POH",size:15}),new TextRun({size:15,children:["\tPage ",PageNumber.CURRENT]})]})]})},
+      children:body}]});
+}
+const status=m=>$("status").textContent=m;
+let dl=null, inViewer=!!(window.claude&&window.claude.use);
+if(inViewer){ window.claude.use("downloads").then(x=>{dl=x}).catch(()=>{}) }
+async function offer(filename,data){
+  if(dl){ try{ await dl.save({filename,data}); status("Saved: "+filename); }catch(e){ status(e&&e.code==="declined"?"Download cancelled.":"Couldn't save the file here."); } return; }
+  if(inViewer){ status("Downloads aren't available in this view."); return; }
+  const url=URL.createObjectURL(data instanceof Blob?data:new Blob([data])); const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); status("Downloaded: "+filename);
+}
+const fname=ext=>((S.aircraft||"Aircraft").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim()+" Checklist"+(ext==="docx"?" v"+(S.version||"1.0"):"")+(ext==="docx"&&size==="large"?" LARGE PRINT":"")+"."+ext);
+$("dlWord").onclick=async()=>{ if(!S.sections.length){status("Add a section first.");return} status("Building Word file…"); try{ const blob=await window.docx.Packer.toBlob(buildDoc(size==="large")); await offer(fname("docx"),blob);}catch(e){status("Something went wrong building the file.")} };
+$("saveJson").onclick=()=>offer(fname("json").replace(/\.json$/," v"+(S.version||"1.0")+".json"),JSON.stringify(Object.assign({builderVersion:APP_VERSION},S),null,1));
+$("openJson").onclick=()=>$("fileIn").click();
+$("fileIn").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().then(t=>{try{const x=JSON.parse(t); if(!Array.isArray(x.sections)) throw 0; S=x; if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; loadHeader(); renderEditor(); changed(); drawSel(); status("Opened "+f.name)}catch(_){alert("That file isn't a checklist file from this builder.")}}); e.target.value=""};
+
+{{ENDORSEMENTS}}
+/* ---------- CFI endorsements (AC 61-65K) ---------- */
+const END=END_RAW.split("\n").map(l=>{const [id,cat,title,reg,page,status,valid,text]=l.split("|");return {id,cat,title,reg,page,status,valid,text}});
+const END_BY=Object.fromEntries(END.map(e=>[e.id,e]));
+const END_COMMON=["A.1","A.2","A.3","A.4","A.6","A.7","A.9","A.10","A.36","A.37","A.42","A.43","A.44","A.69","A.71","A.72","A.73","A.75"];
+const EKEY="acb-endorse-v1";
+let E; try{E=JSON.parse(localStorage.getItem(EKEY)||"null")}catch(e){E=null}
+const todayUS=()=>{const d=new Date();return String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0")+"/"+d.getFullYear()};
+if(!E) E={inst:{name:"",cert:"",kind:"RE",date:""},pilot:{name:"",grade:"",cert:"",mm:"",date:todayUS()},sel:[],fills:{},pasted:{},titles:true};
+const esave=()=>{try{localStorage.setItem(EKEY,JSON.stringify(E))}catch(e){}};
+const GLOBAL_PH={"first name, mi, last name":"name","grade of pilot certificate":"grade","certificate number":"cert","m/m":"mm","make and model (m/m)":"mm","date":"date"};
+const textOf=e=>e.status?e.text:(E.pasted[e.id]||"");
+const stBadge=e=>e.status==="faa"?'<span class="eb ok">✓ AC 61-65K text</span>':e.status==="draft"?'<span class="eb dr">✎ Draft – check AC</span>':(E.pasted[e.id]?'<span class="eb ok">✓ Your pasted text</span>':'<span class="eb no">Paste FAA text</span>');
+function parseUS(s){const m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec((s||"").trim()); return m?new Date(+m[3],+m[1]-1,+m[2]):null}
+const fmtUS=d=>String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0")+"/"+d.getFullYear();
+function validNote(e){const d=parseUS(E.pilot.date);
+  if(e.valid==="90d"){return "Valid 90 calendar days"+(d?` — through ${fmtUS(new Date(d.getFullYear(),d.getMonth(),d.getDate()+90))}`:"")}
+  if(e.valid==="24cm"){return "Good for 24 calendar months"+(d?` — through ${fmtUS(new Date(d.getFullYear(),d.getMonth()+25,0))}`:"")}
+  if(e.valid==="2cm"){return "Training must fall within the 2 calendar months before the month of the test"}
+  if(e.valid==="flight"){return "Needed for each solo cross-country flight"}
+  return ""}
+function fillText(e,forDoc){
+  const t=textOf(e); const f=E.fills[e.id]||{};
+  return t.replace(/\[([^\]]+)\]/g,(m,ph)=>{const g=GLOBAL_PH[ph.toLowerCase()];
+    if(g){const v=E.pilot[g]; if(forDoc) return v||"________________"; return v?`<mark class="eg">${esc(v)}</mark>`:`<mark class="em">[${esc(ph)}]</mark>`;}
+    const v=f[ph]||""; if(forDoc) return v||"________________";
+    return `<input class="ein" data-eid="${esc(e.id)}" data-ph="${esc(ph)}" value="${esc(v)}" placeholder="${esc(ph)}" size="${Math.max(8,Math.min(38,(v||ph).length+2))}">`;});
+}
+const sigLine=()=>{const i=E.inst; return `/s/ ________________  ${E.pilot.date||"[date]"}  ${i.name||"[instructor name]"}  ${i.cert?i.cert+"CFI":"[certificate no.]CFI"}  ${i.kind==="Exp"?"Exp.":"RE"} ${i.date||"[MM-DD-YYYY]"}`};
+function renderEndList(){
+  const q=($("eQ").value||"").toUpperCase(), cat=$("eCat").value;
+  const list=END.filter(e=>(cat==="__common"?END_COMMON.includes(e.id):cat==="__all"||e.cat===cat)&&(!q||(e.id+" "+e.title+" "+e.reg+" "+e.cat).toUpperCase().includes(q)));
+  $("eList").innerHTML=list.length?list.map(e=>`<label class="ei${E.sel.includes(e.id)?" on":""}"><input type="checkbox" data-eid="${esc(e.id)}"${E.sel.includes(e.id)?" checked":""}><span class="eit"><b>${esc(e.id)}</b> ${esc(e.title)}<small>${esc(e.reg)} · AC p. ${esc(e.page)} · ${stBadge(e)}${e.valid?" · "+esc(validNote(e).split(" — ")[0]):""}</small></span></label>`).join(""):'<div class="pk-empty">No endorsements match.</div>';
+}
+function renderEndSel(){
+  $("eCount").textContent=E.sel.length;
+  $("eSel").innerHTML=E.sel.length?E.sel.map(id=>{const e=END_BY[id]; if(!e) return "";
+    const body=textOf(e)?`<p class="etx">${fillText(e,false)}</p>`:`<p class="disc">The recommended wording for this endorsement is on page ${esc(e.page)} of AC 61-65K. Paste it here once; it is kept on this device.</p><textarea class="epaste" data-eid="${esc(e.id)}" rows="4" placeholder="Paste the AC 61-65K wording, keeping the [bracketed] blanks"></textarea><button class="btn small" data-esave="${esc(e.id)}">Save wording</button>`;
+    const vn=validNote(e);
+    return `<div class="ecard"><div class="ehead"><b>${esc(e.id)} ${esc(e.title)}</b><button class="icon" data-erem="${esc(e.id)}" title="Remove">✕</button></div><div class="ereg">${esc(e.reg)} · ${stBadge(e)}${e.status==="draft"?` <span class="disc">Compare with AC 61-65K p. ${esc(e.page)} before signing.</span>`:""}</div>${body}<div class="esig">${esc(sigLine())}</div>${vn?`<div class="evalid">⏱ ${esc(vn)}</div>`:""}</div>`}).join(""):'<div class="pk-empty">Tick endorsements on the left to add them here.</div>';
+}
+function bindEndForm(){
+  [["eiName","inst","name"],["eiCert","inst","cert"],["eiKind","inst","kind"],["eiDate","inst","date"],["epName","pilot","name"],["epGrade","pilot","grade"],["epCert","pilot","cert"],["epMM","pilot","mm"],["epDate","pilot","date"]].forEach(([id,g,k])=>{
+    const el=$(id); el.value=E[g][k]||""; el.addEventListener("input",()=>{E[g][k]=el.value;esave();renderEndSel()});});
+  $("eTitles").checked=E.titles!==false; $("eTitles").onchange=()=>{E.titles=$("eTitles").checked;esave()};
+  $("eQ").oninput=renderEndList; $("eCat").onchange=renderEndList;
+  $("eCat").innerHTML=`<option value="__common">Most used</option><option value="__all">All 96 + extras</option>`+[...new Set(END.map(e=>e.cat))].map(c=>`<option>${esc(c)}</option>`).join("");
+  $("eList").onchange=e=>{const id=e.target.dataset.eid; if(!id) return; if(e.target.checked){if(!E.sel.includes(id)) E.sel.push(id)} else E.sel=E.sel.filter(x=>x!==id); esave(); renderEndList(); renderEndSel();};
+  $("eSel").addEventListener("input",e=>{const t=e.target; if(!t.classList.contains("ein")) return; (E.fills[t.dataset.eid]=E.fills[t.dataset.eid]||{})[t.dataset.ph]=t.value; t.size=Math.max(8,Math.min(38,(t.value||t.placeholder).length+2)); esave();});
+  $("eSel").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b) return;
+    if(b.dataset.erem){E.sel=E.sel.filter(x=>x!==b.dataset.erem); esave(); renderEndList(); renderEndSel();}
+    if(b.dataset.esave){const ta=$("eSel").querySelector(`textarea[data-eid="${b.dataset.esave}"]`); if(ta&&ta.value.trim()){E.pasted[b.dataset.esave]=ta.value.trim(); esave(); renderEndList(); renderEndSel();}}});
+  $("eClear").onclick=()=>{if(E.sel.length&&confirm("Clear the selected endorsements and their blanks? (Instructor details stay.)")){E.sel=[];E.fills={};esave();renderEndList();renderEndSel();}};
+  $("eNewPilot").onclick=()=>{if(confirm("Start a new pilot? This clears the pilot details, selections and blanks.")){E.pilot={name:"",grade:"",cert:"",mm:"",date:todayUS()};E.sel=[];E.fills={};esave();["epName","epGrade","epCert","epMM"].forEach(i=>$(i).value="");$("epDate").value=E.pilot.date;renderEndList();renderEndSel();}};
+  $("eWord").onclick=async()=>{const st=$("eStatus"); if(!E.sel.length){st.textContent="Pick at least one endorsement.";return}
+    st.textContent="Building Word file…"; try{const blob=await window.docx.Packer.toBlob(buildEndDoc()); const nm=((E.pilot.name||"Pilot").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim())+" Endorsements "+(E.pilot.date||"").replace(/\//g,"-")+".docx"; await offer(nm,blob); st.textContent=$("status").textContent||"Done.";}catch(err){st.textContent="Something went wrong building the file."}};
+}
+function buildEndDoc(){
+  const d=window.docx; const {Document,Paragraph,TextRun,AlignmentType,BorderStyle}=d;
+  const kids=[new Paragraph({spacing:{after:120},children:[new TextRun({text:"Logbook endorsements — "+(E.pilot.name||"[pilot name]"),bold:true,size:28})]}),
+    new Paragraph({spacing:{after:240},children:[new TextRun({text:"Recommended wording per FAA AC 61-65K, Appendix A. Draft items must be checked against the AC before signing.",italics:true,size:18,color:"555555"})]})];
+  E.sel.forEach(id=>{const e=END_BY[id]; if(!e) return; const body=textOf(e);
+    if(E.titles!==false) kids.push(new Paragraph({keepNext:true,spacing:{before:120,after:60},children:[new TextRun({text:`${e.id} ${e.title}: ${e.reg}`,bold:true,size:20})]}));
+    kids.push(new Paragraph({keepNext:true,spacing:{after:80,line:300},children:[new TextRun({text:body?fillText(e,true):`[Paste AC 61-65K wording from page ${e.page}]`,size:22})]}));
+    kids.push(new Paragraph({spacing:{after:280},border:{bottom:{style:BorderStyle.SINGLE,size:4,color:"BBBBBB",space:6}},children:[new TextRun({text:sigLine(),size:22})]}));});
+  return new Document({styles:{default:{document:{run:{font:"Arial",size:22}}}},sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1080,bottom:1080,left:1080,right:1080}}},children:kids}]});
+}
+$("modeBtn").onclick=()=>{const on=document.body.dataset.mode!=="end"; document.body.dataset.mode=on?"end":""; $("modeBtn").textContent=on?"✈️ Checklists":"🎓 CFI endorsements"; if(on){renderEndList();renderEndSel();} window.scrollTo(0,0)};
+bindEndForm();
+renderChips(); renderEditor(); renderPreview(); drawSel();
+})();
+</script>
+</body>
+</html>

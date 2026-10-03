@@ -1,0 +1,24 @@
+# Pick list: BEFORE TAXI
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: BEFORE TAXI
+order: 5
+items:
+  - {item: ATIS / Clearance, response: RECEIVED}
+  - {item: FMS / GPS Route, response: LOADED / VERIFIED}
+  - {item: Flight Director, response: SET}
+  - {item: Altimeters, response: SET / CROSS-CHECKED}
+  - {item: Heading Bug / Course, response: SET}
+  - {item: V-Speeds / Bugs, response: SET}
+  - {item: Takeoff N1 / Torque, response: SET, tags: [turbine]}
+  - {item: Transponder, response: CODE SET}
+  - {item: TCAS, response: TA/RA, tags: [turbine]}
+  - {item: Flaps, response: SET FOR TAKEOFF}
+  - {item: Trims, response: SET}
+  - {item: Speedbrakes, response: TESTED / RETRACTED, tags: [jet]}
+  - {item: Flight Controls, response: FREE & CORRECT}
+  - {item: Engine Anti-Ice, response: AS REQUIRED, tags: [turbine]}
+  - {item: DC Amps / Volts, response: CHECKED}
+  - {item: Engine Instruments, response: NO FLAGS}
+  - {item: Lavatory Door, response: LATCHED OPEN, tags: [jet]}
+  - {item: Taxi Lights, response: 'ON'}
+  - {item: Taxi Brief, response: COMPLETE}

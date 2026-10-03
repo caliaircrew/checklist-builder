@@ -1,0 +1,15 @@
+# Pick list: COLD WEATHER / DEICING
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: COLD WEATHER / DEICING
+order: 27
+items:
+  - {item: Frost / Snow / Ice, response: REMOVED FROM ALL SURFACES}
+  - {note: 'NO TAKEOFF WITH FROST, SNOW OR ICE ON WINGS OR TAIL'}
+  - {item: Pitot / Static Ports / Vents, response: CLEAR}
+  - {item: Engine Preheat, response: AS REQUIRED, tags: [piston]}
+  - {item: Deicing Fluid / Holdover Time, response: NOTED, tags: [turbine]}
+  - {item: Flight Controls, response: FREE & CORRECT AFTER DEICING}
+  - {item: Engine Anti-Ice, response: ON AS REQUIRED, tags: [turbine]}
+  - {item: Pitot Heat, response: 'ON'}
+  - {item: Brakes, response: CHECKED}
+  - {item: Taxi, response: SLOW / AVOID SLUSH}

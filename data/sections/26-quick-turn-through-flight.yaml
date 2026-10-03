@@ -1,0 +1,15 @@
+# Pick list: QUICK TURN / THROUGH-FLIGHT
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: QUICK TURN / THROUGH-FLIGHT
+order: 26
+items:
+  - {item: Fuel, response: ORDERED / QUANTITY CONFIRMED}
+  - {item: Oil, response: CHECKED}
+  - {item: Walkaround, response: COMPLETE}
+  - {item: Weight & Balance, response: UPDATED}
+  - {item: Takeoff Data, response: RECOMPUTED}
+  - {item: FMS / GPS, response: NEXT LEG LOADED}
+  - {item: Weather / NOTAMs, response: CHECKED}
+  - {item: Passenger Briefing, response: COMPLETE}
+  - {item: Cabin, response: CLEANED}
+  - {item: Flight Times, response: RECORDED}

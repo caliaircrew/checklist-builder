@@ -1,0 +1,147 @@
+# Suggested checklist: Challenger 605. SUGGESTIONS ONLY — not FAA-approved; verify every line against the AFM/POH.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+key: CL605
+order: 1            # position in the app's model list
+name: Challenger 605
+status: draft          # draft | reviewed | retired
+author: Claude (AI draft)
+reviewed_by: ''
+review_date: ''      # YYYY-MM-DD, required when reviewed
+aircraft:                # aircraft ids from data/aircraft/*.yaml
+  - challenger-605
+source: Compiled from Challenger 600-series training material and the 604/605 flow (power-up, systems tests, three hydraulic systems, APU, APR, nosewheel steering).
+sections:
+  - title: SAFETY & POWER UP
+    items:
+      - {item: Emergency Equipment, response: CHECKED}
+      - {item: Gear Pins, response: REMOVED & STOWED}
+      - {item: Circuit Breakers, response: IN}
+      - {item: Parking Brake, response: SET}
+      - {item: Thrust Levers, response: SHUTOFF}
+      - {item: BATT MASTER, response: 'ON'}
+      - {item: DC Volts, response: CHECKED}
+      - {note: LIMIT TIME ON BATTERY ONLY – DISPLAY COOLING}
+      - {item: APU, response: START / AVAIL}
+      - {item: APU Generator, response: 'ON'}
+      - {item: Lamp Test, response: COMPLETE, first_flight: true}
+      - {item: Bleed Leak Detection (DUCT MON) Test, response: COMPLETE, first_flight: true}
+      - {item: Fire Detection Test, response: COMPLETE, first_flight: true}
+      - {item: Wing Overheat / Anti-Ice Test, response: COMPLETE, first_flight: true}
+      - {item: Windshield / Window Heat Test, response: COMPLETE, first_flight: true}
+      - {item: ADG Test, response: COMPLETE, first_flight: true}
+      - {item: Brakes & Anti-Skid Test, response: COMPLETE, first_flight: true}
+      - {item: Gravity Crossflow, response: CHECKED, first_flight: true}
+      - {item: Hydraulic Pumps, response: 3A ON / CHECKED}
+      - {item: Crew Oxygen Masks, response: CHECKED / 100%}
+      - {item: Avionics / FMS, response: INITIALIZED}
+      - {item: Takeoff Data, response: COMPUTED / SET}
+      - {item: Pressurization, response: CHECKED / AUTO}
+  - title: BEFORE STARTING ENGINES
+    items:
+      - {item: Passenger Briefing, response: COMPLETE}
+      - {item: Doors, response: CLOSED / CHECKED}
+      - {item: Seat Belt / No Smoking, response: 'ON'}
+      - {item: Parking Brake / Pressure, response: SET / CHECKED}
+      - {item: Beacon, response: 'ON'}
+      - {item: Boost Pumps, response: 'ON'}
+      - {item: APU Bleed Air, response: 'ON'}
+      - {item: Bleed Air, response: SET FOR START}
+      - {item: Bleed Air Pressure, response: CHECKED}
+      - {item: CAS Messages, response: CHECKED}
+  - title: STARTING ENGINES
+    items:
+      - {item: Engine Start, response: START}
+      - {item: N1 Rotation, response: CONFIRMED}
+      - {item: ITT / Light-off, response: MONITOR}
+      - {note: HOT / HUNG / NO LIGHT-OFF → ABORT PER AFM}
+      - {item: Oil Pressure, response: RISING}
+      - {item: Engine Indications, response: NORMAL}
+      - {item: Fuel System Valve Check, response: COMPLETE, first_flight: true}
+      - {item: Opposite Engine, response: START}
+  - title: AFTER START / BEFORE TAXI
+    items:
+      - {item: Generators, response: ON / CHECKED}
+      - {item: External Power, response: DISCONNECTED}
+      - {item: APU Bleed, response: 'OFF'}
+      - {item: APU, response: AS REQUIRED}
+      - {item: Hydraulic B Pumps, response: ON / AUTO}
+      - {item: Anti-Ice, response: AS REQUIRED}
+      - {item: Flaps, response: SET FOR TAKEOFF}
+      - {item: Stab Trim, response: SET FOR TAKEOFF}
+      - {item: Flight Controls, response: CHECKED}
+      - {item: Nosewheel Steering, response: ARMED}
+      - {item: Altimeters, response: SET / CROSS-CHECKED}
+      - {item: FMS / Flight Director, response: SET}
+      - {item: Takeoff Briefing, response: COMPLETE}
+      - {item: Taxi Lights, response: 'ON'}
+  - title: TAXI
+    items:
+      - {item: Brakes, response: CHECKED}
+      - {item: Nosewheel Steering, response: CHECKED}
+      - {item: Thrust Reversers, response: CHECKED}
+      - {item: Flight Instruments, response: CHECKED}
+      - {item: Takeoff Configuration, response: T/O CONFIG OK}
+  - title: BEFORE TAKEOFF
+    items:
+      - {item: Anti-Collision / Landing / Recog Lights, response: 'ON'}
+      - {item: Ignition, response: SET}
+      - {item: Bleeds / 10th Stage, response: SET FOR TAKEOFF}
+      - {item: APR, response: ARMED}
+      - {item: Transponder, response: TA/RA}
+      - {item: Weather Radar, response: AS REQUIRED}
+      - {item: CAS Messages, response: CHECKED / CLEAR}
+      - {item: Runway, response: 'VERIFIED, HDG AGREES'}
+  - title: AFTER TAKEOFF
+    items:
+      - {item: Landing Gear, response: UP}
+      - {item: Flaps, response: UP}
+      - {item: Ignition, response: AS REQUIRED}
+      - {item: Bleeds, response: AS REQUIRED}
+      - {item: APU, response: 'OFF'}
+      - {item: Hydraulic B Pumps, response: AS REQUIRED}
+      - {item: Pressurization, response: CHECKED}
+      - {item: Lights, response: AS REQUIRED}
+  - title: TRANSITION ALTITUDE
+    items:
+      - {item: Altimeters, response: 29.92 / CROSS-CHECKED}
+      - {item: Seat Belt Sign, response: AS REQUIRED}
+      - {item: Fuel Balance, response: CHECKED}
+  - title: DESCENT / APPROACH
+    items:
+      - {item: Landing Elevation, response: SET}
+      - {item: Altimeters, response: SET / CROSS-CHECKED}
+      - {item: Approach Briefing, response: COMPLETE}
+      - {item: Landing Data / VREF, response: SET}
+      - {item: Anti-Ice, response: AS REQUIRED}
+      - {item: Hydraulic B Pumps, response: 'ON'}
+      - {item: Seat Belt Sign, response: 'ON'}
+  - title: BEFORE LANDING
+    items:
+      - {item: Landing Gear, response: 'DOWN, 3 GREEN'}
+      - {item: Flaps, response: SET FOR LANDING}
+      - {item: Ground Spoilers, response: ARMED}
+      - {item: Thrust Reversers, response: ARMED}
+      - {item: Landing Lights, response: 'ON'}
+      - {item: Autopilot, response: OFF BY MINIMUMS}
+  - title: AFTER LANDING
+    items:
+      - {item: Ground Spoilers, response: RETRACTED}
+      - {item: Thrust Reversers, response: STOWED / DISARMED}
+      - {item: Flaps, response: AS REQUIRED}
+      - {item: APU, response: START AS REQUIRED}
+      - {item: Ignition, response: 'OFF'}
+      - {item: Transponder, response: STBY}
+      - {item: Weather Radar, response: STBY}
+      - {item: Lights, response: TAXI / AS REQUIRED}
+  - title: SHUTDOWN
+    items:
+      - {item: Parking Brake, response: SET}
+      - {item: APU Generator / GPU, response: 'ON'}
+      - {item: Engines, response: SHUTOFF AFTER COOL-DOWN}
+      - {item: Fuel System Valve Check, response: COMPLETE, first_flight: true}
+      - {item: Hydraulic Pumps, response: 'OFF'}
+      - {item: Boost Pumps, response: 'OFF'}
+      - {item: Beacon, response: 'OFF'}
+      - {item: APU, response: 'OFF'}
+      - {item: BATT MASTER, response: 'OFF'}
+      - {item: Gear Pins / Chocks, response: INSTALLED}

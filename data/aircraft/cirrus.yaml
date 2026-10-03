@@ -1,0 +1,6 @@
+# Aircraft: Cirrus. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 105, id: cirrus-sr20, make: Cirrus, model: SR20, years: 1999–present, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 106, id: cirrus-sr22-sr22t, make: Cirrus, model: SR22 / SR22T, years: 2001–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22 turbo}
+  - {seq: 107, id: cirrus-sf50-vision-jet, make: Cirrus, model: SF50 Vision Jet, years: 2016–present, engine: jet, twin: false, retractable: true, pressurized: true, search_words: Vision Jet}

@@ -1,0 +1,5 @@
+# Aircraft: Pilatus. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 113, id: pilatus-pc-12-ng-ngx, make: Pilatus, model: PC-12 / NG / NGX, years: 1994–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: PC12}
+  - {seq: 114, id: pilatus-pc-24, make: Pilatus, model: PC-24, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: PC24}

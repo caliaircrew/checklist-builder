@@ -1,0 +1,22 @@
+# Aircraft: Piper. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 73, id: piper-pa-18-super-cub, make: Piper, model: PA-18 Super Cub, years: 1949–1994, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 74, id: piper-pa-22-tri-pacer-colt, make: Piper, model: PA-22 Tri-Pacer / Colt, years: 1951–1964, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 75, id: piper-pa-23-apache-aztec, make: Piper, model: PA-23 Apache / Aztec, years: 1954–1981, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 76, id: piper-pa-24-comanche, make: Piper, model: PA-24 Comanche, years: 1958–1972, engine: piston, twin: false, retractable: true, pressurized: false}
+  - {seq: 77, id: piper-pa-30-pa-39-twin-comanche, make: Piper, model: PA-30 / PA-39 Twin Comanche, years: 1963–1972, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 78, id: piper-pa-28-140-150-160-180-cherokee, make: Piper, model: PA-28-140 / 150 / 160 / 180 Cherokee, years: 1961–1977, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Cherokee}
+  - {seq: 79, id: piper-pa-28-151-161-warrior, make: Piper, model: PA-28-151 / 161 Warrior, years: 1974 on, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Warrior}
+  - {seq: 80, id: piper-pa-28-181-archer, make: Piper, model: 'PA-28-181 Archer (II, III, LX, TX, DX)', years: 1976–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Archer}
+  - {seq: 81, id: piper-pa-28r-arrow, make: Piper, model: PA-28R Arrow, years: 1967 on, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Arrow}
+  - {seq: 82, id: piper-pa-28-235-236-dakota, make: Piper, model: PA-28-235 / 236 Dakota, years: 1963–1994, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Pathfinder Dakota}
+  - {seq: 83, id: piper-pa-32-cherokee-six-saratoga, make: Piper, model: PA-32 Cherokee Six / Saratoga, years: 1965–2009, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Six}
+  - {seq: 84, id: piper-pa-32r-lance-saratoga, make: Piper, model: PA-32R Lance / Saratoga, years: 1976–2009, engine: piston, twin: false, retractable: true, pressurized: false}
+  - {seq: 85, id: piper-pa-34-seneca, make: Piper, model: PA-34 Seneca, years: 1972–present, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Seneca}
+  - {seq: 86, id: piper-pa-38-tomahawk, make: Piper, model: PA-38 Tomahawk, years: 1978–1982, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 87, id: piper-pa-44-seminole, make: Piper, model: PA-44 Seminole, years: 1979–present, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Seminole}
+  - {seq: 88, id: piper-pa-31-31-350-navajo-chieftain, make: Piper, model: PA-31 / 31-350 Navajo / Chieftain, years: 1967–1984, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 89, id: piper-pa-31t-cheyenne, make: Piper, model: PA-31T Cheyenne, years: 1974–1984, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Cheyenne}
+  - {seq: 90, id: piper-pa-46-malibu-mirage-m350, make: Piper, model: PA-46 Malibu / Mirage / M350, years: 1984–present, engine: piston, twin: false, retractable: true, pressurized: true, search_words: Malibu}
+  - {seq: 91, id: piper-pa-46-meridian-m500-m600, make: Piper, model: PA-46 Meridian / M500 / M600, years: 1998–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: Meridian}

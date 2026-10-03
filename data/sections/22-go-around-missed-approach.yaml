@@ -1,0 +1,15 @@
+# Pick list: GO-AROUND / MISSED APPROACH
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: GO-AROUND / MISSED APPROACH
+order: 22
+items:
+  - {item: Power, response: GO-AROUND / FULL}
+  - {item: Pitch, response: GO-AROUND ATTITUDE}
+  - {item: Carburetor Heat, response: 'OFF', tags: [piston]}
+  - {item: Flaps, response: GO-AROUND SETTING}
+  - {item: Positive Rate, response: GEAR UP, tags: [retract]}
+  - {item: Flight Director, response: GO-AROUND, tags: [turbine]}
+  - {item: Yaw Damper, response: 'ON', tags: [turbine]}
+  - {item: Missed Approach Procedure, response: FLY}
+  - {item: ATC, response: ADVISE}
+  - {item: Flaps, response: UP AT SAFE ALTITUDE}

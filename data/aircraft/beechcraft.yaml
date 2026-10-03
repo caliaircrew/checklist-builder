@@ -1,0 +1,16 @@
+# Aircraft: Beechcraft. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 92, id: beechcraft-35-bonanza, make: Beechcraft, model: 35 Bonanza (V-tail), years: 1947–1982, engine: piston, twin: false, retractable: true, pressurized: false, search_words: V35 Bonanza}
+  - {seq: 93, id: beechcraft-33-debonair-f33a-bonanza, make: Beechcraft, model: 33 Debonair / F33A Bonanza, years: 1960–1995, engine: piston, twin: false, retractable: true, pressurized: false}
+  - {seq: 94, id: beechcraft-a36-g36-bonanza, make: Beechcraft, model: A36 / G36 Bonanza, years: 1968–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: A36 Bonanza}
+  - {seq: 95, id: beechcraft-23-musketeer-sundowner, make: Beechcraft, model: 23 Musketeer / Sundowner, years: 1963–1983, engine: piston, twin: false, retractable: false, pressurized: false}
+  - {seq: 96, id: beechcraft-c24r-sierra, make: Beechcraft, model: C24R Sierra, years: 1970–1983, engine: piston, twin: false, retractable: true, pressurized: false}
+  - {seq: 97, id: beechcraft-55-58-baron-g58, make: Beechcraft, model: 55 / 58 Baron / G58, years: 1961–present, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Baron}
+  - {seq: 98, id: beechcraft-76-duchess, make: Beechcraft, model: 76 Duchess, years: 1978–1983, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 99, id: beechcraft-60-duke, make: Beechcraft, model: 60 Duke, years: 1968–1982, engine: piston, twin: true, retractable: true, pressurized: true}
+  - {seq: 100, id: beechcraft-king-air-90-series, make: Beechcraft, model: 'King Air 90 series (C90, E90, F90)', years: 1964–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air C90}
+  - {seq: 101, id: beechcraft-king-air-200-b200-250, make: Beechcraft, model: King Air 200 / B200 / 250, years: 1974–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air B200 Super King Air}
+  - {seq: 102, id: beechcraft-king-air-350-360, make: Beechcraft, model: King Air 350 / 360, years: 1990–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 350}
+  - {seq: 103, id: beechcraft-beechjet-400-hawker-400xp, make: Beechcraft, model: Beechjet 400 / Hawker 400XP, years: 1985–2009, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 104, id: beechcraft-premier-i-ia, make: Beechcraft, model: Premier I / IA, years: 2001–2012, engine: jet, twin: true, retractable: true, pressurized: true}

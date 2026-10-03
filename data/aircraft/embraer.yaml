@@ -1,0 +1,8 @@
+# Aircraft: Embraer. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 117, id: embraer-phenom-100, make: Embraer, model: Phenom 100, years: 2008–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: EMB-500}
+  - {seq: 118, id: embraer-phenom-300, make: Embraer, model: Phenom 300, years: 2009–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: EMB-505}
+  - {seq: 119, id: embraer-legacy-450-praetor-500, make: Embraer, model: Legacy 450 / Praetor 500, years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 120, id: embraer-legacy-500-praetor-600, make: Embraer, model: Legacy 500 / Praetor 600, years: 2014–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 121, id: embraer-legacy-600-650, make: Embraer, model: Legacy 600 / 650, years: 2002–2020, engine: jet, twin: true, retractable: true, pressurized: true}

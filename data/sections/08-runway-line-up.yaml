@@ -1,0 +1,22 @@
+# Pick list: RUNWAY LINE UP
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: RUNWAY LINE UP
+order: 8
+items:
+  - {item: Final & Runway, response: CLEAR}
+  - {item: Runway, response: 'VERIFIED, HDG AGREES'}
+  - {item: Takeoff Clearance, response: RECEIVED}
+  - {item: Landing Lights, response: 'ON'}
+  - {item: Strobes, response: 'ON'}
+  - {item: Exterior Lights, response: ALL ON}
+  - {item: Transponder, response: ALT}
+  - {item: Ignition, response: 'ON', tags: [turbine]}
+  - {item: Pitot / Static Heat, response: 'ON'}
+  - {item: Fuel Pump, response: 'ON', tags: [piston]}
+  - {item: Mixture, response: FULL RICH, tags: [piston]}
+  - {item: Engine Sync, response: 'OFF', tags: [twin]}
+  - {item: Passenger Safety Switch, response: 'ON', tags: [turbine]}
+  - {item: Parking Brake, response: RELEASED}
+  - {item: Annunciator Panel, response: CHECKED / CLEAR}
+  - {item: Heading Indicator, response: ALIGNED}
+  - {item: Time, response: NOTED}

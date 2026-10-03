@@ -1,0 +1,8 @@
+# Pick list: TRANSITION LEVEL (DESCENT)
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: TRANSITION LEVEL (DESCENT)
+order: 17
+items:
+  - {item: Altimeters, response: LOCAL SETTING / CROSS-CHECKED}
+  - {item: Altitude Alerter, response: SET}
+  - {item: ATIS, response: RECEIVED}

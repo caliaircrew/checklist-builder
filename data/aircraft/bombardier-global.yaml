@@ -1,0 +1,5 @@
+# Aircraft: Bombardier Global. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 140, id: global-express-xrs-5000-6000, make: Bombardier Global, model: Express / XRS / 5000 / 6000, years: 1999–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Global Express}
+  - {seq: 141, id: global-7500, make: Bombardier Global, model: '7500', years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true}

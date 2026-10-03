@@ -1,0 +1,23 @@
+# Pick list: DESCENT
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: DESCENT
+order: 16
+items:
+  - {item: ATIS / Weather, response: RECEIVED}
+  - {item: Altimeters (at transition level), response: SET LOCAL}
+  - {item: Approach Brief, response: COMPLETE}
+  - {item: FMS / Approach, response: LOADED / VERIFIED}
+  - {item: Landing Data / V-Speeds, response: SET}
+  - {item: Minimums, response: SET}
+  - {item: Nav Radios, response: SET / IDENTIFIED}
+  - {item: Pressurization, response: LANDING ELEV SET, tags: [press]}
+  - {item: Mixture, response: ENRICH AS REQUIRED, tags: [piston]}
+  - {item: Carburetor Heat, response: AS REQUIRED, tags: [piston]}
+  - {item: Cowl Flaps, response: CLOSED, tags: [piston]}
+  - {item: Fuel Selector, response: FULLEST TANK, tags: [piston]}
+  - {item: Fuel Balance, response: CHECKED}
+  - {item: Anti-Ice / De-Ice, response: AS REQUIRED}
+  - {item: Seat Belt Sign, response: 'ON'}
+  - {item: Passenger Briefing, response: COMPLETE}
+  - {item: Landing Lights, response: 'ON'}
+  - {item: Weather Radar, response: AS REQUIRED, tags: [turbine]}

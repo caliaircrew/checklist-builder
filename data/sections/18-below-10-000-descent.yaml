@@ -1,0 +1,14 @@
+# Pick list: BELOW 10,000 (DESCENT)
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: BELOW 10,000 (DESCENT)
+order: 18
+items:
+  - {item: Landing Lights, response: 'ON'}
+  - {item: Seat Belt Sign, response: 'ON'}
+  - {item: Sterile Cockpit, response: IN EFFECT}
+  - {item: Airspeed, response: 250 KT MAX, tags: [turbine]}
+  - {item: Passenger Safety Switch, response: PASS SAFETY, tags: [turbine]}
+  - {item: Pressurization, response: CHECKED, tags: [press]}
+  - {item: Approach Briefing, response: COMPLETE}
+  - {item: Fuel Balance, response: CHECKED}
+  - {item: Anti-Ice, response: AS REQUIRED}

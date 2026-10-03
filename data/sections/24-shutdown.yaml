@@ -1,0 +1,23 @@
+# Pick list: SHUTDOWN
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+title: SHUTDOWN
+order: 24
+items:
+  - {item: Parking Brake, response: SET}
+  - {item: Throttle(s), response: IDLE}
+  - {item: Avionics, response: 'OFF'}
+  - {item: Electrical Equipment, response: 'OFF'}
+  - {item: ELT, response: CHECK 121.5 (NOT ACTIVATED)}
+  - {item: Engine Cool-Down, response: COMPLETE (TIME PER AFM), tags: [turbine]}
+  - {item: Mixture, response: IDLE CUTOFF, tags: [piston]}
+  - {item: Magnetos, response: OFF / KEY REMOVED, tags: [piston]}
+  - {item: Throttles / Fuel, response: CUTOFF, tags: [turbine]}
+  - {item: ITT, response: MONITOR, tags: [turbine]}
+  - {item: Generators, response: 'OFF', tags: [turbine]}
+  - {item: APU, response: 'OFF', tags: [jet]}
+  - {item: Beacon, response: 'OFF'}
+  - {item: Passenger Safety Switch, response: 'OFF', tags: [turbine]}
+  - {item: Battery / Master, response: 'OFF'}
+  - {item: Fuel Selector, response: AS REQUIRED}
+  - {item: Hobbs / Tach, response: RECORDED, tags: [piston]}
+  - {item: Flight Times, response: RECORDED}

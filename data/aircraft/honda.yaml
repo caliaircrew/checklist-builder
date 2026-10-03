@@ -1,0 +1,4 @@
+# Aircraft: Honda. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 143, id: honda-hondajet-ha-420, make: Honda, model: HondaJet HA-420, years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: HondaJet Elite}

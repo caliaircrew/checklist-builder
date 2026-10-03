@@ -1,0 +1,9 @@
+# Aircraft: Gulfstream. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 122, id: gulfstream-gii-giii, make: Gulfstream, model: GII / GIII, years: 1967–1986, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G2 G3}
+  - {seq: 123, id: gulfstream-giv-g450, make: Gulfstream, model: GIV / G450, years: 1987–2018, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G4}
+  - {seq: 124, id: gulfstream-gv-g550, make: Gulfstream, model: GV / G550, years: 1997–2021, engine: jet, twin: true, retractable: true, pressurized: true, search_words: G5}
+  - {seq: 125, id: gulfstream-g280, make: Gulfstream, model: G280, years: 2012–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 126, id: gulfstream-g500-g600, make: Gulfstream, model: G500 / G600, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 127, id: gulfstream-g650-g650er, make: Gulfstream, model: G650 / G650ER, years: 2012–present, engine: jet, twin: true, retractable: true, pressurized: true}
