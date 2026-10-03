@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.23 | 2026-10-03 | Builder: Home button + title link to the site root. Homepage Sign in (top bar and phone tab) → crew/#/me. |
 | 1.22 | 2026-10-03 | Profile editor: Browse the list (category → manufacturer → model tiles, tap to add/remove), manufacturer variants grouped (Cessna, Bombardier, Dassault, Embraer). |
 | 1.21 | 2026-10-03 | Crew directory page (/crew): sign-in (email code + Microsoft Authenticator), My profile editor with aircraft picker (623 types, hours, type rating), live preview (side by side on wide/landscape; Preview toggle on portrait/phones), publish → review status, public profile page (#/p/<id>) with FAA verified badge. Homepage List yourself box now live. |
 | 1.20 | 2026-10-03 | Homepage redesign (clear-sky palette, new headline, three entry boxes + Browse by aircraft, symmetric how-it-works steps, Get notified form → Supabase notify_signups, phone bottom tab bar). supabase/002_directory.sql: crew/operator profiles, aircraft links, moderation, admins, notify list, public counts. |
