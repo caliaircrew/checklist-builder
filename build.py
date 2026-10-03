@@ -17,6 +17,10 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.4.0  2026-10-04  Steve  Site layout: site/home.html becomes the homepage
+                            (index.html); the builder moves to
+                            checklists/index.html. Homepage checked for the
+                            builder link and the safety note. Builds app 1.18.
   2.3.0  2026-10-03  Steve  Bundles supabase-js (vendored, checksum-verified)
                             and the cloud config (project URL + publishable
                             key) from data/app.yaml; refuses secret keys.
@@ -47,7 +51,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.3.0"
+SCRIPT_VERSION = "2.4.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -348,9 +352,20 @@ def main(argv=None):
     if a.check:
         print("Check complete — nothing written.")
         return 0
-    os.makedirs(a.out, exist_ok=True)
+    # Site layout: homepage at the root, the builder at /checklists/
+    home_path = os.path.join(ROOT, "site", "home.html")
+    try:
+        need(os.path.exists(home_path), "missing site/home.html (homepage)")
+        home = open(home_path, encoding="utf-8").read()
+        need('href="checklists/"' in home, "site/home.html must link to the builder at checklists/")
+        need("not FAA-approved" in home, "site/home.html must keep the safety note in the footer")
+    except BuildError as e:
+        print(f"BUILD FAILED: {e}", file=sys.stderr)
+        return 1
+    os.makedirs(os.path.join(a.out, "checklists"), exist_ok=True)
     data = html.encode("utf-8")
-    open(os.path.join(a.out, "index.html"), "wb").write(data)
+    open(os.path.join(a.out, "checklists", "index.html"), "wb").write(data)
+    open(os.path.join(a.out, "index.html"), "w", encoding="utf-8").write(home)
     inputs = {os.path.relpath(p, ROOT).replace(os.sep, "/"): sha256(open(p, "rb").read())
               for p in files("data/**/*.yaml") + files("data/*.yaml") + [os.path.join(ROOT, "src", "app_template.html")]}
     manifest = {
@@ -358,14 +373,15 @@ def main(argv=None):
         "script_version": SCRIPT_VERSION, "show_drafts": bool(app["show_drafts"]),
         "built_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "commit": os.environ.get("GITHUB_SHA", ""), "python": sys.version.split()[0],
-        "output": {"file": "index.html", "bytes": len(data), "sha256": sha256(data)},
+        "output": {"file": "checklists/index.html", "bytes": len(data), "sha256": sha256(data),
+                   "homepage": {"file": "index.html", "sha256": sha256(home.encode("utf-8"))}},
         "inputs": inputs, "docx": app["docx"], "supabase_js": app.get("supabase_js"), "cloud_enabled": bool((app.get("cloud") or {}).get("enabled")),
         "content": {"pick_list_sections": n_secs, "pick_list_items": n_items, "aircraft": n_ac,
                     "suggested_models": minfo, "endorsements": einfo},
         "changelog_top": app["changelog"][0],
     }
     json.dump(manifest, open(os.path.join(a.out, "build_manifest.json"), "w", encoding="utf-8"), indent=2, ensure_ascii=False)
-    print(f"Wrote {os.path.join(a.out, 'index.html')}  sha256 {manifest['output']['sha256']}")
+    print(f"Wrote {os.path.join(a.out, 'index.html')} (homepage) and {os.path.join(a.out, 'checklists', 'index.html')}  sha256 {manifest['output']['sha256']}")
     return 0
 
 

@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.18 | 2026-10-04 | Cali Air Crew homepage at the site root (site/home.html, original coastal-sunset illustration, sample printed card, CFI section, safety footer). Builder moved to /checklists/. |
 | 1.17 | 2026-10-04 | My checklists card removed from the page; top 📁 dropdown switches checklists and offers New and a Manage panel (rename, duplicate, delete, backup/restore). Save/sync status moved to Step 1. |
 | 1.16 | 2026-10-04 | Sign-in dialog explains link sign-in (Supabase default templates send a link; codes need custom SMTP). |
 | 1.15 | 2026-10-03 | Optional accounts (Supabase): email-code sign-in, optional Microsoft Authenticator (TOTP) two-step, sync of checklists and My items across devices with offline queue and newest-wins merge, delete tombstones, account panel. Database setup in supabase/001_checklists.sql (owner-only RLS + MFA-when-enrolled). |
@@ -25,6 +26,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.4.0 | 2026-10-04 | Homepage at index.html, builder at checklists/index.html; homepage validation. Builds app 1.18. |
 | 2.3.0 | 2026-10-03 | Vendored supabase-js + cloud config from app.yaml (publishable key only; secret keys refused). Builds app 1.15. |
 | 2.2.0 | 2026-10-03 | Section `when` and `plain` fields, unique `order` check; emits LIB_WHEN / LIB_PLAIN. Builds app 1.09. |
 | 2.1.0 | 2026-10-03 | Pick-list default fields (`default_section`, item `default`) and LIB_DEFAULTS output. Builds app 1.08. |

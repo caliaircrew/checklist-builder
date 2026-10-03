@@ -28,6 +28,7 @@ publishes it. Pull requests are built and checked but not published.
 | `data/aircraft/<make>.yaml` | The "Find your aircraft" list, one file per make |
 | `data/models/*.yaml` | Suggested checklists for specific models, with review status |
 | `data/endorsements/ac-61-65k.yaml` | All 96 AC 61-65K endorsements (+ § 61.195(h)) with wording status |
+| `site/home.html` | The Cali Air Crew homepage (site root). Plain HTML; edit the wording freely |
 | `src/app_template.html` | Page layout, styles and behavior (placeholders are filled from the data) |
 | `vendor/` | docx (Word export) and supabase-js (sign-in & sync), checksum-verified |
 | `supabase/` | Database setup SQL for optional accounts (run once in Supabase's SQL Editor) |
