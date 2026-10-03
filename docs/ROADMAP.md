@@ -23,6 +23,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 12. Crew types: airplane pilot, helicopter pilot, CFI/CFII/CFI-H, corporate flight attendant, ferry/delivery pilot, mechanic (A&P/IA)
 - [ ] 13. Profile editor (build → publish/unpublish) and public profile page
 - [ ] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
+- [ ] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
 - [ ] 15. Admin review for James (approve, hide, handle reports)
 - [ ] 16. Homepage update; invite James's network
 
@@ -43,7 +44,13 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 26. Endorsements: fill 59 blank texts, verify 27 drafts against AC 61-65K
 - [ ] 27. Set `show_drafts: false` before public launch
 
+## Design
+- Look and feel: "clear sky" palette (sky ink #234A6E, sky blue #2470B3 for the main action, cloud #E4EEF8, page #F4F8FC, white cards, sage for verified/current), Barlow Condensed + Source Sans 3, white top bar on computers, bottom tab bar on phones. Design canvas: https://claude.ai/artifact/Aq6Toqrz36YdWrZXiHgfjz
+- Homepage headline: "Find the right pilot for every aircraft, / and the right tool for the job."
+- [ ] Apply the clear-sky look and new headline to the live homepage and checklist builder
+
 ## Guardrails (from earlier decisions)
+- No aircraft-for-sale or charter listings (different business; charter-broker risk). Operator profiles ("aircraft that need crew") are Phase 2.
 - Directory, not a broker: never arrange or sell flights; no trip/job posting board for now.
 - Profiles are advertisements; members verify each other. Show badges, never store or display ID/medical documents publicly.
 - Text-message two-step sign-in costs money (~$75/mo Supabase add-on + per-text fees): stay with Microsoft Authenticator.
