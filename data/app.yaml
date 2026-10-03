@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.16'
+app_version: '1.17'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,11 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.17'
+    notes:
+      - "Cleaner top of the page: the big My checklists box is gone, so Step 1 (aircraft search, the blue aircraft box and Reset to default) is first again"
+      - "One 📁 dropdown at the top does it all: tap a checklist to switch, ＋ New checklist, or Rename, duplicate, delete, back up… for the rest"
+      - "Saved / synced status now shows at the top of Step 1"
   - version: '1.16'
     notes:
       - "Sign-in: the email now arrives with a sign-in link; tap it on the device you're using and the page opens signed in. A 6-digit code box is still there for when code emails are turned on"

@@ -36,9 +36,9 @@ input[type=text],.afind input[type=search]{width:100%;font-size:16px;padding:10p
 .row{display:grid;grid-template-columns:34px 46px minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
 .row .n{font-size:14px;color:var(--muted);text-align:right}
-.hdrpick{max-width:210px;font-size:14px;padding:7px 8px;border:1px solid var(--line);border-radius:999px;background:var(--chip);color:var(--ink)}
+.hdrpick{max-width:240px;font-weight:600;font-size:14px;padding:7px 8px;border:1px solid var(--line);border-radius:999px;background:var(--chip);color:var(--ink)}
 body[data-mode="end"] .hdrpick{display:none}
-@media (max-width:600px){.hdrpick{max-width:150px}}
+@media (max-width:600px){.hdrpick{max-width:none;flex:1;min-width:0}}
 .libtop{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
 .libtop .f{flex:1;min-width:220px;margin-bottom:8px}
 #libPick{flex:1;min-width:200px}
@@ -186,15 +186,15 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 </header>
 <main id="main" data-view="edit">
   <section id="editPane">
-    <div class="card" id="libCard">
+    <div class="card" id="libCard" hidden>
       <p class="step">📁 My checklists</p>
-      <div class="libtop"><label class="f">This checklist's name<input type="text" id="libName" placeholder="e.g. N123AB – Citation XLS"></label><span class="libsaved" id="libSaved">✓ Saved on this device</span></div>
+      <div class="libtop"><label class="f">This checklist's name<input type="text" id="libName" placeholder="e.g. N123AB – Citation XLS"></label></div>
       <div class="outbar"><select id="libPick" class="esel" aria-label="Open a saved checklist"></select><button class="btn small" id="libNew">＋ New</button><button class="btn small" id="libDup">⧉ Duplicate</button><button class="btn small" id="libDel" style="color:var(--danger)">Delete</button></div>
       <div class="outbar"><button class="btn small" id="libExport">⬇ Back up all checklists</button><button class="btn small" id="libImport">⬆ Restore / import</button><input type="file" id="libFile" accept=".json,application/json" hidden></div>
       <p class="help" id="libHelp">Every checklist saves automatically as you work. To move them to another iPad or phone, tap <b>Back up all checklists</b>, then <b>Restore / import</b> on the other device. Your ★ My items come along too.</p>
     </div>
     <div class="card">
-      <p class="step">Step 1 · Your aircraft &amp; top of the page</p>
+      <p class="step" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span>Step 1 · Your aircraft &amp; top of the page</span><span class="libsaved" id="libSaved" style="text-transform:none;letter-spacing:0;font-weight:500;margin:0">✓ Saved on this device</span></p>
       <div id="aSel"></div>
       <div class="afind" id="aFind"><label class="f" style="margin-bottom:0">Find your aircraft<input type="search" id="aQ" placeholder="e.g. 182, Archer, SR22, King Air, Phenom 300" autocomplete="off"></label><div class="ares" id="aRes" hidden></div></div>
       <div class="grid3">
@@ -774,7 +774,7 @@ function drawLib(){const cur=LIBR.items[LIBR.current];
   $("libName").value=cur?cur.name:"";
   $("libPick").innerHTML=libSorted().map(it=>`<option value="${esc(it.id)}"${it.id===LIBR.current?" selected":""}>${esc(it.name||"Untitled")}${it.acft&&it.acft!==it.name?" · "+esc(it.acft):""}</option>`).join("");
   $("libDel").disabled=Object.keys(LIBR.items).length<1;
-  $("hdrPick").innerHTML=`<option value="" disabled>📁 Saved checklists</option>`+libSorted().map(it=>`<option value="${esc(it.id)}"${it.id===LIBR.current?" selected":""}>📁 ${esc(it.name||"Untitled")}</option>`).join("");}
+  $("hdrPick").innerHTML=`<optgroup label="My checklists">`+libSorted().map(it=>`<option value="${esc(it.id)}"${it.id===LIBR.current?" selected":""}>📁 ${esc(it.name||"Untitled")}</option>`).join("")+`</optgroup><optgroup label="──────────"><option value="act:new">＋ New checklist</option><option value="act:manage">⚙︎ Rename, duplicate, delete, back up…</option></optgroup>`;}
 function libOpen(id){const it=LIBR.items[id]; if(!it) return; libTouch(); LIBR.current=id; S=snap(it.data); if(!S.profile) S.profile={engine:"any",twin:true,retract:true,press:true}; save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib(); window.scrollTo(0,0)}
 function libAdd(data,name){libTouch(); const id=uid(); LIBR.items[id]={id,name:name||"New checklist",created:Date.now(),updated:Date.now(),acft:data.aircraft||"",data:snap(data)}; LIBR.current=id; S=snap(data); save(); lsave(); cloudDirty(id); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib(); return id}
 function nextName(base){const names=new Set(Object.values(LIBR.items).map(i=>i.name)); if(!names.has(base)) return base; let n=2; while(names.has(base+" "+n)) n++; return base+" "+n}
@@ -782,9 +782,30 @@ function nextName(base){const names=new Set(Object.values(LIBR.items).map(i=>i.n
 if(!LIBR.current||!LIBR.items[LIBR.current]){const first=libSorted()[0]; if(first){LIBR.current=first.id; S=snap(first.data)} else {const id=uid(); LIBR.items[id]={id,name:S.aircraft||"My checklist",created:Date.now(),updated:Date.now(),acft:S.aircraft||"",data:snap(S),auto:true}; LIBR.current=id} lsave(); loadHeader()}
 $("libName").addEventListener("input",()=>{const it=LIBR.items[LIBR.current]; if(!it) return; it.name=$("libName").value; it.updated=Date.now(); lsave(); cloudDirty(it.id); const o=$("libPick").querySelector(`option[value="${it.id}"]`); if(o) o.textContent=(it.name||"Untitled")+(it.acft&&it.acft!==it.name?" · "+it.acft:""); const h=$("hdrPick").querySelector(`option[value="${it.id}"]`); if(h) h.textContent="📁 "+(it.name||"Untitled")});
 $("libPick").onchange=e=>libOpen(e.target.value);
-$("hdrPick").onchange=e=>{if(e.target.value) libOpen(e.target.value)};
-$("libNew").onclick=()=>{libAdd({operator:S.operator||"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},nextName("New checklist")); $("libName").select(); status(""); setTimeout(()=>{const q=$("aQ"); if(q&&!q.closest("[hidden]")) q.scrollIntoView({block:"center"})},50)};
-$("libDup").onclick=()=>{const it=LIBR.items[LIBR.current]; libAdd(snap(S),nextName((it&&it.name||"Checklist")+" (copy)")); $("libName").select()};
+$("hdrPick").onchange=e=>{const v=e.target.value; if(!v) return;
+  if(v==="act:new"){drawLib(); $("libNew").click(); return}
+  if(v==="act:manage"){drawLib(); openManage(); return}
+  libOpen(v)};
+function openManage(){const it=LIBR.items[LIBR.current]||{};
+  const m=modalBox(`<h2>📁 My checklists</h2>
+    <label class="f">This checklist's name<input type="text" id="mgName" value="${esc(it.name||"")}" placeholder="e.g. N123AB – Citation XLS"></label>
+    <div class="outbar"><button class="btn small" id="mgNew">＋ New checklist</button><button class="btn small" id="mgDup">⧉ Duplicate this one</button><button class="btn small" id="mgDel" style="color:var(--danger)">🗑 Delete this one</button></div>
+    <h3>Move to another device</h3>
+    <p class="help">${sbUser?"You're signed in, so your checklists already sync to every device you sign in on. A backup file is still handy to keep.":"Sign in (top of the screen) to keep checklists on every device automatically, or use a backup file:"}</p>
+    <div class="outbar"><button class="btn small" id="mgBak">⬇ Back up all checklists</button><button class="btn small" id="mgRes">⬆ Restore / import</button></div>
+    <div style="text-align:right;margin-top:12px"><button class="btn primary" id="mgDone">Done</button></div>`);
+  const nm=m.querySelector("#mgName");
+  nm.addEventListener("input",()=>{$("libName").value=nm.value; $("libName").dispatchEvent(new Event("input"))});
+  const close=()=>{m.remove(); drawLib()};
+  m.querySelector("#mgDone").onclick=close;
+  m.querySelector("#mgNew").onclick=()=>{close(); $("libNew").click()};
+  m.querySelector("#mgDup").onclick=()=>{close(); $("libDup").click(); setTimeout(openManage,50)};
+  m.querySelector("#mgDel").onclick=()=>{$("libDel").click(); close()};
+  m.querySelector("#mgBak").onclick=()=>$("libExport").click();
+  m.querySelector("#mgRes").onclick=()=>{$("libFile").click(); close()};
+  nm.focus();}
+$("libNew").onclick=()=>{libAdd({operator:S.operator||"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},nextName("New checklist")); status(""); window.scrollTo(0,0); setTimeout(()=>{const q=$("aQ"); if(q&&!q.closest("[hidden]")) q.focus()},80)};
+$("libDup").onclick=()=>{const it=LIBR.items[LIBR.current]; libAdd(snap(S),nextName((it&&it.name||"Checklist")+" (copy)"))};
 $("libDel").onclick=()=>{const it=LIBR.items[LIBR.current]; if(!it) return; if(!confirm(`Delete "${it.name||"Untitled"}" from this device?\n\nTip: Back up all checklists first if you might want it later.`)) return;
   delete LIBR.items[it.id]; LIBR.deleted[it.id]=Date.now(); cloudDirty(it.id); const next=libSorted()[0]; if(next){LIBR.current=next.id; S=snap(next.data); save(); lsave(); loadHeader(); renderEditor(); renderPreview(); drawSel(); drawLib()} else {LIBR.current=null; libAdd({operator:"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]},"New checklist")}};
 $("libExport").onclick=()=>{libTouch(); const d=new Date(), ds=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
