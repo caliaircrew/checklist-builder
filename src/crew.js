@@ -140,7 +140,9 @@ async function viewMe(){
     </section>
     <section class="panel" aria-labelledby="h1b"><h2 id="h1b">Aircraft and time</h2>
       <p class="hint">Add each aircraft you are current on. Owners search by exact type.</p>
-      <div class="f acsearch"><label for="acq">Add an aircraft</label><input id="acq" type="search" autocomplete="off" placeholder="e.g. Citation XLS, King Air 350, R44"><div class="acres" id="acres" hidden></div></div>
+      <div class="f acsearch"><label for="acq">Add an aircraft</label><input id="acq" type="search" autocomplete="off" placeholder="Type to search, e.g. Citation XLS, King Air 350"><div class="acres" id="acres" hidden></div></div>
+      <div><button class="btn secondary" id="brw" type="button" aria-expanded="false" aria-controls="acbrowse">Browse the list</button></div>
+      <div id="acbrowse" class="browse" hidden></div>
       <div id="aclist"></div>
       <div class="grid2">${field("tt","Total time (hours)",P.total_time ?? "",'inputmode="numeric" placeholder="e.g. 6800"')}</div>
     </section>
@@ -180,7 +182,33 @@ async function viewMe(){
     if (t.id !== "acq") changed();
   });
   app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.name === "ct" || t.id === "pub") changed(); });
-  $("aclist").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (!b) return; AC.splice(+b.dataset.rm, 1); drawAc(); changed(); });
+  $("aclist").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (!b) return; AC.splice(+b.dataset.rm, 1); drawAc(); if (!$("acbrowse").hidden) drawBrowse(); changed(); });
+  /* browse: category -> manufacturer -> model tiles; tap to add or remove */
+  const CATS = [["jet","Jets"],["turboprop","Turboprops"],["ptwin","Piston twins"],["psingle","Piston singles"],["heli","Helicopters"]];
+  const catOf = a => a.heli ? "heli" : a.engine === "jet" ? "jet" : a.engine === "turboprop" ? "turboprop" : a.twin ? "ptwin" : "psingle";
+  const makeOf = a => /^Cessna/.test(a.make) ? "Cessna" : /^Bombardier/.test(a.make) ? "Bombardier" : /^Dassault/.test(a.make) ? "Dassault" : /^Embraer/.test(a.make) ? "Embraer" : a.make;
+  let bcat = null, bmake = null;
+  const drawBrowse = () => {
+    const box = $("acbrowse"), have = new Set(AC.map(a => a.acft_seq));
+    const cats = CATS.filter(([k]) => ACFT.some(a => catOf(a) === k));
+    let h = `<div class="pills" role="group" aria-label="Aircraft category">${cats.map(([k, l]) => `<button type="button" class="pill${k === bcat ? " on" : ""}" data-cat="${k}" aria-pressed="${k === bcat}">${esc(l)}</button>`).join("")}</div>`;
+    if (bcat) {
+      const makes = [...new Set(ACFT.filter(a => catOf(a) === bcat).map(makeOf))].sort((x, y) => x.localeCompare(y));
+      h += `<div class="pills makes" role="group" aria-label="Manufacturer">${makes.map(m => `<button type="button" class="pill${m === bmake ? " on" : ""}" data-make="${esc(m)}" aria-pressed="${m === bmake}">${esc(m)}</button>`).join("")}</div>`;
+      if (bmake) {
+        const list = ACFT.filter(a => catOf(a) === bcat && makeOf(a) === bmake);
+        h += `<div class="mtiles">${list.map(a => { const on = have.has(a.seq); return `<button type="button" class="mtile${on ? " on" : ""}" data-tog="${a.seq}" aria-pressed="${on}"><span>${esc(a.name.replace(new RegExp("^" + bmake.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s+"), ""))}</span><small>${on ? "✓ Added" : "＋ Add"} · ${esc(a.years)}</small></button>`; }).join("")}</div>`;
+      } else h += `<p class="hint">Pick a manufacturer.</p>`;
+    }
+    box.innerHTML = h;
+  };
+  $("brw").onclick = () => { const box = $("acbrowse"); box.hidden = !box.hidden; $("brw").setAttribute("aria-expanded", String(!box.hidden)); $("brw").textContent = box.hidden ? "Browse the list" : "Close the list"; if (!box.hidden) drawBrowse(); };
+  $("acbrowse").addEventListener("click", e => {
+    const c = e.target.closest("[data-cat]"), m = e.target.closest("[data-make]"), t = e.target.closest("[data-tog]");
+    if (c) { bcat = c.dataset.cat === bcat ? null : c.dataset.cat; bmake = null; drawBrowse(); return; }
+    if (m) { bmake = m.dataset.make === bmake ? null : m.dataset.make; drawBrowse(); return; }
+    if (t) { const seq = +t.dataset.tog, i = AC.findIndex(a => a.acft_seq === seq); if (i >= 0) AC.splice(i, 1); else AC.push({acft_seq:seq, type_rated:false, hours:null}); drawAc(); drawBrowse(); changed(); }
+  });
   const q = $("acq"), res = $("acres");
   q.addEventListener("input", () => {
     const words = q.value.toUpperCase().replace(/[-–]/g, " ").split(/\s+/).filter(Boolean);
