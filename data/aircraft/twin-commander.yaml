@@ -3,3 +3,5 @@
 aircraft:
   - {seq: 147, id: twin-commander-690-840-900-1000, make: Twin Commander, model: 690 / 840 / 900 / 1000, years: 1971–1986, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Aero Commander Jetprop}
   - {seq: 166, id: twin-commander-500-520-560-680-shrike, make: Twin Commander, model: 500 / 520 / 560 / 680 / Shrike (piston), years: 1951–1980, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Aero Commander Shrike Commander}
+  - {seq: 350, id: twin-commander-690a-690b-turbo-commander, make: Twin Commander, model: 690A / 690B Turbo Commander, years: 1973–1978, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Turbo Commander}
+  - {seq: 351, id: twin-commander-840-980-900-1000-jetprop-commander, make: Twin Commander, model: 840 / 980 / 900 / 1000 Jetprop Commander, years: 1979–1986, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Jetprop}

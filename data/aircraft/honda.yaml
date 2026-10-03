@@ -2,3 +2,4 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 143, id: honda-hondajet-ha-420, make: Honda, model: HondaJet HA-420, years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: HondaJet Elite}
+  - {seq: 396, id: honda-hondajet-elite-elite-s-elite-ii, make: Honda, model: HondaJet Elite / Elite S / Elite II, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: HA-420 Elite}

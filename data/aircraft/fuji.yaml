@@ -1,0 +1,4 @@
+# Aircraft: Fuji. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 434, id: fuji-fa-200-aero-subaru, make: Fuji, model: FA-200 Aero Subaru, years: 1965–1986, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}

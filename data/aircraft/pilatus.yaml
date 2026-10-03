@@ -4,3 +4,9 @@ aircraft:
   - {seq: 113, id: pilatus-pc-12-ng-ngx, make: Pilatus, model: PC-12 / NG / NGX, years: 1994–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: PC12}
   - {seq: 114, id: pilatus-pc-24, make: Pilatus, model: PC-24, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: PC24}
   - {seq: 193, id: pilatus-pc-6-porter, make: Pilatus, model: PC-6 Porter, years: 1959–2019, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Porter STOL}
+  - {seq: 225, id: pilatus-pc-12-41-and-pc-12-45, make: Pilatus, model: PC-12/41 and PC-12/45 (classic), years: 1994–2005, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: PC12 legacy}
+  - {seq: 226, id: pilatus-pc-12-47, make: Pilatus, model: PC-12/47, years: 2005–2007, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: PC12}
+  - {seq: 227, id: pilatus-pc-12-47e-ng, make: Pilatus, model: PC-12/47E NG, years: 2008–2018, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: PC12 NG}
+  - {seq: 228, id: pilatus-pc-12-ngx, make: Pilatus, model: PC-12 NGX, years: 2019–present, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: PC12 NGX}
+  - {seq: 229, id: pilatus-pc-7-pc-7-mkii, make: Pilatus, model: PC-7 / PC-7 MkII, years: 1978–present, engine: turboprop, twin: false, retractable: true, pressurized: false, search_words: trainer}
+  - {seq: 230, id: pilatus-pc-9, make: Pilatus, model: PC-9, years: 1985–2000s, engine: turboprop, twin: false, retractable: true, pressurized: false, search_words: trainer}

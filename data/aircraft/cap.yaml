@@ -1,0 +1,5 @@
+# Aircraft: CAP. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 336, id: cap-cap-10-10b-10c, make: CAP, model: CAP 10 / 10B / 10C, years: 1970–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Mudry aerobatic trainer}
+  - {seq: 337, id: cap-cap-231-232, make: CAP, model: CAP 231 / 232, years: 1985–2000s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Mudry aerobatic}

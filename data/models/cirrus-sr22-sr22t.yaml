@@ -9,6 +9,16 @@ reviewed_by: ''
 review_date: ''      # YYYY-MM-DD, required when reviewed
 aircraft:                # aircraft ids from data/aircraft/*.yaml
   - cirrus-sr22-sr22t
+  - cirrus-sr22-g1
+  - cirrus-sr22-g2
+  - cirrus-sr22-g3
+  - cirrus-sr22-g5
+  - cirrus-sr22-g6
+  - cirrus-sr22-g7
+  - cirrus-sr22t-g3-turbo
+  - cirrus-sr22t-g5
+  - cirrus-sr22t-g6
+  - cirrus-sr22t-g7
 source: Follows the Cirrus SR22 pilot's checklist structure (CAPS pin, dual battery/alternator, boost/prime fuel pump, 50% flap takeoff). Some responses are from general type knowledge.
 sections:
   - title: PREFLIGHT (CABIN)

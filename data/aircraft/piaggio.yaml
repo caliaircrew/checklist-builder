@@ -2,3 +2,5 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 145, id: piaggio-p-180-avanti, make: Piaggio, model: P.180 Avanti, years: 1990–2022, engine: turboprop, twin: true, retractable: true, pressurized: true}
+  - {seq: 347, id: piaggio-p-180-avanti-ii, make: Piaggio, model: P.180 Avanti II, years: 2005–2014, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Avanti II}
+  - {seq: 348, id: piaggio-p-180-avanti-evo, make: Piaggio, model: P.180 Avanti EVO, years: 2014–2022, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Avanti EVO}

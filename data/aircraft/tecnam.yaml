@@ -3,3 +3,6 @@
 aircraft:
   - {seq: 186, id: tecnam-p2008-p2010, make: Tecnam, model: P2008 / P2010, years: 2007–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA}
   - {seq: 187, id: tecnam-p2006t, make: Tecnam, model: P2006T, years: 2009–present, engine: piston, twin: true, retractable: true, pressurized: false}
+  - {seq: 315, id: tecnam-p-mentor, make: Tecnam, model: P-Mentor, years: 2021–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: trainer}
+  - {seq: 316, id: tecnam-p92-echo-eaglet, make: Tecnam, model: P92 Echo / Eaglet, years: 1993–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA}
+  - {seq: 317, id: tecnam-p2002-sierra, make: Tecnam, model: P2002 Sierra, years: 2003–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: LSA}

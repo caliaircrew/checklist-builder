@@ -1,0 +1,4 @@
+# Aircraft: Sukhoi. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 335, id: sukhoi-su-26-su-29-su-31, make: Sukhoi, model: Su-26 / Su-29 / Su-31, years: 1984–2000s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic radial}

@@ -8,3 +8,10 @@ aircraft:
   - {seq: 132, id: dassault-falcon-2000-series, make: Dassault Falcon, model: 2000 series, years: 1995–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 2000}
   - {seq: 133, id: dassault-falcon-7x-8x, make: Dassault Falcon, model: 7X / 8X, years: 2007–present, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 201, id: dassault-falcon-6x, make: Dassault Falcon, model: 6X, years: 2023–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 6X}
+  - {seq: 383, id: dassault-falcon-50-50ex, make: Dassault Falcon, model: 50 / 50EX, years: 1979–2008, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 50EX trijet}
+  - {seq: 384, id: dassault-falcon-900-900b-900c, make: Dassault Falcon, model: 900 / 900B / 900C, years: 1986–2000s, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 900B trijet}
+  - {seq: 385, id: dassault-falcon-900ex-900ex-easy-900lx, make: Dassault Falcon, model: 900EX / 900EX EASy / 900LX, years: 1996–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 900LX trijet}
+  - {seq: 386, id: dassault-falcon-2000-2000ex, make: Dassault Falcon, model: 2000 / 2000EX, years: 1995–2007, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 2000EX}
+  - {seq: 387, id: dassault-falcon-2000lx-lxs-s, make: Dassault Falcon, model: 2000LX / LXS / S, years: 2007–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 2000LXS}
+  - {seq: 388, id: dassault-falcon-7x, make: Dassault Falcon, model: 7X, years: 2007–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 7X trijet}
+  - {seq: 389, id: dassault-falcon-8x, make: Dassault Falcon, model: 8X, years: 2016–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Falcon 8X trijet}

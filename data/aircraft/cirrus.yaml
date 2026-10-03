@@ -4,3 +4,21 @@ aircraft:
   - {seq: 105, id: cirrus-sr20, make: Cirrus, model: SR20, years: 1999–present, engine: piston, twin: false, retractable: false, pressurized: false}
   - {seq: 106, id: cirrus-sr22-sr22t, make: Cirrus, model: SR22 / SR22T, years: 2001–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22 turbo}
   - {seq: 107, id: cirrus-sf50-vision-jet, make: Cirrus, model: SF50 Vision Jet, years: 2016–present, engine: jet, twin: false, retractable: true, pressurized: true, search_words: Vision Jet}
+  - {seq: 207, id: cirrus-sr20-g1, make: Cirrus, model: SR20 G1, years: 1999–2003, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR20}
+  - {seq: 208, id: cirrus-sr20-g2, make: Cirrus, model: SR20 G2, years: 2004–2007, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR20}
+  - {seq: 209, id: cirrus-sr20-g3, make: Cirrus, model: SR20 G3, years: 2008–2012, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR20}
+  - {seq: 210, id: cirrus-sr20-g5, make: Cirrus, model: SR20 G5, years: 2013–2016, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR20}
+  - {seq: 211, id: cirrus-sr20-g6, make: Cirrus, model: SR20 G6, years: 2017–2022, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR20}
+  - {seq: 212, id: cirrus-sr20-g7, make: Cirrus, model: SR20 G7, years: 2023–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR20}
+  - {seq: 213, id: cirrus-sr22-g1, make: Cirrus, model: SR22 G1, years: 2001–2003, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22}
+  - {seq: 214, id: cirrus-sr22-g2, make: Cirrus, model: SR22 G2, years: 2004–2006, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22}
+  - {seq: 215, id: cirrus-sr22-g3, make: Cirrus, model: SR22 G3, years: 2007–2012, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22}
+  - {seq: 216, id: cirrus-sr22-g5, make: Cirrus, model: SR22 G5, years: 2013–2016, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22}
+  - {seq: 217, id: cirrus-sr22-g6, make: Cirrus, model: SR22 G6, years: 2017–2022, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22}
+  - {seq: 218, id: cirrus-sr22-g7, make: Cirrus, model: SR22 G7, years: 2023–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22}
+  - {seq: 219, id: cirrus-sr22t-g3-turbo, make: Cirrus, model: SR22T G3 Turbo, years: 2010–2012, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22T turbo}
+  - {seq: 220, id: cirrus-sr22t-g5, make: Cirrus, model: SR22T G5, years: 2013–2016, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22T turbo}
+  - {seq: 221, id: cirrus-sr22t-g6, make: Cirrus, model: SR22T G6, years: 2017–2022, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22T turbo}
+  - {seq: 222, id: cirrus-sr22t-g7, make: Cirrus, model: SR22T G7, years: 2023–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: SR22T turbo}
+  - {seq: 223, id: cirrus-sf50-vision-jet-g1, make: Cirrus, model: SF50 Vision Jet G1, years: 2016–2021, engine: jet, twin: false, retractable: true, pressurized: true, search_words: Vision Jet}
+  - {seq: 224, id: cirrus-sf50-vision-jet-g2-g2, make: Cirrus, model: SF50 Vision Jet G2 / G2+, years: 2022–present, engine: jet, twin: false, retractable: true, pressurized: true, search_words: Vision Jet}

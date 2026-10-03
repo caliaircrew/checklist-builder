@@ -1,0 +1,4 @@
+# Aircraft: Slingsby. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 324, id: slingsby-t67-firefly, make: Slingsby, model: T67 Firefly, years: 1974–1995, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic trainer}

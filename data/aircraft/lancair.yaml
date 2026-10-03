@@ -1,0 +1,5 @@
+# Aircraft: Lancair. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 425, id: lancair-iv-p-evolution, make: Lancair, model: IV-P / Evolution (kit), years: 1990s–present, engine: piston, twin: false, retractable: true, pressurized: true, search_words: Lancair pressurized}
+  - {seq: 426, id: lancair-legacy-es, make: Lancair, model: Legacy / ES (kit), years: 1998–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Lancair}

@@ -9,6 +9,7 @@ reviewed_by: ''
 review_date: ''      # YYYY-MM-DD, required when reviewed
 aircraft:                # aircraft ids from data/aircraft/*.yaml
   - cessna-172r-172s-skyhawk
+  - cessna-172s-skyhawk-sp
 source: 'Follows the Cessna 172S POH Section 4 order (fuel-injected IO-360: fuel pump and mixture start, no carburetor heat).'
 sections:
   - title: PREFLIGHT (CABIN)

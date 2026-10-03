@@ -1,0 +1,4 @@
+# Aircraft: Waco. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 345, id: waco-ymf-5-classic, make: Waco, model: YMF-5 / Classic, years: 1986–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: biplane}

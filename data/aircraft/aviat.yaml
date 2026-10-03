@@ -3,3 +3,5 @@
 aircraft:
   - {seq: 171, id: aviat-a-1-husky, make: Aviat, model: A-1 Husky, years: 1987–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: tailwheel bush}
   - {seq: 172, id: aviat-pitts-s-2-series, make: Aviat, model: Pitts S-2 series, years: 1971–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic S-2B S-2C}
+  - {seq: 333, id: aviat-pitts-s-1s-s-1t-s-1-11, make: Aviat, model: Pitts S-1S / S-1T / S-1-11, years: 1960s–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic single seat}
+  - {seq: 334, id: aviat-christen-eagle-ii, make: Aviat, model: Christen Eagle II (kit), years: 1977–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}

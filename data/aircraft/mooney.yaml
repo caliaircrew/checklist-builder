@@ -2,3 +2,12 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 108, id: mooney-m20-series, make: Mooney, model: 'M20 series (M20C–M20V, Ovation, Acclaim)', years: 1955–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Mooney}
+  - {seq: 282, id: mooney-m20c-ranger-mark-21, make: Mooney, model: M20C Ranger / Mark 21, years: 1962–1978, engine: piston, twin: false, retractable: true, pressurized: false, search_words: M20C}
+  - {seq: 283, id: mooney-m20e-chaparral-super-21, make: Mooney, model: M20E Chaparral / Super 21, years: 1964–1975, engine: piston, twin: false, retractable: true, pressurized: false, search_words: M20E}
+  - {seq: 284, id: mooney-m20f-executive, make: Mooney, model: M20F Executive, years: 1967–1977, engine: piston, twin: false, retractable: true, pressurized: false, search_words: M20F}
+  - {seq: 285, id: mooney-m20j-201-mse-allegro, make: Mooney, model: M20J 201 / MSE / Allegro, years: 1977–1998, engine: piston, twin: false, retractable: true, pressurized: false, search_words: M20J 201}
+  - {seq: 286, id: mooney-m20k-231-252-encore, make: Mooney, model: M20K 231 / 252 / Encore, years: 1979–1998, engine: piston, twin: false, retractable: true, pressurized: false, search_words: M20K turbo}
+  - {seq: 287, id: mooney-m20m-tls-bravo, make: Mooney, model: M20M TLS / Bravo, years: 1989–2006, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Bravo turbo}
+  - {seq: 288, id: mooney-m20r-ovation, make: Mooney, model: M20R Ovation, years: 1994–2019, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Ovation}
+  - {seq: 289, id: mooney-m20tn-acclaim, make: Mooney, model: M20TN Acclaim, years: 2006–2019, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Acclaim turbo}
+  - {seq: 290, id: mooney-m20v-acclaim-ultra-m20u-ovation-ultra, make: Mooney, model: M20V Acclaim Ultra / M20U Ovation Ultra, years: 2017–2019, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Ultra}

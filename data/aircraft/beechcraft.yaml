@@ -21,3 +21,25 @@ aircraft:
   - {seq: 158, id: beechcraft-77-skipper, make: Beechcraft, model: 77 Skipper, years: 1979–1981, engine: piston, twin: false, retractable: false, pressurized: false, search_words: trainer}
   - {seq: 159, id: beechcraft-king-air-100-a100-b100, make: Beechcraft, model: King Air 100 / A100 / B100, years: 1969–1983, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 100}
   - {seq: 160, id: beechcraft-2000-starship, make: Beechcraft, model: 2000 Starship, years: 1989–1995, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Starship pusher}
+  - {seq: 261, id: beechcraft-a36-bonanza, make: Beechcraft, model: A36 Bonanza, years: 1970–2005, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Bonanza A36}
+  - {seq: 262, id: beechcraft-g36-bonanza, make: Beechcraft, model: G36 Bonanza, years: 2006–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: Bonanza G36 G1000}
+  - {seq: 263, id: beechcraft-v35b-bonanza, make: Beechcraft, model: V35B Bonanza, years: 1970–1982, engine: piston, twin: false, retractable: true, pressurized: false, search_words: V-tail}
+  - {seq: 264, id: beechcraft-55-baron, make: Beechcraft, model: 55 Baron, years: 1961–1983, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Baron 55}
+  - {seq: 265, id: beechcraft-58-baron, make: Beechcraft, model: 58 Baron, years: 1969–2005, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Baron 58}
+  - {seq: 266, id: beechcraft-g58-baron, make: Beechcraft, model: G58 Baron, years: 2005–present, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Baron G58 G1000}
+  - {seq: 267, id: beechcraft-58p-pressurized-baron, make: Beechcraft, model: 58P Pressurized Baron, years: 1976–1985, engine: piston, twin: true, retractable: true, pressurized: true, search_words: Baron 58P}
+  - {seq: 268, id: beechcraft-58tc-turbo-baron, make: Beechcraft, model: 58TC Turbo Baron, years: 1976–1984, engine: piston, twin: true, retractable: true, pressurized: false, search_words: Baron 58TC}
+  - {seq: 269, id: beechcraft-t-34-mentor, make: Beechcraft, model: T-34 Mentor, years: 1953–1959, engine: piston, twin: false, retractable: true, pressurized: false, search_words: T-34A T-34B warbird}
+  - {seq: 270, id: beechcraft-king-air-a90-b90-c90-e90, make: Beechcraft, model: King Air A90 / B90 / C90 / E90 (classic), years: 1966–1991, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air C90}
+  - {seq: 271, id: beechcraft-king-air-f90, make: Beechcraft, model: King Air F90, years: 1979–1985, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air F90}
+  - {seq: 272, id: beechcraft-king-air-c90gt-gti-gtx, make: Beechcraft, model: King Air C90GT / GTi / GTx, years: 2006–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air C90GTx}
+  - {seq: 273, id: beechcraft-king-air-200-b200, make: Beechcraft, model: King Air 200 / B200 (classic), years: 1974–2007, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Super King Air B200}
+  - {seq: 274, id: beechcraft-king-air-b200gt, make: Beechcraft, model: King Air B200GT, years: 2007–2011, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 250}
+  - {seq: 275, id: beechcraft-king-air-250, make: Beechcraft, model: King Air 250, years: 2011–2020, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 250}
+  - {seq: 276, id: beechcraft-king-air-260, make: Beechcraft, model: King Air 260, years: 2021–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 260}
+  - {seq: 277, id: beechcraft-king-air-300, make: Beechcraft, model: King Air 300, years: 1984–1994, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 300}
+  - {seq: 278, id: beechcraft-king-air-350-350i-350er, make: Beechcraft, model: King Air 350 / 350i / 350ER, years: 1990–2020, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 350i}
+  - {seq: 279, id: beechcraft-king-air-360-360er, make: Beechcraft, model: King Air 360 / 360ER, years: 2021–present, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: King Air 360}
+  - {seq: 280, id: beechcraft-99-airliner, make: Beechcraft, model: 99 Airliner, years: 1968–1986, engine: turboprop, twin: true, retractable: true, pressurized: false, search_words: Beech 99 commuter}
+  - {seq: 281, id: beechcraft-1900c-1900d, make: Beechcraft, model: 1900C / 1900D, years: 1984–2002, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Beech 1900 corporate shuttle}
+  - {seq: 399, id: beechcraft-premier-ia, make: Beechcraft, model: Premier IA, years: 2006–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Premier}

@@ -1,0 +1,4 @@
+# Aircraft: Liberty. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 321, id: liberty-xl2, make: Liberty, model: XL2, years: 2004–2010, engine: piston, twin: false, retractable: false, pressurized: false, search_words: trainer}

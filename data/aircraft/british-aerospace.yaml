@@ -1,0 +1,4 @@
+# Aircraft: British Aerospace. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 352, id: british-aerospace-jetstream-31-32, make: British Aerospace, model: Jetstream 31 / 32, years: 1982–1993, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Jetstream}

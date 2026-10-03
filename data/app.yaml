@@ -1,12 +1,16 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.10'
+app_version: '1.11'
 show_drafts: true
 docx:
   version: 9.6.1
   sha256: ecef72931c98461fc327aa6e95867820aced5db4c3d971ac5ad38ccda21dd360
 changelog:
+  - version: '1.11'
+    notes:
+      - "Over 200 more aircraft (now about 430), including each Cirrus SR20/SR22/SR22T generation and Vision Jet, every Pilatus PC-12 version plus PC-7/PC-9, the TBM 700 through 960, Piper M-class and Malibu/Matrix, King Air variants from the C90 to the 360, Learjet, Global, Gulfstream, Falcon and Hawker variants, Phenom/Praetor, ACJ and BBJ, plus a deep set of aerobatic, training, light-sport, warbird, amphibian and kit aircraft"
+      - "Cirrus SR22 generations, the Cessna 172S and Archer/Pilot 100i variants now load their suggested model checklists"
   - version: '1.10'
     notes:
       - "About 60 more aircraft in Find your aircraft (now about 210): taildraggers and bush planes (Husky, Citabria, Decathlon, Scout, Maule, Carbon Cub, Helio Courier, Beaver, Otter), aerobatic (Pitts, Extra), trainers (Grumman AA-1/AA-5, Beech Skipper, Tecnam, Socata TB), amphibians (Icon A5, Lake), classic and utility twins (Twin Beech, Twin Bonanza, Travel Air, Queen Air, Aerostar, Islander, P68, Twin Otter), turboprops (King Air 100, Starship, Cheyenne III/400, Epic E1000, Merlin/Metro, PC-6, Air Tractor) and jets (Hawker 4000, Gulfstream G100–G700, Falcon 6X, Westwind, Sabreliner, JetStar, Nextant)"

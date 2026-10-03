@@ -1,0 +1,5 @@
+# Aircraft: Yakovlev. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 338, id: yakovlev-yak-52-yak-52tw, make: Yakovlev, model: Yak-52 / Yak-52TW, years: 1979–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: aerobatic radial}
+  - {seq: 339, id: yakovlev-yak-18t, make: Yakovlev, model: Yak-18T, years: 1973–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: radial}

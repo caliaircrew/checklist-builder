@@ -1,0 +1,4 @@
+# Aircraft: Republic. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 419, id: republic-rc-3-seabee, make: Republic, model: RC-3 Seabee, years: 1946–1948, engine: piston, twin: false, retractable: true, pressurized: false, search_words: amphibian}

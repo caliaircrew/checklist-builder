@@ -3,3 +3,8 @@
 aircraft:
   - {seq: 140, id: global-express-xrs-5000-6000, make: Bombardier Global, model: Express / XRS / 5000 / 6000, years: 1999–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Global Express}
   - {seq: 141, id: global-7500, make: Bombardier Global, model: '7500', years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 367, id: global-global-express, make: Bombardier Global, model: Express, years: 1999–2004, engine: jet, twin: true, retractable: true, pressurized: true, search_words: BD-700}
+  - {seq: 368, id: global-global-express-xrs, make: Bombardier Global, model: Express XRS, years: 2005–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: XRS}
+  - {seq: 369, id: global-global-5000, make: Bombardier Global, model: 5000, years: 2005–2019, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Global 5000}
+  - {seq: 370, id: global-global-6000, make: Bombardier Global, model: 6000, years: 2012–2019, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Global 6000}
+  - {seq: 371, id: global-global-5500-6500, make: Bombardier Global, model: 5500 / 6500, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Global 6500}

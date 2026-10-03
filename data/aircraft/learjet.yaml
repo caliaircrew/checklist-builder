@@ -7,3 +7,14 @@ aircraft:
   - {seq: 137, id: learjet-55, make: Learjet, model: '55', years: 1981–1990, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 138, id: learjet-60, make: Learjet, model: '60', years: 1993–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 60}
   - {seq: 139, id: learjet-40-45-70-75, make: Learjet, model: 40 / 45 / 70 / 75, years: 1998–2022, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 45}
+  - {seq: 356, id: learjet-24, make: Learjet, model: '24', years: 1966–1977, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 24}
+  - {seq: 357, id: learjet-25, make: Learjet, model: '25', years: 1967–1982, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 25}
+  - {seq: 358, id: learjet-28-29-longhorn, make: Learjet, model: 28 / 29 Longhorn, years: 1979–1982, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 28}
+  - {seq: 359, id: learjet-31-31a, make: Learjet, model: 31 / 31A, years: 1990–2003, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 31A}
+  - {seq: 360, id: learjet-35-35a, make: Learjet, model: 35 / 35A, years: 1974–1994, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 35A}
+  - {seq: 361, id: learjet-36-36a, make: Learjet, model: 36 / 36A, years: 1974–1994, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 36A}
+  - {seq: 362, id: learjet-40-40xr, make: Learjet, model: 40 / 40XR, years: 2004–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 40XR}
+  - {seq: 363, id: learjet-45-45xr, make: Learjet, model: 45 / 45XR, years: 1998–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 45XR}
+  - {seq: 364, id: learjet-55-55b-55c, make: Learjet, model: 55 / 55B / 55C, years: 1981–1990, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 55}
+  - {seq: 365, id: learjet-60-60xr, make: Learjet, model: 60 / 60XR, years: 1993–2012, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 60XR}
+  - {seq: 366, id: learjet-70-75-75-liberty, make: Learjet, model: 70 / 75 / 75 Liberty, years: 2013–2022, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Lear 75}

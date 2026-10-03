@@ -2,3 +2,8 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 179, id: extra-300-series, make: Extra, model: 300 series, years: 1988–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic 300L 330}
+  - {seq: 329, id: extra-ea-200-ea-230, make: Extra, model: EA-200 / EA-230, years: 1983–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}
+  - {seq: 330, id: extra-ea-300l-300lp-300lx, make: Extra, model: EA-300L / 300LP / 300LX, years: 1988–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}
+  - {seq: 331, id: extra-ea-330lx-330sc, make: Extra, model: EA-330LX / 330SC, years: 2010–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}
+  - {seq: 332, id: extra-ng, make: Extra, model: NG, years: 2019–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}
+  - {seq: 355, id: extra-ea-500, make: Extra, model: EA-500, years: 2003–2010s, engine: turboprop, twin: false, retractable: true, pressurized: true, search_words: EA500}

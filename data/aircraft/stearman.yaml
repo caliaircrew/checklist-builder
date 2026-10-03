@@ -1,0 +1,4 @@
+# Aircraft: Stearman. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 344, id: stearman-pt-17-n2s-kaydet, make: Stearman, model: PT-17 / N2S Kaydet, years: 1934–1945, engine: piston, twin: false, retractable: false, pressurized: false, search_words: biplane warbird}

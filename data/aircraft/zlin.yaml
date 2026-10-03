@@ -1,0 +1,5 @@
+# Aircraft: Zlin. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 327, id: zlin-z-242-z-142, make: Zlin, model: Z-242 / Z-142, years: 1979–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic trainer}
+  - {seq: 328, id: zlin-z-50-z-526, make: Zlin, model: Z-50 / Z-526, years: 1975–1990s, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic}

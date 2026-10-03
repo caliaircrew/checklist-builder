@@ -6,3 +6,9 @@ aircraft:
   - {seq: 119, id: embraer-legacy-450-praetor-500, make: Embraer, model: Legacy 450 / Praetor 500, years: 2015–present, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 120, id: embraer-legacy-500-praetor-600, make: Embraer, model: Legacy 500 / Praetor 600, years: 2014–present, engine: jet, twin: true, retractable: true, pressurized: true}
   - {seq: 121, id: embraer-legacy-600-650, make: Embraer, model: Legacy 600 / 650, years: 2002–2020, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 353, id: embraer-emb-121-xingu, make: Embraer, model: EMB-121 Xingu, years: 1979–1987, engine: turboprop, twin: true, retractable: true, pressurized: true, search_words: Xingu}
+  - {seq: 372, id: embraer-phenom-100e-100ev-100ex, make: Embraer, model: Phenom 100E / 100EV / 100EX, years: 2014–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: EMB-500 Phenom 100EV}
+  - {seq: 373, id: embraer-phenom-300e, make: Embraer, model: Phenom 300E, years: 2018–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: EMB-505 Phenom 300E}
+  - {seq: 374, id: embraer-praetor-500, make: Embraer, model: Praetor 500, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Praetor}
+  - {seq: 375, id: embraer-praetor-600, make: Embraer, model: Praetor 600, years: 2019–present, engine: jet, twin: true, retractable: true, pressurized: true, search_words: Praetor}
+  - {seq: 376, id: embraer-lineage-1000-1000e, make: Embraer, model: Lineage 1000 / 1000E, years: 2009–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: E190 bizliner}

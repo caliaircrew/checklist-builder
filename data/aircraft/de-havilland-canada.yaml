@@ -4,3 +4,5 @@ aircraft:
   - {seq: 190, id: de-havilland-canada-dhc-2-beaver, make: de Havilland Canada, model: DHC-2 Beaver, years: 1947–1967, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Beaver floatplane radial}
   - {seq: 191, id: de-havilland-canada-dhc-3-otter, make: de Havilland Canada, model: DHC-3 Otter, years: 1951–1967, engine: piston, twin: false, retractable: false, pressurized: false, search_words: Otter}
   - {seq: 192, id: de-havilland-canada-dhc-6-twin-otter, make: de Havilland Canada, model: DHC-6 Twin Otter, years: 1965–present, engine: turboprop, twin: true, retractable: false, pressurized: false, search_words: Twin Otter Viking}
+  - {seq: 421, id: de-havilland-canada-dhc-2t-turbo-beaver, make: de Havilland Canada, model: DHC-2T Turbo Beaver, years: 1963–1967, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Turbo Beaver}
+  - {seq: 422, id: de-havilland-canada-dhc-3t-turbine-otter, make: de Havilland Canada, model: DHC-3T Turbine Otter (conversion), years: 1980s–present, engine: turboprop, twin: false, retractable: false, pressurized: false, search_words: Vazar Otter}

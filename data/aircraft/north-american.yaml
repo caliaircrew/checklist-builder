@@ -1,0 +1,5 @@
+# Aircraft: North American. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 342, id: north-american-t-6-texan-harvard, make: North American, model: T-6 Texan / Harvard, years: 1937–1954, engine: piston, twin: false, retractable: true, pressurized: false, search_words: warbird radial tailwheel}
+  - {seq: 343, id: north-american-t-28-trojan, make: North American, model: T-28 Trojan, years: 1950–1957, engine: piston, twin: false, retractable: true, pressurized: false, search_words: warbird radial}

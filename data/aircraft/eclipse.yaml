@@ -2,3 +2,5 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 aircraft:
   - {seq: 144, id: eclipse-500-550, make: Eclipse, model: 500 / 550, years: 2006 on, engine: jet, twin: true, retractable: true, pressurized: true}
+  - {seq: 397, id: eclipse-500, make: Eclipse, model: '500', years: 2006–2008, engine: jet, twin: true, retractable: true, pressurized: true, search_words: EA500}
+  - {seq: 398, id: eclipse-550, make: Eclipse, model: '550', years: 2014–2020, engine: jet, twin: true, retractable: true, pressurized: true, search_words: EA550}

@@ -1,0 +1,4 @@
+# Aircraft: Progressive Aerodyne. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 420, id: progressive-aerodyne-searey-adventure-elite, make: Progressive Aerodyne, model: SeaRey Adventure / Elite, years: 2010s–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: amphibian LSA}

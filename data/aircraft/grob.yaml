@@ -1,0 +1,5 @@
+# Aircraft: Grob. 'seq' is permanent — never reuse or renumber; new aircraft get the next unused seq.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+aircraft:
+  - {seq: 322, id: grob-g115-tutor, make: Grob, model: G115 / Tutor, years: 1987–present, engine: piston, twin: false, retractable: false, pressurized: false, search_words: aerobatic trainer}
+  - {seq: 323, id: grob-g120a-g120tp, make: Grob, model: G120A / G120TP, years: 1999–present, engine: piston, twin: false, retractable: true, pressurized: false, search_words: trainer}
