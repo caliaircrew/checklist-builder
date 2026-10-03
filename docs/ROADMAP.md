@@ -3,9 +3,9 @@
 Tick items as they are done (edit this file, or ask Claude to). Order = planned order of work.
 
 ## A. Housekeeping
-- [ ] 1. Supabase URL Configuration: Site URL `https://caliaircrew.com/checklists/`; Redirect URLs include `https://caliaircrew.com/**` (keep the github.io entries)
-- [ ] 2. GitHub Pages: Enforce HTTPS on once the certificate is issued
-- [ ] 3. Delete Steve's old "Supabase checklist" Gmail app password (James's account is the sender now)
+- [x] 1. Supabase URL Configuration: Site URL `https://caliaircrew.com/checklists/`; Redirect URLs include `https://caliaircrew.com/**` (keep the github.io entries)
+- [x] 2. GitHub Pages: Enforce HTTPS on once the certificate is issued
+- [x] 3. Delete Steve's old "Supabase checklist" Gmail app password (James's account is the sender now)
 - [ ] 4. Delete the temporary GitHub fine-grained token after the session (expires ~2026-10-10)
 
 ## B. Checklist builder
