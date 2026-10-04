@@ -53,11 +53,17 @@ async function load(){
     q("requests", sb.from("aircraft_requests").select("*").order("created_at", {ascending:false})), q("privacy", sb.from("privacy_requests").select("*").order("received_on", {ascending:false})),
     q("partners", sb.from("partners").select("*").order("sort").order("name")), q("banner", sb.from("site_settings").select("*").eq("key", "banner").maybeSingle()),
     q("audit", sb.from("admin_audit").select("*").order("id", {ascending:false}).limit(300))]);
+  // Operator profiles (database update 009). Older databases simply show none.
+  const soft = fn => fn.then(r => r.error ? [] : (r.data || []), () => []);
+  const [ops, opac, oppend] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*"))]);
   const mod = new Map(mods.map(m => [m.user_id, m])), acBy = new Map(), pend = new Map(pending.map(p => [p.user_id, p]));
   aircraft.forEach(a => { if (!acBy.has(a.user_id)) acBy.set(a.user_id, []); acBy.get(a.user_id).push(a); });
   const email = new Map(users.map(u => [u.user_id, u.email]));
   const statusOf = p => { const m = mod.get(p.user_id); if (m && m.hidden) return "hidden"; if (!p.published) return "draft"; return m && m.approved ? "listed" : "waiting"; };
-  D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf};
+  const opAcBy = new Map(); opac.forEach(a => { if (!opAcBy.has(a.user_id)) opAcBy.set(a.user_id, []); opAcBy.get(a.user_id).push(a); });
+  const opStatus = o => { const m = mod.get(o.user_id); if (m && m.op_hidden) return "hidden"; if (!o.published) return "draft"; return m && m.op_approved ? "listed" : "waiting"; };
+  D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf,
+       ops, opAcBy, opPend:new Map(oppend.map(p => [p.user_id, p])), opStatus};
 }
 
 /* ---------------- quality flags ---------------- */
@@ -83,7 +89,8 @@ const completeness = p => { const d = p.details || {}, ac = D.acBy.get(p.user_id
 const TABS = [["dash","Dashboard"],["review","Review"],["users","Users"],["signups","Sign-ups"],["requests","Requests"],["site","Site"],["audit","Audit log"],["backup","Backup"]];
 let tab = "dash";
 function shell(body){
-  const waiting = new Set([...D.profiles.filter(p => D.statusOf(p) === "waiting").map(p => p.user_id), ...D.pend.keys()]).size;
+  const waiting = new Set([...D.profiles.filter(p => D.statusOf(p) === "waiting").map(p => p.user_id), ...D.pend.keys()]).size
+    + new Set([...D.ops.filter(o => D.opStatus(o) === "waiting").map(o => o.user_id), ...D.opPend.keys()]).size;
   const reqs = D.acreq.filter(r => r.status === "open").length + D.privacy.filter(r => r.status === "open").length;
   app.innerHTML = `<div class="pagehead"><div><h1>Admin</h1><p>Signed in as ${esc(user.email)} · <a href="#" id="rl">Refresh</a></p></div></div>
     <nav class="atabs" aria-label="Admin sections">${TABS.map(([k, l]) => `<a href="#${k}" class="${k === tab ? "on" : ""}">${l}${k === "review" && waiting ? ` <span class="n">${waiting}</span>` : ""}${k === "requests" && reqs ? ` <span class="n">${reqs}</span>` : ""}</a>`).join("")}</nav>
@@ -116,6 +123,8 @@ function viewDash(){
   const kpi = (v, t, sub) => `<div class="kpi"><b>${v}</b><span>${t}</span>${sub ? `<small>${sub}</small>` : ""}</div>`;
   const dbPct = Math.min(100, Math.round(100 * M.db_bytes / FREE.db)), mauPct = Math.min(100, Math.round(100 * M.active_30d / FREE.mau));
   const acName = s => (BYSEQ.get(s) || {}).name || "Aircraft #" + s;
+  const opsListed = D.ops.filter(o => D.opStatus(o) === "listed"), opTypes = new Set(); opsListed.forEach(o => (D.opAcBy.get(o.user_id) || []).forEach(a => opTypes.add(a.acft_seq)));
+  const both = [...types].filter(t => opTypes.has(t)).length;
   return `
   <h2 class="sect" style="margin-top:0">At a glance</h2>
   <div class="kgrid">
@@ -125,6 +134,8 @@ function viewDash(){
     ${kpi(fmt(M.searches_7d), "Searches this week", `${fmt(M.searches_30d)} in 30 days`)}
     ${kpi(fmt(types.size), "Aircraft types covered", "with at least one listed pilot")}
     ${kpi(fmt(M.notify_total), "Get-notified sign-ups", `+${M.notify_7d} this week · ${owners} owners/operators`)}
+    ${kpi(fmt(opsListed.length), "Listed operators", `${D.ops.filter(o => D.opStatus(o) === "waiting").length} waiting · ${opsListed.filter(o => o.open_to_contract).length} open to contract crew`)}
+    ${kpi(fmt(both), "Aircraft with crew and operators", "where pilots and operators meet")}
   </div>
   <h2 class="sect">Crew supply</h2>
   <div class="kgrid">
@@ -180,19 +191,45 @@ function itemHTML(p, mode){
       <a class="btn secondary sm" href="../crew/#/p/${esc(p.user_id)}" target="_blank" rel="noopener">View as public</a>
     </div></article>`;
 }
+const OPK = {owner:"Private owner", charter:"Charter operator (Part 135)", management:"Management company", flight_department:"Corporate flight department", school:"Flight school", other:"Other"};
+function opItemHTML(o, mode){
+  const d = o.details || {}, m = D.mod.get(o.user_id) || {}, ac = D.opAcBy.get(o.user_id) || [], pend = D.opPend.get(o.user_id), txt = (pend && pend.about) || o.about || "";
+  const fl = []; if (!ac.length) fl.push(["bad", "No aircraft"]); if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(txt)) fl.push(["bad", "Email address in text"]); if (/(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(txt)) fl.push(["bad", "Phone number in text"]); if (!d.region) fl.push(["", "No region"]);
+  return `<article class="item op" data-id="${esc(o.user_id)}">
+    <div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap"><h3>✈ ${esc(d.private || !o.name ? "Private owner" : o.name)}</h3><span class="tag ${D.opStatus(o) === "listed" ? "ok" : "warn"}">operator · ${esc(D.opStatus(o))}</span></div>
+    <div class="meta">${esc(D.email.get(o.user_id) || "")} · ${esc(OPK[o.kind] || o.kind)} · ${esc([d.airport, L.region[d.region]].filter(Boolean).join(" · ") || "no base")}${o.open_to_contract ? " · open to contract crew" : ""}</div>
+    ${fl.length ? `<div class="flags">${fl.map(([k, t]) => `<span class="flag ${k}">${esc(t)}</span>`).join("")}</div>` : `<div class="flags"><span class="tag ok">No issues found</span></div>`}
+    <div style="font-size:16px;line-height:1.6">${ac.map(a => esc((BYSEQ.get(a.acft_seq) || {}).name || "#" + a.acft_seq) + (a.how_many > 1 ? " × " + a.how_many : "")).join("<br>") || '<span class="empty">No aircraft</span>'}</div>
+    ${pend ? `<div><b>New text waiting for review</b><div class="pend">${esc(pend.about)}</div>${o.about ? `<b style="display:block;margin-top:8px">Currently public</b><div class="old">${esc(o.about)}</div>` : ""}</div>` : (o.about ? `<div class="old">${esc(o.about)}</div>` : "")}
+    <div class="acts">${mode === "text" ? `<button class="btn primary sm" data-oa="approvetext">Approve new text</button><button class="btn secondary sm" data-oa="declinetext">Decline new text</button>` : `<button class="btn primary sm" data-oa="approve">Approve operator</button>`}
+      <button class="btn secondary sm" data-oa="hide">${m.op_hidden ? "Unhide" : "Hide"}</button><a class="btn secondary sm" href="../crew/#/o/${esc(o.user_id)}" target="_blank" rel="noopener">View as public</a></div></article>`;
+}
 function viewReview(){
   const waiting = D.profiles.filter(p => D.statusOf(p) === "waiting").sort((a, b) => String(a.updated_at).localeCompare(String(b.updated_at)));
   const textOnly = D.profiles.filter(p => D.pend.has(p.user_id) && D.statusOf(p) !== "waiting");
   const listed = D.profiles.filter(p => ["listed", "hidden"].includes(D.statusOf(p)));
+  const opWait = D.ops.filter(o => D.opStatus(o) === "waiting"), opText = D.ops.filter(o => D.opPend.has(o.user_id) && D.opStatus(o) !== "waiting"), opListed = D.ops.filter(o => ["listed", "hidden"].includes(D.opStatus(o)));
   return `<div class="toolbar"><button class="btn primary" id="bulk" type="button">Approve selected</button><span class="hint">Tick profiles, then approve them together. Their new text is approved too.</span></div>
   <h2 class="sect" style="margin-top:0">Waiting for review (${waiting.length})</h2>
   <div style="display:flex;flex-direction:column;gap:16px">${waiting.map(p => itemHTML(p, "new")).join("") || '<p class="empty">Nothing waiting.</p>'}</div>
   <h2 class="sect">Changed free text on listed profiles (${textOnly.length})</h2>
   <div style="display:flex;flex-direction:column;gap:16px">${textOnly.map(p => itemHTML(p, "text")).join("") || '<p class="empty">Nothing waiting.</p>'}</div>
-  <h2 class="sect">Listed and hidden profiles (${listed.length})</h2>
+  <h2 class="sect">Operators waiting for review (${opWait.length})</h2>
+  <div style="display:flex;flex-direction:column;gap:16px">${opWait.map(o => opItemHTML(o, "new")).join("") || '<p class="empty">Nothing waiting.</p>'}</div>
+  ${opText.length ? `<h2 class="sect">Changed operator text (${opText.length})</h2><div style="display:flex;flex-direction:column;gap:16px">${opText.map(o => opItemHTML(o, "text")).join("")}</div>` : ""}
+  <h2 class="sect">Listed and hidden operators (${opListed.length})</h2>
+  <div style="display:flex;flex-direction:column;gap:16px">${opListed.map(o => opItemHTML(o, "listed")).join("") || '<p class="empty">None yet.</p>'}</div>
+  <h2 class="sect">Listed and hidden crew profiles (${listed.length})</h2>
   <div style="display:flex;flex-direction:column;gap:16px">${listed.map(p => itemHTML(p, "listed")).join("") || '<p class="empty">None yet.</p>'}</div>`;
 }
 function bindReview(){
+  $("body").addEventListener("click", e => {
+    const b = e.target.closest("[data-oa]"); if (!b) return; const id = b.closest(".item").dataset.id, m = D.mod.get(id) || {}, a = b.dataset.oa;
+    if (a === "approve") return act(() => sb.rpc("admin_moderate_operator", {p_user:id, p_approved:true, p_hidden:false, p_note:m.note || "", p_approve_text:true}), "Operator approved.");
+    if (a === "hide") return act(() => sb.rpc("admin_moderate_operator", {p_user:id, p_approved:!!m.op_approved, p_hidden:!m.op_hidden, p_note:m.note || "", p_approve_text:false}), m.op_hidden ? "Unhidden." : "Hidden.");
+    if (a === "approvetext") return act(() => sb.rpc("admin_moderate_operator", {p_user:id, p_approved:!!m.op_approved, p_hidden:!!m.op_hidden, p_note:m.note || "", p_approve_text:true}), "New text approved.");
+    if (a === "declinetext") return act(() => sb.rpc("admin_decline_operator_text", {p_user:id}), "New text declined.");
+  });
   $("body").addEventListener("click", async e => {
     const b = e.target.closest("[data-a]"); if (!b) return; const it = b.closest(".item"), id = it.dataset.id, m = D.mod.get(id) || {}, note = it.querySelector(".note").value;
     const a = b.dataset.a;
@@ -307,7 +344,7 @@ function bindSite(){
 }
 
 function viewAudit(){
-  const what = {moderate:"Review decision", decline_text:"Declined new text", remove_authenticator:"Lost phone reset", make_admin:"Made admin", remove_admin:"Removed admin", delete_account:"Deleted account", banner:"Changed banner"};
+  const what = {moderate_operator:"Operator review", decline_operator_text:"Declined operator text", moderate:"Review decision", decline_text:"Declined new text", remove_authenticator:"Lost phone reset", make_admin:"Made admin", remove_admin:"Removed admin", delete_account:"Deleted account", banner:"Changed banner"};
   return `<p class="hint">The latest 300 admin actions. Entries can't be edited or deleted from here.</p><div class="tblwrap"><table class="tbl"><thead><tr><th>When</th><th>Admin</th><th>Action</th><th>Account</th><th>Details</th></tr></thead><tbody>
   ${D.audit.map(a => `<tr><td>${esc(new Date(a.at).toLocaleString("en-US"))}</td><td>${esc(a.admin_email)}</td><td>${esc(what[a.action] || a.action)}</td><td>${esc(a.target_email)}</td><td><small>${esc(Object.entries(a.detail || {}).map(([k, v]) => k + ": " + v).join(", "))}</small></td></tr>`).join("") || '<tr><td colspan="5" class="empty">Nothing yet.</td></tr>'}
   </tbody></table></div>`;
@@ -320,7 +357,7 @@ function viewBackup(){
 }
 function bindBackup(){
   $("bk1").onclick = () => { const out = {exported_at:new Date().toISOString(), exported_by:user.email, users:D.users, crew_profiles:D.profiles, crew_aircraft:[...D.acBy.values()].flat(), moderation:[...D.mod.values()], crew_bio_pending:[...D.pend.values()],
-      notify_signups:D.notify, aircraft_requests:D.acreq, privacy_requests:D.privacy, partners:D.partners, banner:D.banner, admin_audit:D.audit};
+      operator_profiles:D.ops, operator_aircraft:[...D.opAcBy.values()].flat(), operator_about_pending:[...D.opPend.values()], notify_signups:D.notify, aircraft_requests:D.acreq, privacy_requests:D.privacy, partners:D.partners, banner:D.banner, admin_audit:D.audit};
     download("cali-aircrew-backup-" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(out, null, 1), "application/json"); say("Backup downloaded.", true); };
 }
 

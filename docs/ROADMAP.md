@@ -4,6 +4,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 
 ## A. Housekeeping
 - [x] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor
+- [ ] 3e. Run supabase/009_operators.sql (operator profiles)
 - [x] 3d. supabase/008_metrics_fix.sql and supabase/001_checklists.sql applied 2026-10-03 (checklist sync tables were missing in production until now)
 - [x] 3c. Run supabase/007_admin.sql (admin page, review of free text, search metrics, banner, partners, requests)
 - [x] 3b. Run supabase/006_currency_details.sql (includes 005: Current checkbox, current-through month, training school)
@@ -33,8 +34,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
 - [x] 14c. Quick links under the Find crew search: Contract pilots · Available now · Part 135 current · CFIs near me · Helicopter pilots
 - [x] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
-- [ ] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)
-- [ ] 14d. Recommended crew for operators: an operator profile's aircraft + base automatically shows matching crew (type, region, available now, Part 135)
+- [x] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)
+- [x] 14d. Recommended crew for operators: an operator profile's aircraft + base automatically shows matching crew (type, region, available now, Part 135)
 - [x] 15. Admin page (caliaircrew.com/admin, admins only; database functions gated by is_admin(), no secret keys in the browser):
   - [x] 15a. Dashboard: users, profiles by status (draft / waiting / listed / hidden), operators, Get-notified sign-ups, new this week
   - [x] 15b. Review queue: approve, hide, mark FAA verified (with FAA registry link), notes; re-review when a listed profile's free text changes

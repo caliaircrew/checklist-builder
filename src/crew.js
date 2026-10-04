@@ -23,6 +23,10 @@ const OPT = {
   travel:[["local","Local only"],["300nm","Within 300 nm"],["westcoast","West Coast"],["national","Nationwide"],["international","International"]],
   experience:[["p91","Part 91"],["p135","Part 135 charter"],["p91k","Part 91K fractional"],["p121","Part 121 airline"],["corporate","Corporate flight department"],["intl","International / oceanic"],["mountain","Mountain flying"],["ems","Medevac / EMS"],["tours","Aerial tours"],["utility","Utility / external load"],["military","Military"]],
   school:[["flightsafety","FlightSafety"],["cae","CAE (SimuFlite)"],["simcom","SIMCOM"],["loft","LOFT (Carlsbad)"],["factory","Manufacturer / factory"],["inhouse","Company in-house (Part 135)"],["independent","Independent instructor"],["other","Other"]],
+  opkind:[["owner","Private owner"],["charter","Charter operator (Part 135)"],["management","Management company"],["flight_department","Corporate flight department"],["school","Flight school"],["other","Other"]],
+  oplook:[["pic","Captain / PIC"],["sic","First officer / SIC"],["fa","Flight attendant"],["mech","Mechanic"],["cfi","Flight instructor"]],
+  opops:[["p91","Part 91"],["p135","Part 135"],["p91k","Part 91K"]],
+  opwork:[["contract","Contract trips"],["fulltime","Full-time"],["parttime","Part-time"]],
   languages:[["en","English"],["es","Spanish"],["fr","French"],["pt","Portuguese"],["de","German"],["zh","Mandarin"],["other","Other"]]
 };
 const LBL = k => Object.fromEntries(OPT[k]);
@@ -185,7 +189,8 @@ function logSearch(n){
   logTimer = setTimeout(() => { LOGGED.add(key); sb.from("search_log").insert({acft_seq:F.seq, region:F.region || "", filters, results:n}).then(() => {}, () => {}); }, 1500);
 }
 const wide = () => window.matchMedia("(min-width: 1024px), (min-width: 760px) and (orientation: landscape)").matches;
-function tabs(which){ return `<div class="seg" role="tablist" aria-label="Find crew"><a role="tab" href="#/"${which === "search" ? ' aria-selected="true" class="on"' : ""}>Search crew</a><a role="tab" href="#/aircraft"${which === "browse" ? ' aria-selected="true" class="on"' : ""}>Browse by aircraft</a></div>`; }
+function tabs(which){ const t = (h, k, l) => `<a role="tab" href="${h}"${which === k ? ' aria-selected="true" class="on"' : ""}>${l}</a>`;
+  return `<div class="seg" role="tablist" aria-label="Directory">${t("#/", "search", "Crew")}${t("#/operators", "ops", "Operators")}${t("#/aircraft", "browse", "By aircraft")}</div>`; }
 function selectHTML(id, k, label, val, first){ return `<div class="f"><label for="${id}">${label}</label><select id="${id}"><option value="">${first}</option>${OPT[k].map(([v, l]) => `<option value="${v}"${v === val ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`; }
 
 async function viewFind(){
@@ -247,13 +252,14 @@ let BR = {cat:"", make:"", all:false};
 async function viewBrowse(){
   if (!sb) { app.innerHTML = `<p class="err">The directory isn't available right now.</p>`; return; }
   app.innerHTML = `<div class="pagehead"><div><h1>Browse by aircraft</h1><p>Start from the aircraft you fly or operate and see who is current on it.</p></div>${tabs("browse")}</div><div id="br"><p>Loading…</p></div>`;
-  let D; try { D = await loadDir(); } catch (e) { $("br").innerHTML = `<p class="err">Couldn't load the directory.</p>`; return; }
+  let D, O; try { [D, O] = await Promise.all([loadDir(), loadOps()]); } catch (e) { $("br").innerHTML = `<p class="err">Couldn't load the directory.</p>`; return; }
   const draw = () => {
-    const pool = ACFT.filter(a => (BR.all || D.count.get(a.seq)) && (!BR.cat || catOf2(a) === BR.cat));
-    const cats = CATS2.filter(([k]) => ACFT.some(a => catOf2(a) === k && (BR.all || D.count.get(a.seq))));
+    const has = a => D.count.get(a.seq) || O.count.get(a.seq);
+    const pool = ACFT.filter(a => (BR.all || has(a)) && (!BR.cat || catOf2(a) === BR.cat));
+    const cats = CATS2.filter(([k]) => ACFT.some(a => catOf2(a) === k && (BR.all || has(a))));
     const makes = BR.cat ? [...new Set(pool.map(makeOf2))].sort((x, y) => x.localeCompare(y)) : [];
-    const list = pool.filter(a => !BR.make || makeOf2(a) === BR.make).sort((x, y) => (D.count.get(y.seq) || 0) - (D.count.get(x.seq) || 0) || x.name.localeCompare(y.name));
-    const tile = a => `<a class="mtile" href="#/a/${a.seq}"><span>${esc(a.name)}</span><small>${D.count.get(a.seq) || 0} crew · ${esc(a.years)}</small></a>`;
+    const list = pool.filter(a => !BR.make || makeOf2(a) === BR.make).sort((x, y) => ((D.count.get(y.seq) || 0) + (O.count.get(y.seq) || 0)) - ((D.count.get(x.seq) || 0) + (O.count.get(x.seq) || 0)) || x.name.localeCompare(y.name));
+    const tile = a => `<a class="mtile" href="#/a/${a.seq}"><span>${esc(a.name)}</span><small>${D.count.get(a.seq) || 0} crew${O.count.get(a.seq) ? " · " + O.count.get(a.seq) + " operator" + (O.count.get(a.seq) === 1 ? "" : "s") : ""} · ${esc(a.years)}</small></a>`;
     $("br").innerHTML = `<div class="browse">
       <div class="pills" role="group" aria-label="Category"><button type="button" class="pill${!BR.cat ? " on" : ""}" data-c="">All</button>${cats.map(([k, l]) => `<button type="button" class="pill${k === BR.cat ? " on" : ""}" data-c="${k}">${esc(l)}</button>`).join("")}</div>
       ${makes.length > 1 ? `<div class="pills makes" role="group" aria-label="Manufacturer"><button type="button" class="pill${!BR.make ? " on" : ""}" data-m="">All makers</button>${makes.map(m => `<button type="button" class="pill${m === BR.make ? " on" : ""}" data-m="${esc(m)}">${esc(m)}</button>`).join("")}</div>` : ""}
@@ -267,7 +273,7 @@ async function viewBrowse(){
   draw();
 }
 
-async function viewAircraft(seq){
+async function viewAircraft(seq, which){
   const a = BYSEQ.get(seq);
   if (!a) { app.innerHTML = `<div class="center"><h1>Aircraft not found</h1><a class="btn secondary" href="#/aircraft">Browse by aircraft</a></div>`; return; }
   document.title = a.name + " crew · Cali Aircrew";
@@ -275,13 +281,20 @@ async function viewAircraft(seq){
   const facts = [["Category", cat], ["Engines", a.heli ? (a.engine === "piston" ? "Piston" : "Turbine") + (a.twin ? " twin" : " single") : (a.engine === "piston" ? "Piston" : a.engine === "turboprop" ? "Turboprop" : "Jet") + (a.twin ? " twin" : " single")], ["Years", a.years]];
   app.innerHTML = `<nav aria-label="Breadcrumb" class="crumbs"><a href="#/aircraft">Aircraft</a> › <span>${esc(cat)}</span> › <span aria-current="page">${esc(a.name)}</span></nav>
   <div class="acbanner"><div><h1>${esc(a.name)}</h1></div><div class="facts">${facts.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div></div>
-  <div class="seg" role="tablist" aria-label="On this aircraft" style="margin:16px 0"><a role="tab" class="on" aria-selected="true" href="#/a/${seq}">Crew on this aircraft</a><span role="tab" aria-disabled="true" class="soon2">Operators flying it · soon</span></div>
+  <div class="seg" role="tablist" aria-label="On this aircraft" style="margin:16px 0"><a role="tab"${which !== "ops" ? ' class="on" aria-selected="true"' : ""} href="#/a/${seq}">Crew on this aircraft</a><a role="tab"${which === "ops" ? ' class="on" aria-selected="true"' : ""} href="#/a/${seq}/ops">Operators flying it</a></div>
   <div class="acpage"><section class="panel" style="flex:999 1 520px;min-width:0"><div id="acrew"><p>Loading crew…</p></div></section>
     <div style="flex:1 1 300px;display:flex;flex-direction:column;gap:16px">
       <section class="panel"><h2>Checklist</h2><p class="hint" style="font-size:16px">${a.heli ? "Helicopter checklists are coming next. You can start one now from your own lines." : "Start from this aircraft's default and make it yours. Verify against your AFM/POH."}</p><a class="btn secondary" href="../checklists/#acft=${seq}">Build a checklist</a></section>
       <section class="panel"><h2>Fly this aircraft?</h2><p class="hint" style="font-size:16px">Add it to your free crew profile so owners can find you.</p><a class="btn primary" href="#/me">I fly this aircraft</a></section>
       <section class="panel"><h2>Training</h2><p class="hint" style="font-size:16px">Training partners for this type will appear here.</p><a href="../#partners">Become a partner</a></section>
     </div></div>`;
+  if (which === "ops") {
+    let O; try { O = await loadOps(); } catch (e) { $("acrew").innerHTML = `<p class="err">Couldn't load operators.</p>`; return; }
+    const hits = O.listed.filter(o => (O.acBy.get(o.user_id) || []).some(x => x.acft_seq === seq)).sort((x, y) => (y.open_to_contract ? 1 : 0) - (x.open_to_contract ? 1 : 0));
+    $("acrew").innerHTML = `<h2 style="margin:0 0 8px;font:700 26px/1.1 var(--display);color:var(--ink)">Operators flying this aircraft</h2><p class="count">${hits.length} listed operator${hits.length === 1 ? "" : "s"}</p>` +
+      (hits.length ? hits.map(o => opResultHTML(o, O.acBy.get(o.user_id) || [], seq)).join("") : `<p style="margin:0">No listed operators for this aircraft yet. <a href="#/op">Operate one? List it.</a></p>`);
+    return;
+  }
   let D; try { D = await loadDir(); } catch (e) { $("acrew").innerHTML = `<p class="err">Couldn't load crew.</p>`; return; }
   const saved = F; F = {seq, type:"", region:"", cert:"", avail:"", p135:false, contract:false};
   const hits = D.listed.filter(p => (D.acBy.get(p.user_id) || []).some(x => x.acft_seq === seq)).sort((x, y) => rank(y, D.acBy.get(y.user_id) || [], D.mod.get(y.user_id)) - rank(x, D.acBy.get(x.user_id) || [], D.mod.get(x.user_id)));
@@ -340,7 +353,7 @@ async function viewMe(){
   const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
   app.innerHTML = `
   <div class="pagehead"><div><h1>My crew profile</h1><p>Signed in as ${esc(user.email || "")}. Mostly taps: choose what fits, then Save.</p></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn secondary" href="#/op">Operator profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
   <div class="split" id="split">
    <div class="formcol">
     <section class="panel" aria-labelledby="h1a"><h2 id="h1a">About you</h2>
@@ -507,6 +520,199 @@ async function viewMe(){
   window.onbeforeunload = () => dirty ? "You have unsaved changes." : undefined;
 }
 
+/* ---------------- operators ---------------- */
+let OPS = null;
+async function loadOps(force){
+  if (OPS && !force && Date.now() - OPS.at < 60000) return OPS;
+  const [{data:ps, error:e1}, {data:acs}, {data:mods}] = await Promise.all([
+    sb.from("operator_profiles").select("*"), sb.from("operator_aircraft").select("*"), sb.from("moderation").select("*")]);
+  if (e1) throw e1;
+  const mod = new Map((mods || []).map(m => [m.user_id, m]));
+  const acBy = new Map(); (acs || []).forEach(a => { if (!acBy.has(a.user_id)) acBy.set(a.user_id, []); acBy.get(a.user_id).push(a); });
+  const listed = (ps || []).filter(o => { const m = mod.get(o.user_id); return o.published && m && m.op_approved && !m.op_hidden; });
+  const count = new Map(); listed.forEach(o => (acBy.get(o.user_id) || []).forEach(a => count.set(a.acft_seq, (count.get(a.acft_seq) || 0) + 1)));
+  OPS = {at:Date.now(), listed, acBy, mod, count};
+  return OPS;
+}
+const opName = o => (o.details || {}).private || !o.name ? "Private owner" : o.name;
+function opCardHTML(o, aircraft, opts){
+  const d = o.details || {}, chips = (k, arr) => (arr || []).map(v => lbl(k, v)).filter(Boolean).map(t => `<span class="badge">${esc(t)}</span>`).join("");
+  const base = [d.airport, lbl("region", d.region)].filter(Boolean).join(" · ");
+  const ac = (aircraft || []).map(a => ({...a, info:BYSEQ.get(a.acft_seq)})).filter(a => a.info);
+  const block = (t, h) => h ? `<section><h3>${t}</h3><div class="chips2">${h}</div></section>` : "";
+  return `<article class="pcard" aria-label="Operator profile">
+    <div class="top"><div class="avatar" aria-hidden="true">✈</div><div><h2>${esc(opName(o)) || '<span class="empty">Name</span>'}</h2>
+      <div class="meta">${esc(lbl("opkind", o.kind)) || '<span class="empty">Type of operator</span>'}</div>
+      <div class="meta">${base ? "Based in " + esc(base) : '<span class="empty">Home base</span>'}</div></div></div>
+    ${o.open_to_contract ? `<div class="badges"><span class="badge ok">✓ Open to contract crew</span></div>` : ""}
+    <section><h3>Aircraft</h3>${ac.length ? ac.map(a => `<div class="row"><span>${esc(a.info.name)}</span><b>${a.how_many > 1 ? "× " + a.how_many : ""}</b></div>`).join("") : '<p class="empty">Add the aircraft you operate.</p>'}</section>
+    ${block("Looking for", chips("oplook", d.looking))}
+    ${block("Operations", chips("opops", d.ops) + chips("opwork", d.work))}
+    ${o.about ? `<section><h3>About</h3><p>${esc(o.about)}</p></section>` : ""}
+    <div class="actions"><button class="btn primary" type="button" disabled title="Messaging opens soon" style="opacity:.6">Message (coming soon)</button></div>
+    <div class="note">${opts && opts.preview ? "Preview: this is how crew will see your operator profile." : "Cali Aircrew is a directory, not a broker. Verify operators before accepting work."}</div>
+  </article>`;
+}
+function opResultHTML(o, ac, seq){
+  const d = o.details || {}, base = [d.airport, lbl("region", d.region)].filter(Boolean).join(" · ");
+  const list = (seq != null ? ac.filter(a => a.acft_seq === seq) : ac).slice(0, 3).map(a => { const i = BYSEQ.get(a.acft_seq); return i ? esc(i.name) + (a.how_many > 1 ? " × " + a.how_many : "") : ""; }).filter(Boolean);
+  return `<a class="res" href="#/o/${esc(o.user_id)}" data-id="${esc(o.user_id)}"><span class="avatar sm" aria-hidden="true">✈</span>
+    <span class="rbody"><b class="rname">${esc(opName(o))}</b><span class="rmeta">${esc(lbl("opkind", o.kind))}${base ? " · " + esc(base) : ""}</span>
+    ${list.length ? `<span class="rac">${list.join("<br>")}</span>` : ""}<span class="chips2">${o.open_to_contract ? `<span class="badge ok">Open to contract crew</span>` : ""}${(d.looking || []).slice(0, 3).map(v => `<span class="badge">${esc(lbl("oplook", v))}</span>`).join("")}</span></span></a>`;
+}
+let OF = {seq:null, region:"", open:false};
+async function viewOperators(){
+  if (!sb) { app.innerHTML = `<p class="err">The directory isn't available right now.</p>`; return; }
+  app.innerHTML = `<div class="pagehead"><div><h1>Operators</h1><p>Owners and operators who fly the aircraft you're current on.</p></div>${tabs("ops")}</div>
+  <section class="panel filters" aria-label="Filters"><div class="fgrid">
+    <div class="f acsearch"><label for="oa">Aircraft</label><input id="oa" type="search" autocomplete="off" placeholder="Any aircraft, e.g. Citation XLS"><div class="acres" id="oares" hidden></div></div>
+    ${selectHTML("orr", "region", "Region", OF.region, "Anywhere")}</div>
+    <div class="savebar"><label class="switch"><input type="checkbox" id="oo"${OF.open ? " checked" : ""}> Open to contract crew</label><button class="btn secondary" id="ox" type="button" style="margin-left:auto">Clear</button></div></section>
+  <div class="mdsplit"><div class="results" id="ores"><p>Loading operators…</p></div><aside class="detail" id="odet" aria-label="Selected operator"></aside></div>
+  <p class="hint" style="margin-top:16px">Own or operate an aircraft? <a href="#/op">Create your free operator profile.</a></p>`;
+  let O; try { O = await loadOps(); } catch (e) { $("ores").innerHTML = `<p class="err">Couldn't load operators.</p>`; return; }
+  let active = null;
+  const show = id => { active = id; const o = O.listed.find(x => x.user_id === id); $("odet").innerHTML = o ? opCardHTML(o, O.acBy.get(id) || []) : ""; app.querySelectorAll("#ores .res").forEach(r => r.classList.toggle("on", r.dataset.id === id)); };
+  const draw = () => {
+    $("oa").value = OF.seq != null && BYSEQ.get(OF.seq) ? BYSEQ.get(OF.seq).name : ""; $("orr").value = OF.region; $("oo").checked = OF.open;
+    const hits = O.listed.filter(o => (OF.seq == null || (O.acBy.get(o.user_id) || []).some(a => a.acft_seq === OF.seq)) && (!OF.region || (o.details || {}).region === OF.region) && (!OF.open || o.open_to_contract))
+      .sort((x, y) => (y.open_to_contract ? 1 : 0) - (x.open_to_contract ? 1 : 0));
+    $("ores").innerHTML = `<p class="count">${hits.length} operator${hits.length === 1 ? "" : "s"}</p>` + (hits.length ? hits.map(o => opResultHTML(o, O.acBy.get(o.user_id) || [], OF.seq)).join("")
+      : `<div class="panel"><p style="margin:0">No listed operators match yet. The directory is new: operator profiles appear here once they're reviewed.</p></div>`);
+    if (wide() && hits.length) show(hits.some(h => h.user_id === active) ? active : hits[0].user_id); else $("odet").innerHTML = "";
+  };
+  $("ores").addEventListener("click", e => { const r = e.target.closest(".res"); if (!r || !wide()) return; e.preventDefault(); show(r.dataset.id); });
+  app.querySelector(".filters").addEventListener("change", e => { if (e.target.id === "orr") OF.region = e.target.value; if (e.target.id === "oo") OF.open = e.target.checked; draw(); });
+  $("ox").onclick = () => { OF = {seq:null, region:"", open:false}; draw(); };
+  const fa = $("oa"), fr = $("oares");
+  fa.addEventListener("input", () => { const hits = searchAcftList(fa.value, s => O.count.get(s) || 0);
+    if (!fa.value.trim()) { fr.hidden = true; if (OF.seq != null) { OF.seq = null; draw(); } return; }
+    fr.innerHTML = hits.map(a => `<button type="button" data-f="${a.seq}">${esc(a.name)}<small>${O.count.get(a.seq) || 0} listed operators · ${esc(a.years)}</small></button>`).join("") || '<div style="padding:12px;color:var(--muted)">No match.</div>'; fr.hidden = false; });
+  fr.addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (!b) return; OF.seq = +b.dataset.f; fr.hidden = true; draw(); });
+  document.addEventListener("click", e => { if (!e.target.closest(".acsearch")) fr.hidden = true; });
+  draw();
+}
+function searchAcftList(q, score){
+  const words = q.toUpperCase().replace(/[-–]/g, " ").split(/\s+/).filter(Boolean); if (!words.length) return [];
+  const cw = words.map(w => w.replace(/[^A-Z0-9]/g, ""));
+  return ACFT.filter(a => { const hay = (a.name + " " + a.alias + " " + a.engine + (a.heli ? " HELICOPTER" : "")).toUpperCase().replace(/[-–]/g, " "), hc = hay.replace(/[^A-Z0-9]/g, ""); return words.every((w, i) => hay.includes(w) || (cw[i] && hc.includes(cw[i]))); })
+    .sort((x, y) => score(y.seq) - score(x.seq)).slice(0, 15);
+}
+async function viewOperator(id){
+  if (!sb) return;
+  app.innerHTML = `<p>Loading…</p>`;
+  const [{data:o}, {data:ac}] = await Promise.all([sb.from("operator_profiles").select("*").eq("user_id", id).maybeSingle(), sb.from("operator_aircraft").select("*").eq("user_id", id)]);
+  if (!o) { app.innerHTML = `<div class="center"><h1>Operator not found</h1><p>It may be unpublished or waiting for review.</p><a class="btn secondary" href="#/operators">Operators</a></div>`; return; }
+  document.title = opName(o) + " · Cali Aircrew";
+  app.innerHTML = `<div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px"><a href="#/operators">← Operators</a>${opCardHTML(o, ac || [])}</div>`;
+}
+
+async function viewOpMe(){
+  if (!sb) { app.innerHTML = `<p class="err">Sign-in isn't available right now.</p>`; return; }
+  if (!user) { app.innerHTML = `<div class="center"><h1>Operator profile</h1><p>Owners, charter operators and flight departments: sign in to list the aircraft you operate and the crew you need. Free.</p><button class="btn primary" id="go" type="button">Sign in</button></div>`; $("go").onclick = () => signIn(route); return; }
+  if (await needMfa()) { app.innerHTML = `<div class="center"><h1>One more step</h1><p>Enter your Microsoft Authenticator code to edit your profile.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`; $("go").onclick = () => signIn(route); return; }
+  app.innerHTML = `<p>Loading your operator profile…</p>`;
+  const uid = user.id;
+  const [{data:o0}, {data:ac0}, {data:mod}, pr] = await Promise.all([sb.from("operator_profiles").select("*").eq("user_id", uid).maybeSingle(), sb.from("operator_aircraft").select("*").eq("user_id", uid),
+    sb.from("moderation").select("*").eq("user_id", uid).maybeSingle(), sb.from("operator_about_pending").select("about").eq("user_id", uid).maybeSingle()]);
+  const publicAbout = (o0 && o0.about) || ""; let pendingAbout = pr && !pr.error && pr.data ? pr.data.about : null;
+  const P = Object.assign({name:"", kind:"", open_to_contract:true, about:"", published:false, details:{}}, o0 || {});
+  if (pendingAbout != null) P.about = pendingAbout;
+  const D = P.details = Object.assign({private:false, region:"", airport:"", looking:[], ops:[], work:[]}, P.details || {});
+  let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, how_many:a.how_many || 1}));
+  let dirty = false;
+  const statusOf = () => !o0 ? ["", "Not saved yet"] : !P.published ? ["", "Draft: only you can see it"] : mod && mod.op_hidden ? ["warn", "Hidden by Cali Aircrew. Contact us"] : mod && mod.op_approved ? ["ok", "Published and listed"] : ["warn", "Published: waiting for review"];
+  const sel = (id, k, label, val) => `<div class="f"><label for="${id}">${label}</label><select id="${id}"><option value="">Choose…</option>${OPT[k].map(([v, l]) => `<option value="${v}"${v === val ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`;
+  const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
+  app.innerHTML = `<div class="pagehead"><div><h1>My operator profile</h1><p>For owners, charter operators and flight departments. Mostly taps.</p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn secondary" href="#/me">Crew profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button></div></div>
+  <div class="split" id="split"><div class="formcol">
+    <section class="panel"><h2>Who you are</h2>
+      <div class="grid2">${sel("ok", "opkind", "Type of operator", P.kind)}<div class="f"><label for="on">Company name</label><input id="on" maxlength="120" value="${esc(D.private ? "" : P.name)}" placeholder="e.g. Coastal Jets LLC"${D.private ? " disabled" : ""}></div></div>
+      <label class="switch"><input type="checkbox" id="opriv"${D.private ? " checked" : ""}> Show me as "Private owner" (your name is not shown)</label></section>
+    <section class="panel"><h2>Home base</h2><div class="grid2">${sel("org", "region", "Region", D.region)}<div class="f"><label for="oap">Airport (optional)</label><input id="oap" maxlength="8" value="${esc(D.airport)}" placeholder="e.g. SNA" autocapitalize="characters"></div></div></section>
+    <section class="panel"><h2>Aircraft you operate</h2>
+      <div class="f acsearch"><label for="oq">Add an aircraft</label><input id="oq" type="search" autocomplete="off" placeholder="Type to search, e.g. Citation XLS, King Air 350"><div class="acres" id="oqr" hidden></div></div>
+      <div><button class="btn secondary" id="obrw" type="button">Browse the list</button></div><div id="obrowse" class="browse" hidden></div>
+      <div id="oacl"></div></section>
+    <section class="panel"><h2>Crew you need</h2>
+      <label class="switch"><input type="checkbox" id="oopen"${P.open_to_contract ? " checked" : ""}> Open to contract crew</label>
+      ${multi("olk", "oplook", "Looking for (tap all that apply)", D.looking)}${multi("oops", "opops", "Operations", D.ops)}${multi("owk", "opwork", "Work type", D.work)}</section>
+    <section class="panel"><h2>About (optional)</h2><div class="f"><label for="oab">A few words crew should know</label><textarea id="oab" maxlength="2000">${esc(P.about)}</textarea><small>No phone numbers or email here. Changes are reviewed before they show publicly.</small><span class="status warn" id="opend"${pendingAbout != null ? "" : " hidden"}>Your new text is waiting for review.</span></div></section>
+    <section class="panel"><h2>Publish</h2><label class="switch"><input type="checkbox" id="opub"${P.published ? " checked" : ""}> Show my operator profile to crew</label>
+      <p class="hint">Reviewed by Cali Aircrew before it appears. You can unpublish at any time.</p>
+      <div class="savebar"><button class="btn primary" id="osave" type="button">Save operator profile</button><span id="ost"></span><span class="err" id="ose" role="status"></span></div></section>
+    <section class="panel" aria-labelledby="rch"><h2 id="rch">Recommended crew</h2><p class="hint">Listed crew current on your aircraft, best matches first.</p><div id="reco"><p class="empty" style="margin:0">Add an aircraft to see matches.</p></div></section>
+  </div><aside class="prevcol" aria-label="Live preview" id="oprev"></aside></div>`;
+  const checked = n => [...app.querySelectorAll(`input[name=${n}]:checked`)].map(i => i.value);
+  const read = () => { D.private = $("opriv").checked; P.kind = $("ok").value; P.name = D.private ? "" : $("on").value.trim(); D.region = $("org").value; D.airport = $("oap").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+    P.open_to_contract = $("oopen").checked; D.looking = checked("olk"); D.ops = checked("oops"); D.work = checked("owk"); P.about = $("oab").value.trim(); P.published = $("opub").checked;
+    P.home_base = [D.airport, lbl("region", D.region)].filter(Boolean).join(" · ").slice(0, 80); };
+  const drawStatus = () => { const [k, t] = statusOf(); $("ost").innerHTML = `<span class="status ${k}">${esc(t)}${dirty ? " · unsaved changes" : ""}</span>`; };
+  const drawPrev = () => { read(); $("oprev").innerHTML = opCardHTML(P, AC, {preview:true}); };
+  const drawAc = () => { $("oacl").innerHTML = AC.length ? AC.map((a, i) => { const info = BYSEQ.get(a.acft_seq); return `<div class="acrow" style="grid-template-columns:minmax(0,1fr) 120px 44px"><span class="nm">${esc(info ? info.name : "#" + a.acft_seq)}</span>
+      <select class="p135" data-hm="${i}" aria-label="How many">${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}"${n === a.how_many ? " selected" : ""}>${n === 10 ? "10+" : n} aircraft</option>`).join("")}</select>
+      <button class="iconbtn" type="button" data-orm="${i}" aria-label="Remove">✕</button></div>`; }).join("") : '<p class="empty" style="margin:0">No aircraft yet.</p>'; };
+  let reco = null;
+  const drawReco = async () => {
+    if (!AC.length) { $("reco").innerHTML = '<p class="empty" style="margin:0">Add an aircraft to see matches.</p>'; return; }
+    try { reco = reco || await loadDir(); } catch (e) { return; }
+    const seqs = new Set(AC.map(a => a.acft_seq)), want135 = D.ops.includes("p135");
+    const hits = reco.listed.filter(p => p.user_id !== uid && (reco.acBy.get(p.user_id) || []).some(a => seqs.has(a.acft_seq))).map(p => { const ac = reco.acBy.get(p.user_id) || [], d = p.details || {}, mine = ac.filter(a => seqs.has(a.acft_seq));
+      const sc = (d.region && d.region === D.region ? 40 : 0) + (d.status === "now" ? 30 : d.status === "notice" ? 15 : 0) + (mine.some(a => curState(a) === "current") ? 20 : 0) + (want135 && mine.some(a => a.part135) ? 20 : 0) + ((reco.mod.get(p.user_id) || {}).verified_faa ? 10 : 0);
+      return {p, ac, sc, seq:mine[0].acft_seq}; }).sort((x, y) => y.sc - x.sc).slice(0, 6);
+    const saved = F; $("reco").innerHTML = hits.length ? hits.map(h => { F = {...F, seq:h.seq}; return resultHTML(h.p, h.ac, reco.mod.get(h.p.user_id)); }).join("") : '<p style="margin:0">No listed crew on your aircraft yet. As pilots join, the best matches appear here.</p>'; F = saved;
+  };
+  const changed = () => { dirty = true; drawPrev(); drawStatus(); };
+  drawAc(); drawPrev(); drawStatus(); drawReco();
+  const form = app.querySelector(".formcol");
+  form.addEventListener("input", e => { if (e.target.id !== "oq") changed(); });
+  form.addEventListener("change", e => { const t = e.target;
+    if (t.id === "opriv") { $("on").disabled = t.checked; if (t.checked) $("on").value = ""; }
+    if (t.dataset.hm != null) AC[+t.dataset.hm].how_many = +t.value;
+    if (t.id === "org" || t.name === "oops") drawReco(); changed(); });
+  $("oacl").addEventListener("click", e => { const b = e.target.closest("[data-orm]"); if (!b) return; AC.splice(+b.dataset.orm, 1); drawAc(); changed(); drawReco(); if (!$("obrowse").hidden) drawOB(); });
+  const add = seq => { if (!AC.some(a => a.acft_seq === seq)) AC.push({acft_seq:seq, how_many:1}); drawAc(); changed(); drawReco(); };
+  const q = $("oq"), qr = $("oqr");
+  q.addEventListener("input", () => { const have = new Set(AC.map(a => a.acft_seq)); const hits = searchAcftList(q.value, () => 0).filter(a => !have.has(a.seq));
+    if (!q.value.trim()) { qr.hidden = true; return; } qr.innerHTML = hits.map(a => `<button type="button" data-oadd="${a.seq}">${esc(a.name)}<small>${esc(a.years)}</small></button>`).join("") || '<div style="padding:12px;color:var(--muted)">No match.</div>'; qr.hidden = false; });
+  qr.addEventListener("click", e => { const b = e.target.closest("[data-oadd]"); if (!b) return; q.value = ""; qr.hidden = true; add(+b.dataset.oadd); });
+  document.addEventListener("click", e => { if (!e.target.closest(".acsearch")) qr.hidden = true; });
+  let bc = null, bm = null;
+  const drawOB = () => { const have = new Set(AC.map(a => a.acft_seq));
+    let h = `<div class="pills">${CATS2.map(([k, l]) => `<button type="button" class="pill${k === bc ? " on" : ""}" data-oc="${k}">${esc(l)}</button>`).join("")}</div>`;
+    if (bc) { const makes = [...new Set(ACFT.filter(a => catOf2(a) === bc).map(makeOf2))].sort((x, y) => x.localeCompare(y));
+      h += `<div class="pills makes">${makes.map(m => `<button type="button" class="pill${m === bm ? " on" : ""}" data-om="${esc(m)}">${esc(m)}</button>`).join("")}</div>`;
+      if (bm) h += `<div class="mtiles">${ACFT.filter(a => catOf2(a) === bc && makeOf2(a) === bm).map(a => `<button type="button" class="mtile${have.has(a.seq) ? " on" : ""}" data-ot="${a.seq}"><span>${esc(a.name)}</span><small>${have.has(a.seq) ? "✓ Added" : "＋ Add"} · ${esc(a.years)}</small></button>`).join("")}</div>`; }
+    $("obrowse").innerHTML = h; };
+  $("obrw").onclick = () => { const b = $("obrowse"); b.hidden = !b.hidden; $("obrw").textContent = b.hidden ? "Browse the list" : "Close the list"; if (!b.hidden) drawOB(); };
+  $("obrowse").addEventListener("click", e => { const c = e.target.closest("[data-oc]"), m = e.target.closest("[data-om]"), t = e.target.closest("[data-ot]");
+    if (c) { bc = c.dataset.oc === bc ? null : c.dataset.oc; bm = null; drawOB(); } else if (m) { bm = m.dataset.om === bm ? null : m.dataset.om; drawOB(); }
+    else if (t) { const seq = +t.dataset.ot, i = AC.findIndex(a => a.acft_seq === seq); if (i >= 0) { AC.splice(i, 1); drawAc(); changed(); drawReco(); } else add(seq); drawOB(); } });
+  $("tp").onclick = () => { const s = $("split"); s.classList.toggle("showprev"); $("tp").textContent = s.classList.contains("showprev") ? "Edit" : "Preview"; window.scrollTo(0, 0); };
+  $("osave").onclick = async () => {
+    read(); $("ose").textContent = "";
+    if (P.published && !P.kind) { $("ose").textContent = "Choose the type of operator before publishing."; $("ok").focus(); return; }
+    if (P.published && !AC.length) { $("ose").textContent = "Add at least one aircraft before publishing."; q.focus(); return; }
+    const b = $("osave"); b.disabled = true; b.textContent = "Saving…";
+    try {
+      if (await needMfa()) { b.disabled = false; b.textContent = "Save operator profile"; signIn(() => $("osave").click()); return; }
+      const row = {user_id:uid, published:P.published, name:P.name, kind:P.kind || "owner", home_base:P.home_base, open_to_contract:P.open_to_contract, about:P.about, details:D};
+      const r1 = await sb.from("operator_profiles").upsert(row, {onConflict:"user_id"});
+      if (r1.error) throw new Error(/details|kind_check/.test(r1.error.message || "") ? "Operator profiles need one Cali Aircrew setup step (database update 009)." : r1.error.message);
+      if (P.about !== publicAbout) { const rp = await sb.from("operator_about_pending").upsert({user_id:uid, about:P.about}, {onConflict:"user_id"}); pendingAbout = rp.error ? null : P.about; }
+      else if (pendingAbout != null) { await sb.from("operator_about_pending").delete().eq("user_id", uid); pendingAbout = null; }
+      $("opend").hidden = pendingAbout == null;
+      const r2 = await sb.from("operator_aircraft").delete().eq("user_id", uid); if (r2.error) throw r2.error;
+      if (AC.length) { const r3 = await sb.from("operator_aircraft").insert(AC.map(a => ({user_id:uid, acft_seq:a.acft_seq, how_many:a.how_many}))); if (r3.error) throw r3.error; }
+      dirty = false; OPS = null; if (!o0) { await viewOpMe(); return; }
+      drawStatus(); const ok = document.createElement("span"); ok.className = "status ok"; ok.textContent = "Saved"; $("ost").appendChild(ok); setTimeout(() => ok.remove(), 2500);
+    } catch (e) { $("ose").textContent = "Not saved: " + ((e && e.message) || "check your connection and try again."); }
+    finally { b.disabled = false; b.textContent = "Save operator profile"; }
+  };
+  window.onbeforeunload = () => dirty ? "You have unsaved changes." : undefined;
+}
+
 /* ---------------- router ---------------- */
 async function route(){
   const h = location.hash.replace(/^#\/?/, "");
@@ -514,7 +720,10 @@ async function route(){
   if (h === "me") return viewMe();
   if (h.startsWith("p/")) return viewProfile(h.slice(2));
   if (h === "aircraft") return viewBrowse();
-  if (h.startsWith("a/")) return viewAircraft(+h.slice(2));
+  if (h.startsWith("a/")) { const [n, w] = h.slice(2).split("/"); return viewAircraft(+n, w); }
+  if (h === "op") return viewOpMe();
+  if (h === "operators") return viewOperators();
+  if (h.startsWith("o/")) return viewOperator(h.slice(2));
   return viewFind();
 }
 window.addEventListener("hashchange", route);
