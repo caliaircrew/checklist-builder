@@ -274,9 +274,13 @@ end $$;
 
 create or replace function public.admin_metrics() returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
-declare r jsonb;
+declare r jsonb; ck bigint := 0; cu bigint := 0;
 begin
   perform public.admin_guard();
+  -- Checklist sync tables are optional (supabase/001); count them only if they exist.
+  if to_regclass('public.checklists') is not null then
+    execute 'select count(*) filter (where not deleted), count(distinct user_id) filter (where not deleted) from public.checklists' into ck, cu;
+  end if;
   select jsonb_build_object(
     'users_total',   (select count(*) from auth.users),
     'users_7d',      (select count(*) from auth.users where created_at >= now() - interval '7 days'),
@@ -292,8 +296,9 @@ begin
     'searches_weekly', (select coalesce(jsonb_agg(n order by wk), '[]'::jsonb) from (
                         select w.wk, (select count(*) from public.search_log s where s.at >= w.wk and s.at < w.wk + interval '7 days') n
                         from generate_series(date_trunc('week', now()) - interval '11 weeks', date_trunc('week', now()), interval '1 week') w(wk)) x),
-    'checklists_total', (select count(*) from public.checklists where not deleted),
-    'checklist_users',  (select count(distinct user_id) from public.checklists where not deleted),
+    'checklists_total', ck,
+    'checklist_users',  cu,
+    'checklist_sync',   to_regclass('public.checklists') is not null,
     'notify_total',  (select count(*) from public.notify_signups),
     'notify_7d',     (select count(*) from public.notify_signups where created_at >= now() - interval '7 days'),
     'notify_by_role', (select coalesce(jsonb_object_agg(role, n), '{}'::jsonb) from (select coalesce(nullif(role, ''), 'unknown') role, count(*) n from public.notify_signups group by 1) x),

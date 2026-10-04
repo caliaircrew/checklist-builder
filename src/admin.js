@@ -132,7 +132,7 @@ function viewDash(){
     ${kpi(fmt(p135), "Part 135 current", listed.length ? Math.round(100 * p135 / listed.length) + "% of listed" : "")}
     ${kpi(fmt(ver), "FAA verified", listed.length ? Math.round(100 * ver / listed.length) + "% of listed" : "")}
     ${kpi(comp + "%", "Average profile completeness", "all profiles")}
-    ${kpi(fmt(M.checklists_total), "Checklists saved", `by ${fmt(M.checklist_users)} signed-in pilots`)}
+    ${M.checklist_sync === false ? kpi("Off", "Checklist sync", "run supabase/001_checklists.sql to turn it on") : kpi(fmt(M.checklists_total), "Checklists saved", `by ${fmt(M.checklist_users)} signed-in pilots`)}
     ${kpi(fmt(M.mfa_users), "Accounts with authenticator", `${M.admins} admin${M.admins === 1 ? "" : "s"}`)}
   </div>
   <div class="cols" style="margin-top:16px">
