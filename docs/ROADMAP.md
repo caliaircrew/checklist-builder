@@ -8,7 +8,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 3f. Run supabase/010_crew_private.sql
 - [x] 3g. Run supabase/011_account.sql
 - [x] 3i. Run supabase/013_reminders.sql (2026-10-03)
-- [ ] 3l. Run supabase/015_saved.sql and redeploy the reminders Edge Function (v1.47 adds saved-search alerts)
+- [x] 3l. Run supabase/015_saved.sql and redeploy the reminders Edge Function (done 2026-10-03)
 - [x] 3j. Reminders setup (docs/REMINDERS_SETUP.md; scheduled 2026-10-03: cali-currency-reminders, 0 16 * * *, active): deploy reminders function, REMINDER_KEY secret, vault secret, run 014
 - [ ] 3k. Run the "missing objects" audit query after every database update (expect no rows)
 - [x] 3h. Recovery setup (docs/RECOVERY_SETUP.md): Resend account + GoDaddy DNS, run 012, deploy the recovery Edge Function, set 3 secrets (Account page: recovery contacts, help requests, delete my account) (private FAA-verification details) (operator profiles)
