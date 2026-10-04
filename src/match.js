@@ -23,6 +23,15 @@ function hoursByTypeWith(info, aircraft){
 const acRate = (d, seq) => (d.ac_rate && seq != null && d.ac_rate[seq]) || d.rate || "";
 const distNm = (a, b) => { const R = 3440.065, r = x => x * Math.PI / 180, dLa = r(b[0] - a[0]), dLo = r(b[1] - a[1]);
   const h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+/* FAA type ratings a pilot holds: from aircraft marked "type rated", using the rating they picked when an aircraft
+   spans two FAA ratings (details.tr_des), plus the single-pilot "S" rating when ticked (details.tr_sp).
+   A single-pilot rating also counts for the base rating (CE-525S holders match a CE-525 search). */
+function typeRatings(p, ac, env){
+  const d = p.details || {}, out = new Set();
+  for (const a of ac || []) { if (!a.type_rated) continue; const opts = env.tr ? env.tr(a.acft_seq) : null; if (!opts || !opts.length) continue;
+    const pick = opts.find(o => o[0] === (d.tr_des || {})[a.acft_seq]) || opts[0]; out.add(pick[0]); if (pick[1] && (d.tr_sp || {})[a.acft_seq]) out.add(pick[1]); }
+  return out;
+}
 function matchProfile(F, p, ac, env){
   const d = p.details || {}, seq = F.seq != null && F.seq !== "" ? +F.seq : null;
   if (F.type && !(p.crew_types || []).includes(F.type)) return false;
@@ -40,6 +49,7 @@ function matchProfile(F, p, ac, env){
   if (F.minTurb && hoursByTypeWith(env.info, ac).turbine < +F.minTurb) return false;
   if (F.minType && seq != null && (+((ac.find(a => a.acft_seq === seq) || {}).hours) || 0) < +F.minType) return false;
   if (F.trn && !(d.training || []).includes(F.trn)) return false;
+  if (F.tr && !typeRatings(p, ac, env).has(F.tr)) return false;
   if (F.near) { const c = env.ll(F.near), h = env.ll(d.airport); if (c && (!h || distNm(c, h) > +(F.nm || 100))) return false; }
   for (const k of (F.x || [])) { const f = (ROLEF[F.type] || []).find(r => r[0] === k); if (f && !f[2](d)) return false; }
   if (F.eng && F.type === "mechanic" && !(d.mx_engines || []).includes(F.eng)) return false;

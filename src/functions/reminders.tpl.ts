@@ -96,10 +96,12 @@ async function searchAlerts(admin, dry: boolean) {
   const { data: acRows } = listed.length ? await admin.from("crew_aircraft").select("*").in("user_id", listed.map((p: Record<string, unknown>) => p.user_id)) : { data: [] };
   const acBy = new Map(); (acRows ?? []).forEach((a: Record<string, unknown>) => { const l = acBy.get(a.user_id) ?? []; l.push(a); acBy.set(a.user_id, l); });
   let info: Record<string, unknown[]> = {}; try { const r = await fetch(`${SITE}/crew/aircraft-info.json`); if (r.ok) info = await r.json(); } catch (_) { /* optional */ }
+  let trMap: Record<string, string[][]> = {}; try { const r = await fetch(`${SITE}/crew/type-ratings.json`); if (r.ok) trMap = await r.json(); } catch (_) { /* optional */ }
   let airports: Record<string, string> | null = null;
   if (list.some((x: Record<string, Record<string, unknown>>) => x.filters && x.filters.near)) { try { const r = await fetch(`${SITE}/crew/airports.json`); if (r.ok) airports = await r.json(); } catch (_) { /* optional */ } }
   const rec = (c: string) => { const k = String(c || "").toUpperCase(); return airports && k ? (airports[k] || airports["K" + k] || (k.length === 4 && k[0] === "K" ? airports[k.slice(1)] : "") || "") : ""; };
   const env = { info: (sq: number) => { const i = info[String(sq)]; return i ? { engine: i[1], twin: !!i[2], heli: !!i[3] } : undefined; },
+                tr: (sq: number) => trMap[String(sq)] || null,
                 ll: (c: string) => { const p = rec(c).split("|"); return p.length === 3 ? [+p[1], +p[2]] : null; } };
   const byOwner = new Map();
   for (const s of list) {

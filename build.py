@@ -17,6 +17,10 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.11.0 2026-10-03  Steve  data/type-ratings.yaml (FAA Order 8900.1 Fig 5-88)
+                            validated and injected (TR_JSON); shared matching
+                            rules (src/match.js) into crew pages and the
+                            generated reminders function. Builds 1.48.
   2.10.0 2026-10-03  Steve  Offline install for /checklists/: manifest, icons
                             (site/icons), service worker (network-first page,
                             cached fonts, network-only database). Builds 1.43.
@@ -70,7 +74,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.10.0"
+SCRIPT_VERSION = "2.11.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -428,6 +432,22 @@ def main(argv=None):
         c = app.get("cloud") or {}
         cloud = json.dumps({"enabled": bool(c.get("enabled")), "url": c.get("url", "") if c.get("enabled") else "", "key": c.get("publishable_key", "") if c.get("enabled") else ""})
         match_js = open(os.path.join(ROOT, "src", "match.js"), encoding="utf-8").read()
+        # FAA type rating designators (data/type-ratings.yaml) -> {seq: [[designator, single_pilot_or_""], ...]}
+        trd = load("data/type-ratings.yaml"); need(trd and trd.get("ratings"), "data/type-ratings.yaml: needs ratings")
+        seq_of = {}
+        for path in files("data/aircraft/*.yaml"):
+            for ac in (load(os.path.relpath(path, ROOT)) or {}).get("aircraft", []): seq_of[ac["id"]] = ac["seq"]
+        tr_map, seen_d = {}, set()
+        for i, r in enumerate(trd["ratings"], 1):
+            dsg = str(r.get("designator", "")).strip(); need(re.fullmatch(r"[A-Z0-9-]{2,10}", dsg), f"data/type-ratings.yaml entry {i}: bad designator {dsg!r}")
+            need(dsg not in seen_d, f"data/type-ratings.yaml: designator {dsg} listed twice"); seen_d.add(dsg)
+            spd = str(r.get("single_pilot", "") or "")
+            for aid in r.get("aircraft", []):
+                need(aid in seq_of, f"data/type-ratings.yaml {dsg}: unknown aircraft id {aid}")
+                tr_map.setdefault(str(seq_of[aid]), []).append([dsg, spd])
+        tr_json = json.dumps(tr_map, separators=(",", ":"))
+        need("{{TR_JSON}}" in crew_js, "src/crew.js must contain {{TR_JSON}}")
+        crew_js = crew_js.replace("{{TR_JSON}}", tr_json)
         need("/*{{MATCH_JS}}*/" in crew_js, "src/crew.js must contain /*{{MATCH_JS}}*/ for the shared matching rules")
         crew_js = crew_js.replace("/*{{MATCH_JS}}*/", match_js)
         crew_js = crew_js.replace("{{CLOUD_JSON}}", cloud).replace("{{ACFT_JSON}}", json.dumps(acft_rows, ensure_ascii=False, separators=(",", ":")))
@@ -486,6 +506,7 @@ def main(argv=None):
         open(fn_path, "w", encoding="utf-8").write(fn_src); print("  regenerated supabase/functions/reminders/index.ts (redeploy it in Supabase)")
     os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)
     shutil.copyfile(os.path.join(ROOT, "data", "airports-us.json"), os.path.join(a.out, "crew", "airports.json"))
+    open(os.path.join(a.out, "crew", "type-ratings.json"), "w", encoding="utf-8").write(tr_json)
     # seq -> [name, engine, twin, heli] for saved-search alerts (reminders Edge Function)
     open(os.path.join(a.out, "crew", "aircraft-info.json"), "w", encoding="utf-8").write(
         json.dumps({str(r[0]): [(r[1] + " " + r[2]).strip(), r[3], 1 if "t" in r[4] else 0, 1 if "h" in r[4] else 0] for r in acft_rows}, ensure_ascii=False, separators=(",", ":")))

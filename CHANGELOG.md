@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.48 | 2026-10-03 | Roadmap 48: data/type-ratings.yaml (115 FAA designators → 243 aircraft; source FAA Order 8900.1 Vol 5 Ch 2 Sec 19 Fig 5-88, 09/14/2026), validated in build.py 2.11.0 → TR_JSON + /crew/type-ratings.json; match.js typeRatings() (S rating also counts for base) + F.tr; editor designator labels, choice (details.tr_des), single-pilot (details.tr_sp); profile badges; Find crew FAA type rating filter; reminders function regenerated (redeploy). |
 | 1.47 | 2026-10-03 | Roadmap 46–47: supabase/015_saved.sql (favorites, saved_searches with seen uuid[] + 10-per-member limit, search_alert_owners()); shared matching rules src/match.js inserted into crew.js and the generated reminders Edge Function (src/functions/reminders.tpl.ts → supabase/functions/reminders/index.ts, adds saved-search digests); /crew/aircraft-info.json; ★ Saved page (#/saved), ☆ Save / Share on profiles, Save this search (describeF), initials-only (publicName). Tested on PostgreSQL + Deno stand-ins. |
 | 1.46 | 2026-10-03 | FindaPilot-inspired batch (roadmap 41–45): details.ac_pic / ac_sic {seq: hrs}, training[]; Find crew filters minTT, minPIC, minTurb (calculated), minType (searched aircraft), trn, near + nm (haversine on airport coords; distance badge); airports-us.json values now 'City, ST|lat|lon'; profile strength meter (18 checks, top 3 tips). No database update. |
 | 1.45 | 2026-10-03 | Profile round 2 (roadmap 36–40): details.ac_rate {seq: band}, areas[], since, jobs[] (kind, role, company ≤60, seq, from, to|now; blanks dropped on save); hoursByType() from per-aircraft hours (turbine = jet + turboprop + turbine helicopter); typed turbine/helicopter fields removed; profile context box (#/p/id?a=seq; Find crew and aircraft pages pass the aircraft); acRate() for the day-rate filter and result badge; company names with contact details never shown (CONTACTISH) and flagged in admin. No database update. |
@@ -55,6 +56,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.11.0 | 2026-10-03 | Type-rating data validation/injection; shared matching rules into crew pages and the generated reminders function. Builds 1.48. |
 | 2.10.0 | 2026-10-03 | Offline install files for /checklists/ (manifest, icons, service worker). Builds 1.43. |
 | 2.9.0 | 2026-10-03 | Pick-list category (LIB_CAT), endorsement validity 12cm, content-page loop fix + builder guard. Builds 1.40. |
 | 2.8.0 | 2026-10-03 | Renders site/pages/*.html into the shared shell with the homepage CSS. Builds 1.39. |

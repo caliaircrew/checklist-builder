@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.47'
+app_version: '1.48'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,9 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.48'
+    notes:
+      - "FAA type rating designators (e.g. CE-525S, CE-560XL, CL-30, BE-300) from the FAA's official list: shown on profiles, with single-pilot (S) and a choice where one aircraft spans two ratings; Find crew can search by type rating"
   - version: '1.47'
     notes:
       - "Save crew (☆ Save) and save searches (☆ Save this search) with daily email alerts for new matches; see them under ★ Saved"

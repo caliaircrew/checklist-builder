@@ -50,6 +50,12 @@ const psText = (d, seq) => { const pi = (d.ac_pic || {})[seq], si = (d.ac_sic ||
 /* ---- shared matching rules (src/match.js, inserted by build.py) ---- */
 /*{{MATCH_JS}}*/
 const hoursByType = aircraft => hoursByTypeWith(sq => BYSEQ.get(sq), aircraft);
+/* FAA type rating designators per aircraft seq: [[designator, single-pilot designator or ""], ...] (data/type-ratings.yaml) */
+const TR = {{TR_JSON}};
+const ENV = {info:sq => BYSEQ.get(sq), ll:code => airportLL(code), tr:sq => TR[sq] || null};
+const TR_ALL = [...new Set(Object.values(TR).flat().flatMap(o => [o[0], o[1]]).filter(Boolean))].sort();
+/* "CE-525S" / "CE-560XL" for one aircraft row (empty when the aircraft has no FAA type rating) */
+const trOf = (d, a) => { const o = TR[a.acft_seq]; if (!o || !a.type_rated) return ""; const pick = o.find(x => x[0] === (d.tr_des || {})[a.acft_seq]) || o[0]; return pick[1] && (d.tr_sp || {})[a.acft_seq] ? pick[1] : pick[0]; };
 /* Airport code -> "City, ST" (OurAirports, public domain), loaded once when a page needs it. */
 let AIRPORTS = null, airportsP = null;
 const loadAirports = () => airportsP || (airportsP = fetch("airports.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(m => (AIRPORTS = m)));
@@ -206,13 +212,13 @@ function cardHTML(p, aircraft, mod, opts){
   const types0 = p.crew_types || [], isFA = types0.includes("flight_attendant"), isMX = types0.includes("mechanic"), isHeli = types0.includes("helicopter_pilot");
   const pilotish = types0.some(t => /pilot|cfi/.test(t)), faOnly = isFA && !pilotish && !isMX;
   const trLabel = isMX && !pilotish ? "factory trained" : faOnly ? "trained on type" : "type rated";
-  const acRow = a => { const r = (d.ac_rate || {})[a.acft_seq]; return `<div class="row"><span>${esc(a.info.name)}${a.type_rated ? " · " + trLabel : ""}${esc(curText(a))}${a.part135 ? " · 135 " + esc(a.part135) : ""}${r && r !== "ask" ? ` · <b>${esc(lbl("rate", r))}/day</b>` : ""}</span><b>${a.hours ? fmt(a.hours) + " hrs" : ""}${psText(d, a.acft_seq) ? `<small style="display:block;font-weight:400">${esc(psText(d, a.acft_seq))}</small>` : ""}</b></div>`; };
+  const acRow = a => { const r = (d.ac_rate || {})[a.acft_seq]; return `<div class="row"><span>${esc(a.info.name)}${a.type_rated ? " · " + (trOf(d, a) && trLabel === "type rated" ? "type rated " + trOf(d, a) : trLabel) : ""}${esc(curText(a))}${a.part135 ? " · 135 " + esc(a.part135) : ""}${r && r !== "ask" ? ` · <b>${esc(lbl("rate", r))}/day</b>` : ""}</span><b>${a.hours ? fmt(a.hours) + " hrs" : ""}${psText(d, a.acft_seq) ? `<small style="display:block;font-weight:400">${esc(psText(d, a.acft_seq))}</small>` : ""}</b></div>`; };
   const HT = hoursByType(aircraft);
   const hrs = [["Total", p.total_time], ["PIC", d.hrs_pic], ["Turbine", HT.turbine], ["Jet", HT.jet], ["Turboprop", HT.turboprop], ["Piston", HT.piston], ["Multi-engine", HT.multi],
     ["Helicopter", HT.heli], ["Helicopter turbine", HT.heliT && HT.heliP ? HT.heliT : 0], ["Helicopter piston", HT.heliT && HT.heliP ? HT.heliP : 0]].filter(([, v]) => v);
   const ctxSeq = opts && opts.ctx != null ? +opts.ctx : null, ctx = ctxSeq != null ? ac.find(a => a.acft_seq === ctxSeq) : null;
   const ctxBox = ctx ? `<section class="ctxbox" aria-label="On the ${esc(ctx.info.name)}"><h3>On the ${esc(ctx.info.name)}</h3>
-      <div class="ctxgrid">${[[ctx.type_rated ? (trLabel[0].toUpperCase() + trLabel.slice(1)) : "Not type rated", ""],
+      <div class="ctxgrid">${[[ctx.type_rated ? (trLabel[0].toUpperCase() + trLabel.slice(1)) + (trOf(d, ctx) && trLabel === "type rated" ? " " + trOf(d, ctx) : "") : "Not type rated", ""],
         [curState(ctx) === "current" ? "Current" : curState(ctx) === "expired" ? "Currency expired" : "Currency not listed", ctx.current_until ? ymText(ctx.current_until) + (schoolText(ctx) ? " · " + schoolText(ctx) : "") : schoolText(ctx)],
         [ctx.hours ? fmt(ctx.hours) + " hrs" : "Hours not listed", psText(d, ctxSeq) || "on type"], [ctx.part135 ? "Part 135 " + ctx.part135 : "Not 135 current", ""],
         [acRate(d, ctxSeq) && acRate(d, ctxSeq) !== "ask" ? lbl("rate", acRate(d, ctxSeq)) + "/day" : acRate(d, ctxSeq) === "ask" ? "Day rate: ask" : "Day rate not listed", (d.ac_rate || {})[ctxSeq] ? "on this aircraft" : ""],
@@ -256,7 +262,7 @@ function cardHTML(p, aircraft, mod, opts){
       ${(d.mx_exp || []).length ? `<p style="margin:10px 0 4px"><b>Experience</b></p><div class="chips2">${chips("mx_exp", d.mx_exp)}</div>` : ""}
       ${d.mx_aog || d.mx_tools ? `<p style="margin:10px 0 0">${[d.mx_aog ? "Available for AOG road trips" : "", d.mx_tools ? "Owns tools" : ""].filter(Boolean).join(" · ")}</p>` : ""}</section>` : ""}
     ${isHeli && ((d.heli_ops || []).length || (d.sfar73 || []).length) ? `<section><h3>Helicopter</h3><div class="chips2">${chips("heli_ops", d.heli_ops)}${chips("sfar73", d.sfar73)}</div></section>` : ""}
-    ${block("Ratings", chips("ratings", d.ratings) + (d.medical ? `<span class="badge">Medical: ${esc(lbl("medical", d.medical))}</span>` : ""))}
+    ${block("Ratings", [...new Set(ac.map(a => trLabel === "type rated" ? trOf(d, a) : "").filter(Boolean))].map(t => `<span class="badge ok">Type rating ${esc(t)}</span>`).join("") + chips("ratings", d.ratings) + (d.medical ? `<span class="badge">Medical: ${esc(lbl("medical", d.medical))}</span>` : ""))}
     ${(availText || (d.looking || []).length) ? `<section><h3>Availability</h3>${availText ? `<p>${esc(availText)}</p>` : ""}${(d.looking || []).length ? `<div class="chips2" style="margin-top:8px">${chips("looking", d.looking)}</div>` : ""}</section>` : ""}
     ${block("Experience", chips("experience", d.experience))}
     ${block("Special training", chips("training", d.training))}
@@ -283,17 +289,17 @@ async function loadDir(force){
   return DIR;
 }
 const QUICK = [["contract","Contract pilots"],["now","Available now"],["soon","Now or with notice"],["p135","Part 135 current"],["cfi","CFIs"],["heli","Helicopter pilots"],["fa","Flight attendants"],["mx","Mechanics"]];
-let F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:""};
+let F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:"", tr:""};
 function describeF(F){
   const a = F.seq != null && BYSEQ.get(+F.seq) ? BYSEQ.get(+F.seq).name : "";
   const parts = [a, F.type ? TYPE_LABEL[F.type] : "", F.region ? lbl("region", F.region) : "", F.cert ? lbl("cert", F.cert) : "",
     F.avail === "now" ? "Available now" : F.avail === "soon" ? "Now or with notice" : "", F.p135 ? "Part 135" : "", F.contract ? "Contract" : "",
     F.rate ? lbl("rate_max", F.rate) + "/day" : "", F.minTT ? lbl("minhrs", F.minTT) + " total" : "", F.minPIC ? lbl("minhrs", F.minPIC) + " PIC" : "",
     F.minTurb ? lbl("minhrs", F.minTurb) + " turbine" : "", F.minType ? lbl("minhrs", F.minType) + " on type" : "", F.trn ? lbl("training", F.trn) : "",
-    F.near ? `within ${F.nm || 100} nm of ${F.near}` : ""].filter(Boolean);
+    F.near ? `within ${F.nm || 100} nm of ${F.near}` : "", F.tr ? "Type rating " + F.tr : ""].filter(Boolean);
   return (parts.join(" · ") || "All crew").slice(0, 80);
 }
-function matches(p, ac){ return matchProfile(F, p, ac, {info:sq => BYSEQ.get(sq), ll:airportLL}); }
+function matches(p, ac){ return matchProfile(F, p, ac, ENV); }
 function rank(p, ac, mod){
   const d = p.details || {}, t = F.seq != null ? (ac.find(a => a.acft_seq === F.seq) || {}) : {}, onType = t.hours || 0;
   return (d.status === "now" ? 2e9 : d.status === "notice" ? 1e9 : 0) + (curState(t) === "current" ? 4e8 : 0) + (mod && mod.verified_faa ? 1e8 : 0) + onType * 1000 + (p.total_time || 0);
@@ -351,6 +357,7 @@ async function viewFind(){
       ${selectHTML("ftur", "minhrs", "Turbine time", F.minTurb, "Any")}
       ${selectHTML("ftyp", "minhrs", "Hours on the searched aircraft", F.minType, "Any")}
       ${selectHTML("ftrn", "training", "Special training", F.trn, "Any")}
+      <div class="f"><label for="ftr">FAA type rating</label><select id="ftr"><option value="">Any</option>${TR_ALL.map(t => `<option value="${esc(t)}"${t === F.tr ? " selected" : ""}>${esc(t)}</option>`).join("")}</select></div>
       <div class="f"><label for="fnear">Near airport</label><input id="fnear" maxlength="5" autocapitalize="characters" placeholder="e.g. VNY" value="${esc(F.near)}"><small id="fnearc" aria-live="polite"></small></div>
       ${selectHTML("fnm", "nearnm", "Distance", F.nm, "Within 100 nm")}
     </div></details>
@@ -359,13 +366,13 @@ async function viewFind(){
   </section>
   <div class="mdsplit"><div class="results" id="res" aria-live="polite"><p>Loading crew…</p></div><aside class="detail" id="det" aria-label="Selected profile"></aside></div>`;
   const ui = () => { $("fa").value = F.seq != null && BYSEQ.get(F.seq) ? BYSEQ.get(F.seq).name : ""; $("ft").value = F.type; $("fr").value = F.region; $("fc").value = F.cert; $("fv").value = F.avail; $("fp").checked = F.p135; $("fdr").value = F.rate;
-    $("ftt").value = F.minTT; $("fpic").value = F.minPIC; $("ftur").value = F.minTurb; $("ftyp").value = F.minType; $("ftrn").value = F.trn; $("fnm").value = F.nm || "100"; $("ftyp").disabled = F.seq == null;
+    $("ftt").value = F.minTT; $("fpic").value = F.minPIC; $("ftur").value = F.minTurb; $("ftyp").value = F.minType; $("ftrn").value = F.trn; $("ftr").value = F.tr || ""; $("fnm").value = F.nm || "100"; $("ftyp").disabled = F.seq == null;
     if (document.activeElement !== $("fnear")) $("fnear").value = F.near;
     $("fnearc").textContent = F.near ? (airportCity(F.near) ? "✓ " + airportCity(F.near) : AIRPORTS ? "Airport code not found" : "") : "";
     app.querySelectorAll("[data-q]").forEach(b => { const k = b.dataset.q, on = k === "now" ? F.avail === "now" : k === "soon" ? F.avail === "soon" : k === "p135" ? F.p135 : k === "contract" ? F.contract : k === "cfi" ? F.type === "cfi" : k === "fa" ? F.type === "flight_attendant" : k === "mx" ? F.type === "mechanic" : F.type === "helicopter_pilot"; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
     const rf = ROLEF[F.type], box = $("rolef"); box.hidden = !rf;
     box.innerHTML = rf ? `<span class="lbl">${esc(TYPE_LABEL[F.type])} filters</span><div class="chips">${rf.map(([k, l]) => `<label><input type="checkbox" data-x="${k}"${(F.x || []).includes(k) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div>${F.type === "mechanic" ? `<div class="f" style="max-width:340px;margin-top:8px"><label for="feng">Engine</label><select id="feng"><option value="">Any engine</option>${OPT.mx_engines.map(([v, l]) => `<option value="${v}"${v === F.eng ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>` : ""}` : ""; };
-  if (wide() || F.type || F.region || F.cert || F.avail || F.rate || F.minTT || F.minPIC || F.minTurb || F.minType || F.near || F.trn) $("more").open = true;
+  if (wide() || F.type || F.region || F.cert || F.avail || F.rate || F.minTT || F.minPIC || F.minTurb || F.minType || F.near || F.trn || F.tr) $("more").open = true;
   let D; try { D = await loadDir(); } catch (e) { $("res").innerHTML = `<p class="err">Couldn't load the directory. Check your connection and try again.</p>`; return; }
   let active = null, lastHits = [];
   await loadFav();
@@ -402,10 +409,10 @@ async function viewFind(){
     if (t.dataset.x) { F.x = (F.x || []).filter(x => x !== t.dataset.x); if (t.checked) F.x.push(t.dataset.x); draw(); return; }
     if (t.id === "feng") { F.eng = t.value; draw(); return; }
     if (t.id === "ft") { F.type = t.value; F.x = []; F.eng = ""; } if (t.id === "fr") F.region = t.value; if (t.id === "fc") F.cert = t.value; if (t.id === "fv") F.avail = t.value; if (t.id === "fp") F.p135 = t.checked; if (t.id === "fdr") F.rate = t.value;
-    if (t.id === "ftt") F.minTT = t.value; if (t.id === "fpic") F.minPIC = t.value; if (t.id === "ftur") F.minTurb = t.value; if (t.id === "ftyp") F.minType = t.value; if (t.id === "ftrn") F.trn = t.value; if (t.id === "fnm") F.nm = t.value;
+    if (t.id === "ftt") F.minTT = t.value; if (t.id === "fpic") F.minPIC = t.value; if (t.id === "ftur") F.minTurb = t.value; if (t.id === "ftyp") F.minType = t.value; if (t.id === "ftrn") F.trn = t.value; if (t.id === "ftr") F.tr = t.value; if (t.id === "fnm") F.nm = t.value;
     draw(); });
   $("fnear").addEventListener("input", () => { const v = $("fnear").value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5); F.near = airportLL(v) ? v : ""; if (!v) F.near = ""; draw(); if (v && !airportLL(v)) $("fnearc").textContent = AIRPORTS ? "Airport code not found" : ""; });
-  $("fx").onclick = () => { F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:""}; draw(); };
+  $("fx").onclick = () => { F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:"", tr:""}; draw(); };
   const fa = $("fa"), fr = $("fares");
   fa.addEventListener("input", () => { const words = fa.value.toUpperCase().replace(/[-–]/g, " ").split(/\s+/).filter(Boolean);
     if (!words.length) { fr.hidden = true; if (F.seq != null) { F.seq = null; draw(); } return; }
@@ -517,7 +524,7 @@ async function viewMe(){
   P.details = Object.assign({role:"", cert:"", ratings:[], medical:"", region:"", airport:"", status:"", looking:[], travel:"", passport:false, experience:[], languages:[],
     past:[], hrs_pic:null, hrs_turbine:null, hrs_heli:null, hrs_heli_turbine:null, hrs_heli_piston:null, rate:"", rate_exp:false, rate_neg:false,
     fa_school:"", fa_year:"", fa_recurrent:"", cpr_until:"", food_safety:false, fa_skills:[], mx_certs:[], mx_engines:[], mx_spec:[], mx_exp:[], mx_aog:false, mx_tools:false, heli_ops:[], sfar73:[],
-    ac_rate:{}, areas:[], since:"", jobs:[], ac_pic:{}, ac_sic:{}, training:[]}, P.details || {});
+    ac_rate:{}, areas:[], since:"", jobs:[], ac_pic:{}, ac_sic:{}, training:[], tr_des:{}, tr_sp:{}}, P.details || {});
   await loadAirports();
   let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, type_rated:!!a.type_rated, is_current:!!a.is_current, current_until:a.current_until || null, training_school:a.training_school || "", training_other:a.training_other || "", hours:a.hours, part135:a.part135 || ""}));
   let dirty = false;
@@ -630,6 +637,7 @@ async function viewMe(){
       mx_certs:checked("mxc"), mx_engines:checked("mxe"), mx_spec:checked("mxs"), mx_exp:checked("mxx"), mx_aog:$("aog").checked, mx_tools:$("tools").checked,
       hrs_heli_turbine:null, hrs_heli_piston:null, heli_ops:checked("hop"), sfar73:checked("s73")});
     D.ac_rate = Object.fromEntries(Object.entries(D.ac_rate || {}).filter(([k, v]) => v && AC.some(a => a.acft_seq === +k)));
+    for (const m of ["tr_des", "tr_sp"]) D[m] = Object.fromEntries(Object.entries(D[m] || {}).filter(([k, v]) => v && AC.some(a => a.acft_seq === +k && a.type_rated)));
     for (const m of ["ac_pic", "ac_sic"]) D[m] = Object.fromEntries(Object.entries(D[m] || {}).filter(([k, v]) => v && AC.some(a => a.acft_seq === +k)));
     D.training = checked("trn");
     drawStrength();
@@ -656,7 +664,9 @@ async function viewMe(){
   const drawPrev = () => { read(); $("prev").innerHTML = cardHTML(P, AC, mod, {preview:true}); };
   const drawAc = () => {
     $("aclist").innerHTML = AC.length ? AC.map((a, i) => { const info = BYSEQ.get(a.acft_seq); return `<div class="acrow"><span class="nm">${esc(info ? info.name : "Aircraft #" + a.acft_seq)}</span>
-      <label class="tr"><input type="checkbox" data-tr="${i}"${a.type_rated ? " checked" : ""}> Type rated</label>
+      <label class="tr"><input type="checkbox" data-tr="${i}"${a.type_rated ? " checked" : ""}> Type rated${TR[a.acft_seq] && TR[a.acft_seq].length === 1 ? " (" + esc(TR[a.acft_seq][0][0]) + ")" : ""}</label>
+      ${a.type_rated && TR[a.acft_seq] && TR[a.acft_seq].length > 1 ? `<select class="p135" data-trd="${a.acft_seq}" aria-label="Which FAA type rating">${TR[a.acft_seq].map(o => `<option value="${esc(o[0])}"${o[0] === (D.tr_des || {})[a.acft_seq] ? " selected" : ""}>${esc(o[0])}</option>`).join("")}</select>` : ""}
+      ${a.type_rated && TR[a.acft_seq] && ((TR[a.acft_seq].find(o => o[0] === (D.tr_des || {})[a.acft_seq]) || TR[a.acft_seq][0])[1]) ? `<label class="tr"><input type="checkbox" data-trsp="${a.acft_seq}"${(D.tr_sp || {})[a.acft_seq] ? " checked" : ""}> Single-pilot (${esc((TR[a.acft_seq].find(o => o[0] === (D.tr_des || {})[a.acft_seq]) || TR[a.acft_seq][0])[1])})</label>` : ""}
       <label class="tr"><input type="checkbox" data-cur="${i}"${a.is_current ? " checked" : ""}> Current</label>
       <label class="tr"><input type="checkbox" data-now="${a.acft_seq}"${(D.past || []).includes(a.acft_seq) ? "" : " checked"}> Flying it now</label>
       <select class="p135" data-acrate="${a.acft_seq}" aria-label="Day rate on ${esc(info ? info.name : "")}"><option value="">Day rate: general</option>${OPT.rate.map(([v, l]) => `<option value="${v}"${(D.ac_rate || {})[a.acft_seq] === v ? " selected" : ""}>${esc(l)}/day</option>`).join("")}</select>
@@ -710,7 +720,9 @@ async function viewMe(){
     if (t.dataset.job != null && t.tagName === "INPUT" && t.type !== "checkbox") { const [i, k] = t.dataset.job.split(":"); D.jobs[+i][k] = t.value.slice(0, 60); }
     if (t.id !== "acq") changed();
   });
-  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.p135 != null) { AC[+t.dataset.p135].part135 = t.value; changed(); } else if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.dataset.cur != null) { AC[+t.dataset.cur].is_current = t.checked; drawAc(); changed(); }
+  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.p135 != null) { AC[+t.dataset.p135].part135 = t.value; changed(); } else if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; drawAc(); changed(); }
+    else if (t.dataset.trd != null) { D.tr_des = D.tr_des || {}; D.tr_des[t.dataset.trd] = t.value; drawAc(); changed(); }
+    else if (t.dataset.trsp != null) { D.tr_sp = D.tr_sp || {}; if (t.checked) D.tr_sp[t.dataset.trsp] = true; else delete D.tr_sp[t.dataset.trsp]; changed(); } else if (t.dataset.cur != null) { AC[+t.dataset.cur].is_current = t.checked; drawAc(); changed(); }
     else if (t.dataset.acrate != null) { D.ac_rate = D.ac_rate || {}; if (t.value) D.ac_rate[t.dataset.acrate] = t.value; else delete D.ac_rate[t.dataset.acrate]; changed(); }
     else if (t.dataset.job != null) { const [i, k] = t.dataset.job.split(":"); D.jobs[+i][k] = t.type === "checkbox" ? (t.checked ? "now" : "") : t.value; if (k === "to" && t.type === "checkbox") drawJobs(); changed(); }
     else if (t.dataset.now != null) { const sq = +t.dataset.now; D.past = (D.past || []).filter(x => x !== sq); if (!t.checked) D.past.push(sq); changed(); }
@@ -1017,7 +1029,7 @@ async function viewSaved(){
   app.addEventListener("click", async function h(e){
     if (!location.hash.startsWith("#/saved")) { app.removeEventListener("click", h); return; }
     const o = e.target.closest("[data-open]"), d = e.target.closest("[data-del]");
-    if (o) { const x = ss.data.find(r => String(r.id) === o.dataset.open); F = Object.assign({seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:""}, x.filters || {}); location.hash = "#/"; }
+    if (o) { const x = ss.data.find(r => String(r.id) === o.dataset.open); F = Object.assign({seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:"", tr:""}, x.filters || {}); location.hash = "#/"; }
     if (d && confirm("Delete this saved search?")) { await sb.from("saved_searches").delete().eq("id", +d.dataset.del); viewSaved(); }
   });
   app.querySelectorAll("[data-alert]").forEach(cb => cb.onchange = async () => { const {error} = await sb.from("saved_searches").update({alerts:cb.checked}).eq("id", +cb.dataset.alert); toast(error ? "Not saved: " + error.message : cb.checked ? "Alerts on" : "Alerts off"); });

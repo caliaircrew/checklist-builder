@@ -1,0 +1,135 @@
+# FAA pilot certificate aircraft type designations for the aircraft in data/aircraft.
+# Source: FAA Order 8900.1, Volume 5, Chapter 2, Section 19, Figure 5-88 (airplane list dated 09/14/2026,
+# helicopter list 08/26/2026), https://registry.faa.gov/typeratings/  — checked 2026-10-03.
+#   designator:   the rating shown on the pilot certificate
+#   single_pilot: the separate single-pilot rating, where the FAA issues one (e.g. CE-525S)
+#   aircraft:     ids from data/aircraft/*.yaml
+# Where one of our aircraft entries spans two FAA ratings, it appears under both and the pilot picks which they hold.
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+source: FAA Order 8900.1 Vol 5 Ch 2 Sec 19, Figure 5-88 (09/14/2026)
+ratings:
+  # --- Textron Aviation (Cessna / Beechcraft / Hawker) ---
+  - {designator: CE-500, aircraft: [citation-500-citation-citation-i, citation-550-citation-ii, citation-s550-citation-s-ii, citation-550-citation-bravo, citation-560-citation-v, citation-560-citation-ultra, citation-560-citation-encore-encore, cessna-citation-500-citation-eagle-stallion]}
+  - {designator: CE-560XL, aircraft: [citation-560xl-citation-excel, citation-560xl-citation-xls, citation-560xl-citation-xls-xls-gen2]}
+  - {designator: CE-510, single_pilot: CE-510S, aircraft: [citation-510-citation-mustang]}
+  - {designator: CE-525, single_pilot: CE-525S, aircraft: [citation-525-citationjet-cj1-cj1, citation-525-citation-m2-m2-gen2, citation-525a-citation-cj2-cj2, citation-525b-citation-cj3-cj3, citation-525c-citation-cj4-cj4-gen2]}
+  - {designator: CE-650, aircraft: [citation-650-citation-iii-vi-vii]}
+  - {designator: CE-680, aircraft: [citation-680-citation-sovereign-sovereign, citation-680a-citation-latitude]}
+  - {designator: CE-700, aircraft: [citation-700-citation-longitude]}
+  - {designator: CE-750, aircraft: [citation-750-citation-x-x]}
+  - {designator: CE-408, aircraft: [cessna-408-skycourier]}
+  - {designator: BE-200, aircraft: [beechcraft-king-air-200-b200-250, beechcraft-king-air-200-b200, beechcraft-king-air-b200gt, beechcraft-king-air-250, beechcraft-king-air-260]}
+  - {designator: BE-300, aircraft: [beechcraft-king-air-350-360, beechcraft-king-air-300, beechcraft-king-air-350-350i-350er, beechcraft-king-air-360-360er]}
+  - {designator: BE-1900, aircraft: [beechcraft-1900c-1900d]}
+  - {designator: BE-2000, single_pilot: BE-2000S, aircraft: [beechcraft-2000-starship]}
+  - {designator: BE-400, aircraft: [beechcraft-beechjet-400-hawker-400xp, hawker-400xp-400xpr, nextant-400xt-400xti]}
+  - {designator: MU-300, aircraft: [mitsubishi-mu-300-diamond, beechcraft-beechjet-400-hawker-400xp]}
+  - {designator: RA-390, single_pilot: RA-390S, aircraft: [beechcraft-premier-i-ia, beechcraft-premier-ia]}
+  - {designator: RA-4000, aircraft: [hawker-4000]}
+  - {designator: HS-125, aircraft: [hawker-125-700-800-800xp-850xp-900xp, hawker-700-700a, hawker-800-800a, hawker-800xp-800xpi-850xp, hawker-900xp-750, hawker-hs-125-series-1-to-400, hawker-hs-125-600]}
+  - {designator: BAE-125, aircraft: [hawker-1000]}
+  # --- Bombardier / Airbus Canada / MHI RJ ---
+  - {designator: CL-30, aircraft: [challenger-300, challenger-350, challenger-3500]}
+  - {designator: CL-600, aircraft: [challenger-600, challenger-601-1a-601-3a-601-3r]}
+  - {designator: CL-604, aircraft: [challenger-604, challenger-605, challenger-650]}
+  - {designator: CL-65, aircraft: [challenger-850-870-890, bombardier-challenger-870-890, bombardier-crj100-crj200-crj440, bombardier-crj550, bombardier-crj700-crj705, bombardier-crj900-crj900-nextgen, bombardier-crj1000]}
+  - {designator: BBD-700, aircraft: [global-express-xrs-5000-6000, global-global-express, global-global-express-xrs, global-global-5000, global-global-6000, global-global-5500-6500]}
+  - {designator: G7500, aircraft: [global-7500]}
+  - {designator: BD500, aircraft: [airbus-a220-100-a220-300]}
+  # --- Dassault ---
+  - {designator: DA-10, aircraft: [dassault-falcon-10-100]}
+  - {designator: DA-20, aircraft: [dassault-falcon-20-200]}
+  - {designator: DA-200, aircraft: [dassault-falcon-20-200]}
+  - {designator: DA-50, aircraft: [dassault-falcon-50, dassault-falcon-50-50ex, dassault-falcon-900-series, dassault-falcon-900-900b-900c, dassault-falcon-900ex-900ex-easy-900lx]}
+  - {designator: DA-EASY, aircraft: [dassault-falcon-900-series, dassault-falcon-900ex-900ex-easy-900lx, dassault-falcon-900dx]}
+  - {designator: DA-2000, aircraft: [dassault-falcon-2000-series, dassault-falcon-2000-2000ex]}
+  - {designator: DA-2EASY, aircraft: [dassault-falcon-2000-series, dassault-falcon-2000-2000ex, dassault-falcon-2000lx-lxs-s, dassault-falcon-2000dx]}
+  - {designator: DA-7X, aircraft: [dassault-falcon-7x-8x, dassault-falcon-7x, dassault-falcon-8x]}
+  - {designator: DA-6X, aircraft: [dassault-falcon-6x]}
+  # --- Gulfstream ---
+  - {designator: G-1159, aircraft: [gulfstream-gii-giii, gulfstream-g-1159-gii-gii-b-gii-sp, gulfstream-g-1159a-giii]}
+  - {designator: G-IV, aircraft: [gulfstream-giv-g450, gulfstream-giv-giv-sp, gulfstream-g300-g350-g400-g450]}
+  - {designator: G-V, aircraft: [gulfstream-giv-g450, gulfstream-g300-g350-g400-g450, gulfstream-gv-g550, gulfstream-gv, gulfstream-g500-g550]}
+  - {designator: GVI, aircraft: [gulfstream-g650-g650er]}
+  - {designator: GVII, aircraft: [gulfstream-g500-g600, gulfstream-g500-g600-2]}
+  - {designator: GVIII, aircraft: [gulfstream-g700, gulfstream-g800]}
+  - {designator: G280, aircraft: [gulfstream-g280]}
+  - {designator: IA-1125, aircraft: [gulfstream-g100-g150]}
+  - {designator: G150, aircraft: [gulfstream-g100-g150]}
+  - {designator: G-200, aircraft: [gulfstream-g200]}
+  - {designator: IA-JET, aircraft: [iai-1124-westwind]}
+  # --- Learjet ---
+  - {designator: LR-JET, aircraft: [learjet-23-24-25-28, learjet-35-36, learjet-31, learjet-55, learjet-24, learjet-25, learjet-28-29-longhorn, learjet-31-31a, learjet-35-35a, learjet-36-36a, learjet-55-55b-55c, learjet-23]}
+  - {designator: LR-45, aircraft: [learjet-40-45-70-75, learjet-40-40xr, learjet-45-45xr, learjet-70-75-75-liberty]}
+  - {designator: LR-60, aircraft: [learjet-60, learjet-60-60xr]}
+  # --- Embraer ---
+  - {designator: EMB-500, aircraft: [embraer-phenom-100, embraer-phenom-100e-100ev-100ex]}
+  - {designator: EMB-505, aircraft: [embraer-phenom-300, embraer-phenom-300e]}
+  - {designator: EMB-550, aircraft: [embraer-legacy-450-praetor-500, embraer-legacy-500-praetor-600, embraer-praetor-500, embraer-praetor-600]}
+  - {designator: EMB-145, aircraft: [embraer-legacy-600-650, embraer-legacy-650e, embraer-erj-135, embraer-erj-140, embraer-erj-145-145xr]}
+  - {designator: ERJ-170, aircraft: [embraer-e170, embraer-e175]}
+  - {designator: ERJ-190, aircraft: [embraer-e190, embraer-e195, embraer-e190-e2, embraer-e195-e2, embraer-lineage-1000-1000e]}
+  - {designator: EMB-120, aircraft: [embraer-emb-120-brasilia]}
+  - {designator: EMB-110, aircraft: [embraer-emb-110-bandeirante]}
+  # --- Other business jets ---
+  - {designator: HA-420, aircraft: [honda-hondajet-ha-420, honda-hondajet-elite-elite-s-elite-ii]}
+  - {designator: SF-50, aircraft: [cirrus-sf50-vision-jet, cirrus-sf50-vision-jet-g1, cirrus-sf50-vision-jet-g2-g2]}
+  - {designator: PC-24, aircraft: [pilatus-pc-24]}
+  - {designator: EA-500, single_pilot: EA-500S, aircraft: [eclipse-500-550, eclipse-500, eclipse-550]}
+  - {designator: SJ30, single_pilot: SJ30S, aircraft: [syberjet-sj30-2]}
+  - {designator: N-265, aircraft: [sabreliner-t-39-sabreliner-40-60-65]}
+  - {designator: L-1329, aircraft: [lockheed-jetstar]}
+  - {designator: D-328JET, aircraft: [dornier-328jet]}
+  # --- Turboprops ---
+  - {designator: DHC-6, aircraft: [de-havilland-canada-dhc-6-twin-otter]}
+  - {designator: DHC-6HG, aircraft: [de-havilland-canada-dhc-6-twin-otter]}
+  - {designator: DHC-7, aircraft: [de-havilland-canada-dhc-7-dash-7]}
+  - {designator: DHC-8, aircraft: [de-havilland-canada-dhc-8-100-200-dash-8, de-havilland-canada-dhc-8-300-dash-8, de-havilland-canada-dhc-8-400-q400-dash-8-400]}
+  - {designator: DO-328, aircraft: [dornier-328]}
+  - {designator: DO-228, aircraft: [dornier-228-228-ng]}
+  - {designator: ATR-42, aircraft: [atr-42-300-42-320, atr-42-500, atr-42-600]}
+  - {designator: ATR-72, aircraft: [atr-72-200-72-210, atr-72-500, atr-72-600]}
+  - {designator: BA-3100, aircraft: [british-aerospace-jetstream-31-32]}
+  - {designator: BA-4100, aircraft: [british-aerospace-jetstream-41]}
+  - {designator: SF-340, aircraft: [saab-340a-340b]}
+  - {designator: SA-2000, aircraft: [saab-2000]}
+  - {designator: SA-227, aircraft: [fairchild-swearingen-merlin-ii-iii-iv-metro]}
+  - {designator: SD-3, aircraft: [short-brothers-330-360]}
+  - {designator: CA-212, aircraft: [casa-c-212-aviocar]}
+  - {designator: L-420, aircraft: [let-l-410-turbolet]}
+  - {designator: F-27, aircraft: [fokker-f27-friendship]}
+  # --- Airliners ---
+  - {designator: A-300, aircraft: [airbus-a300b4-a300-600-a300-600f]}
+  - {designator: A-310, aircraft: [airbus-a300b4-a300-600-a300-600f, airbus-a310]}
+  - {designator: A-320, aircraft: [airbus-acj318-acj319-acj320, airbus-a318, airbus-a319, airbus-a320, airbus-a321, airbus-a319neo, airbus-a320neo, airbus-a321neo-a321lr-a321xlr]}
+  - {designator: A-330, aircraft: [airbus-a330-200-a330-200f, airbus-a330-300, airbus-a330-800-a330-900]}
+  - {designator: A-340, aircraft: [airbus-a340-200-a340-300, airbus-a340-500-a340-600]}
+  - {designator: A-350, aircraft: [airbus-a350-900, airbus-a350-1000]}
+  - {designator: A-380, aircraft: [airbus-a380-800]}
+  - {designator: B-707, aircraft: [boeing-707-120-707-320]}
+  - {designator: B-727, aircraft: [boeing-727-100-727-200]}
+  - {designator: B-737, aircraft: [boeing-bbj-bbj2-bbj3, boeing-737-100-737-200, boeing-737-300-400-500, boeing-737-600-700, boeing-737-800, boeing-737-900-900er, boeing-737-max-8-max-200, boeing-737-max-9]}
+  - {designator: B-747, aircraft: [boeing-747-100-200-sp]}
+  - {designator: B-747-4, aircraft: [boeing-747-400-747-400f, boeing-747-8-intercontinental-747-8f]}
+  - {designator: B-757, aircraft: [boeing-757-200-757-300]}
+  - {designator: B-767, aircraft: [boeing-767-200-200er, boeing-767-300-300er-300f, boeing-767-400er]}
+  - {designator: B-777, aircraft: [boeing-777-200-777-200er, boeing-777-200lr, boeing-777-300, boeing-777-300er, boeing-777f]}
+  - {designator: B-787, aircraft: [boeing-787-8-dreamliner, boeing-787-9-dreamliner, boeing-787-10-dreamliner]}
+  - {designator: DC-8, aircraft: [mcdonnell-douglas-dc-8]}
+  - {designator: DC-9, aircraft: [boeing-717-200, mcdonnell-douglas-dc-9, mcdonnell-douglas-md-80-series, mcdonnell-douglas-md-90]}
+  - {designator: DC-10, aircraft: [mcdonnell-douglas-dc-10]}
+  - {designator: MD-11, aircraft: [mcdonnell-douglas-md-11-md-11f]}
+  - {designator: L-1011, aircraft: [lockheed-l-1011-tristar]}
+  - {designator: BAE-146, aircraft: [british-aerospace-bae-146-avro-rj70-rj85-rj100]}
+  - {designator: FK-28, aircraft: [fokker-f28-fellowship]}
+  - {designator: FK-100, aircraft: [fokker-70-100]}
+  - {designator: CONCRD, aircraft: [a-rospatiale-bac-concorde]}
+  - {designator: T-33, aircraft: [lockheed-t-33-shooting-star]}
+  # --- Helicopters (only these need a type rating) ---
+  - {designator: AW-139, aircraft: [leonardo-aw139]}
+  - {designator: AW189, aircraft: [leonardo-aw189]}
+  - {designator: SK-92, aircraft: [sikorsky-s-92]}
+  - {designator: SK-61, aircraft: [sikorsky-s-61]}
+  - {designator: H160-B, aircraft: [airbus-helicopters-h160]}
+  - {designator: S-330, aircraft: [airbus-helicopters-as332-h215-super-puma]}
+  - {designator: AS332E, aircraft: [airbus-helicopters-as332-h215-super-puma]}
