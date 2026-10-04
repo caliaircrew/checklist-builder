@@ -39,7 +39,13 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [ ] 15g. Database update 005 (admin functions: list users, remove authenticator, delete user, audit log)
 - [ ] 16. Homepage update; invite James's network
 - [ ] 16a. Account settings for users: change my sign-in email (confirmed from the new inbox), turn Microsoft Authenticator on/off, download my data, delete my account
-- [ ] 16b. Later: optional Sign in with Apple / Google linked to the same account as a backup way in
+- [ ] 16b. Several ways in, one account (Supabase identity linking), shown on Account → Ways to sign in:
+  - [ ] Email code (always; the fallback)
+  - [ ] Continue with Google (free; Google Cloud OAuth client + Supabase provider, ~15 min setup)
+  - [ ] Face ID / Touch ID passkeys (when Supabase passkeys leave beta)
+  - [ ] Continue with Apple (needs Apple Developer account, $99/yr)
+  - [ ] Microsoft Authenticator as optional two-step (already built)
+  - [ ] Recovery contacts (backup email + phone) used only by an admin to confirm identity; no SMS codes ($75/mo add-on, weaker)
 
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile
