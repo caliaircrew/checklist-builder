@@ -44,7 +44,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 1. One menu on every page: Find crew · Get listed · Aircraft Checklists · CFI Endorsements; Partners moved to the footer (v1.52)
 - [x] 2. Same names everywhere (Find crew, Get listed, Aircraft Checklists); builder heading follows the mode (v1.52)
 - [x] 3. CFI Endorsements reachable by link (/checklists/#endorsements) and from the menu (v1.52)
-- [x] 4. Home page: one sentence tying it together; step 3 no longer promises messaging that isn't built ("coming soon") (v1.52) — [ ] James to approve the wording
+- [x] 4. Home page: headline 'The crew directory for every aircraft' (Steve, v1.54, nationwide, no 'West Coast'); one sentence tying it together; step 3 no longer promises messaging that isn't built ("coming soon") (v1.52) — [ ] James to approve the wording
 - [ ] 4b. Home "Stay in the loop" says private beta while the hero says get listed free — James to decide what's open to whom
 - [ ] 5. Home partners strip: keep, shrink or move (James)
 - [x] 6. Find crew for visitors: Save search / Saved only when signed in; More filters closed until used, so results show sooner (v1.52)
