@@ -83,6 +83,18 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 39. Day rate per aircraft line (each aircraft its own rate band); Find crew's day-rate filter uses the searched aircraft's rate
 - [x] 40. Hours by engine type calculated automatically from per-aircraft hours: jet, turboprop, turbine total (jet + turboprop + turbine helicopter), piston, multi-engine, helicopter (turbine / piston); total and PIC stay typed
 
+## D4. Ideas from FindaPilot.com (reviewed 2026-10-03; James approved) — build in this order
+- [ ] 41. PIC and SIC hours per aircraft (shown on each aircraft line and in the aircraft box)
+- [ ] 42. Find crew flight-time filters: minimum total, PIC, turbine, and hours on the searched aircraft
+- [ ] 43. "Near an airport" search: airport code + distance (50 / 100 / 200 / 300 nm) from the pilot's home airport
+- [ ] 44. Special training checkboxes: RVSM, oceanic / NAT HLA, Pacific, international procedures, CPDLC / FANS, UPRT, high altitude, HUD / EVS (+ Find crew filter)
+- [ ] 45. Profile strength meter in the editor with the top things to add
+- [ ] 46. Favorites and saved searches for operators, with email alerts for new matching pilots
+- [ ] 47. Shareable profile link ("Share my profile"); "show initials only" privacy option
+- [ ] 48. FAA type rating designators (e.g. CE-560XL, CL-30) with single-pilot (S); search by designator
+- [ ] 49. Later (revenue): featured profiles listed first
+- Not copying: public job board (directory-not-broker guardrail) and a forum (moderation load)
+
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile
 - [ ] 18. Messaging between operators and crew (pilots choose when to share phone/email); later "Notify me" when a new operator of an aircraft type joins
