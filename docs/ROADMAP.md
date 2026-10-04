@@ -3,6 +3,7 @@
 Tick items as they are done (edit this file, or ask Claude to). Order = planned order of work.
 
 ## A. Housekeeping
+- [ ] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor
 - [x] 1. Supabase URL Configuration: Site URL `https://caliaircrew.com/checklists/`; Redirect URLs include `https://caliaircrew.com/**` (keep the github.io entries)
 - [x] 2. GitHub Pages: Enforce HTTPS on once the certificate is issued
 - [x] 3. Delete Steve's old "Supabase checklist" Gmail app password (James's account is the sender now)
@@ -22,12 +23,19 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 
 ## D. Crew directory — Phase 1 (private beta)
 - [x] 11. Supabase tables + RLS for profiles (public only when published)
-- [ ] 12. Crew types: airplane pilot, helicopter pilot, CFI/CFII/CFI-H, corporate flight attendant, ferry/delivery pilot, mechanic (A&P/IA)
+- [x] 12. Crew types: airplane pilot, helicopter pilot, CFI/CFII/CFI-H, corporate flight attendant, ferry/delivery pilot, mechanic (A&P/IA)
 - [x] 13. Profile editor (build → publish/unpublish) and public profile page
 - [ ] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
 - [ ] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
 - [ ] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)
-- [ ] 15. Admin review for James (approve, hide, handle reports)
+- [ ] 15. Admin page (caliaircrew.com/admin, admins only; database functions gated by is_admin(), no secret keys in the browser):
+  - [ ] 15a. Dashboard: users, profiles by status (draft / waiting / listed / hidden), operators, Get-notified sign-ups, new this week
+  - [ ] 15b. Review queue: approve, hide, mark FAA verified (with FAA registry link), notes; re-review when a listed profile's free text changes
+  - [ ] 15c. User management: search users by email, last sign-in, view profile, hide/unhide, make or remove admin, delete account (with confirmation)
+  - [ ] 15d. Sign-in help: no passwords exist (email codes); "lost phone" reset removes a user's Microsoft Authenticator so they can sign in with an email code and set it up again
+  - [ ] 15e. Get-notified list: view, export CSV, remove
+  - [ ] 15f. Reports from users ("report this profile") and an audit log of admin actions
+  - [ ] 15g. Database update 005 (admin functions: list users, remove authenticator, delete user, audit log)
 - [ ] 16. Homepage update; invite James's network
 
 ## E. Crew directory — Phase 2
