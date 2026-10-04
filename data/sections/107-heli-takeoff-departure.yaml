@@ -1,0 +1,14 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: TAKEOFF AND DEPARTURE
+order: 107
+category: helicopter
+default_section: all
+items:
+  - {item: Departure Path, response: CLEAR, default: true}
+  - {item: Height-Velocity Diagram, response: AVOID SHADED AREA, default: true}
+  - {item: Climb Airspeed, response: PER RFM, default: true}
+  - {item: Engine Instruments, response: MONITOR, default: true}
+  - {item: Power, response: WITHIN LIMITS, default: true}
+  - {item: Landing Light, response: AS REQUIRED}

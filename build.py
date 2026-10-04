@@ -17,6 +17,9 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.9.0  2026-10-03  Steve  Pick-list 'category' (airplane | helicopter | any)
+                            -> LIB_CAT; endorsement validity '12cm'.
+                            Builds 1.40 (helicopter lists, SFAR 73).
   2.8.0  2026-10-03  Steve  Content pages: site/pages/*.html rendered into the
                             shared shell (_shell.html + homepage CSS) as
                             /<name>/ (partners, terms, privacy). Builds 1.39.
@@ -64,11 +67,11 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.8.0"
+SCRIPT_VERSION = "2.9.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
-VALID_VALIDITY = {"none", "90d", "24cm", "2cm", "flight"}
+VALID_VALIDITY = {"none", "90d", "24cm", "12cm", "2cm", "flight"}
 PLACEHOLDERS = ["<<<SUPABASE_LIB>>>", "{{CLOUD_CONFIG}}\n", "{{LIB_RAW}}\n", "{{SECTION_MATCH}}", "{{ACFT_RAW}}\n", "{{MODELS}}\n",
                 "{{ENDORSEMENTS}}\n", "{{VERSION_AND_CHANGELOG}}\n", "<<<DOCX_LIB>>>"]
 
@@ -127,7 +130,7 @@ def build_app(app):
 
 # ---------------------------------------------------------------- sections
 def build_sections():
-    secs, titles, n_items, defaults, whens, plains, orders = [], set(), 0, {}, {}, [], set()
+    secs, titles, n_items, defaults, whens, plains, orders, cats = [], set(), 0, {}, {}, [], set(), {}
     for path in files("data/sections/*.yaml"):
         rel = os.path.relpath(path, ROOT)
         d = load(rel)
@@ -146,6 +149,10 @@ def build_sections():
         need(d.get("plain", False) in (True, False), f"{rel}: plain must be true or false")
         if d.get("plain"):
             plains.append(t)
+        cat = d.get("category", "airplane")
+        need(cat in ("airplane", "helicopter", "any"), f"{rel}: category must be airplane, helicopter or any")
+        if cat != "airplane":
+            cats[t] = cat
         ds = d.get("default_section")
         if ds is not None:
             need(ds in ("all", "turbine", "jet", "press", "retract", "twin"),
@@ -172,7 +179,8 @@ def build_sections():
     lib = ("const LIB_RAW={\n" + ",\n".join(f'"{t}":`' + "\n".join(l) + "`" for _, t, l in secs) + "};\n"
            + "const LIB_DEFAULTS=" + json.dumps(defaults, ensure_ascii=False, separators=(",", ":")) + ";\n"
            + "const LIB_WHEN=" + json.dumps(whens, ensure_ascii=False, separators=(",", ":")) + ";\n"
-           + "const LIB_PLAIN=" + json.dumps(plains, ensure_ascii=False, separators=(",", ":")) + ";\n")
+           + "const LIB_PLAIN=" + json.dumps(plains, ensure_ascii=False, separators=(",", ":")) + ";\n"
+           + "const LIB_CAT=" + json.dumps(cats, ensure_ascii=False, separators=(",", ":")) + ";\n")
     m = load("data/section-matching.yaml")
     pairs = []
     for i, p in enumerate(m["matching"], 1):
@@ -439,9 +447,10 @@ def main(argv=None):
     except BuildError as e:
         print(f"BUILD FAILED: {e}", file=sys.stderr)
         return 1
-    for name, html in pages_out.items():
-        os.makedirs(os.path.join(a.out, name), exist_ok=True)
-        open(os.path.join(a.out, name, "index.html"), "w", encoding="utf-8").write(html)
+    need('id="aQ"' in html and "Checklist builder" in html, "checklist builder page is missing its aircraft search; refusing to publish")
+    for page_name, page_html in pages_out.items():   # distinct names: 'html' is the checklist builder, written below
+        os.makedirs(os.path.join(a.out, page_name), exist_ok=True)
+        open(os.path.join(a.out, page_name, "index.html"), "w", encoding="utf-8").write(page_html)
     os.makedirs(os.path.join(a.out, "admin"), exist_ok=True)
     open(os.path.join(a.out, "admin", "index.html"), "w", encoding="utf-8").write(admin_page)
     os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)

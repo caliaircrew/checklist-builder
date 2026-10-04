@@ -1,0 +1,19 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: HELICOPTER EMERGENCY REFERENCE
+order: 111
+category: helicopter
+when: Memory items and reminders — the RFM emergency section governs
+items:
+  - {item: Engine Failure, response: LOWER COLLECTIVE / AUTOROTATE}
+  - {item: Rotor RPM in Autorotation, response: MAINTAIN IN GREEN}
+  - {item: Low Rotor RPM Warning, response: RECOVER PER RFM}
+  - {item: Low G / Weightless Feeling, response: GENTLE AFT CYCLIC FIRST}
+  - {note: LOW G — DO NOT USE LATERAL CYCLIC UNTIL ROTOR IS RELOADED}
+  - {item: Carburetor Ice Suspected, response: CARB HEAT ON, tags: [piston]}
+  - {item: Chip Light, response: PER RFM / LAND AS DIRECTED}
+  - {item: Tail Rotor Failure, response: PER RFM}
+  - {item: Vortex Ring State, response: RECOVER PER RFM}
+  - {item: Fire, response: PER RFM}
+  - {item: Hydraulic Failure (if equipped), response: PER RFM}

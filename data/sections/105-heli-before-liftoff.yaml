@@ -1,0 +1,19 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: BEFORE LIFTOFF
+order: 105
+category: helicopter
+default_section: all
+items:
+  - {item: Rotor RPM, response: 100% / GREEN, default: true}
+  - {item: Engine Instruments, response: GREEN, default: true}
+  - {item: Warning / Caution Lights, response: OUT, default: true}
+  - {item: Doors & Belts, response: SECURE, default: true}
+  - {item: Altimeter, response: SET, default: true}
+  - {item: Transponder, response: ALT, default: true}
+  - {item: Lights, response: AS REQUIRED, default: true}
+  - {item: Carburetor Heat, response: AS REQUIRED, tags: [piston], default: true}
+  - {item: Frictions, response: OFF / AS REQUIRED, default: true}
+  - {item: Wind / Departure Path, response: BRIEFED, default: true}
+  - {item: Clearance / CTAF, response: RECEIVED / ANNOUNCED, default: true}

@@ -1,0 +1,15 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: EN ROUTE CHECKS
+order: 108
+category: helicopter
+default_section: all
+items:
+  - {item: Engine & Transmission Gauges, response: GREEN, default: true}
+  - {item: Fuel Quantity / Burn, response: CHECKED, default: true}
+  - {item: Low Fuel Warning, response: OUT, default: true}
+  - {item: Carburetor Heat, response: AS REQUIRED, tags: [piston], default: true}
+  - {item: Altimeter, response: SET, default: true}
+  - {item: Autorotation Landing Areas, response: IDENTIFIED, default: true}
+  - {item: Weather / Visibility, response: MONITORED}

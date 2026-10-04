@@ -1,0 +1,30 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: BEFORE STARTING ENGINE
+order: 102
+category: helicopter
+default_section: all
+items:
+  - {item: Seat Belts / Shoulder Harnesses, response: FASTENED, default: true}
+  - {item: Doors, response: CLOSED / AS REQUIRED, default: true}
+  - {item: Loose Items, response: SECURED, default: true}
+  - {item: Passenger Briefing (rotor safety, belts, doors), response: COMPLETE, default: true}
+  - {item: Rotor Brake (if equipped), response: OFF}
+  - {item: Collective, response: DOWN / FRICTION ON, default: true}
+  - {item: Cyclic, response: NEUTRAL / FRICTION AS REQUIRED, default: true}
+  - {item: Pedals, response: NEUTRAL / FREE, default: true}
+  - {item: Fuel Valve / Shutoff, response: ON, default: true}
+  - {item: Circuit Breakers, response: IN, default: true}
+  - {item: Avionics, response: OFF, default: true}
+  - {item: Battery / Master, response: ON, default: true}
+  - {item: Warning / Caution Lights, response: TESTED, default: true}
+  - {item: Mixture, response: PER RFM, tags: [piston], default: true}
+  - {item: Carburetor Heat, response: OFF, tags: [piston]}
+  - {item: Throttle, response: CLOSED / START POSITION, tags: [piston], default: true}
+  - {item: Governor, response: AS REQUIRED FOR START, tags: [piston]}
+  - {item: Clutch Switch, response: DISENGAGED, tags: [piston], default: true}
+  - {item: Fuel Pumps / Boost, response: ON, tags: [turbine], default: true}
+  - {item: Throttle / Twist Grip, response: CUTOFF, tags: [turbine], default: true}
+  - {item: FADEC / Engine Control, response: AUTO / TESTED, tags: [turbine]}
+  - {item: Rotor Area, response: CLEAR, default: true}

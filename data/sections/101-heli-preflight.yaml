@@ -1,0 +1,34 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: HELICOPTER PREFLIGHT
+order: 101
+category: helicopter
+default_section: all
+when: Before every flight, walking around the helicopter
+items:
+  - {item: 'Documents (ARROW) / RFM', response: ON BOARD, default: true}
+  - {item: Weight & Balance / CG, response: WITHIN LIMITS, default: true}
+  - {item: Performance (hover IGE/OGE vs. density altitude), response: COMPUTED, default: true}
+  - {item: Fuel Quantity, response: CHECKED VISUALLY, default: true}
+  - {item: Fuel Sumps / Sample, response: DRAINED / CHECKED, default: true}
+  - {item: Engine Oil, response: CHECKED, default: true}
+  - {item: Main Rotor Gearbox Oil, response: CHECKED, default: true}
+  - {item: Tail Rotor Gearbox Oil, response: CHECKED, default: true}
+  - {item: Hydraulic Reservoir (if equipped), response: CHECKED}
+  - {item: Main Rotor Blades, response: CONDITION / NO DAMAGE, default: true}
+  - {item: 'Main Rotor Hub, Pitch Links, Swashplate', response: SECURE / SAFETIED, default: true}
+  - {item: Drive Belts / Clutch Actuator, response: CHECKED, tags: [piston], default: true}
+  - {item: Tail Rotor Blades & Hub, response: CONDITION / FREE, default: true}
+  - {item: Tail Boom / Tail Cone, response: CONDITION, default: true}
+  - {item: Tail Rotor Guard / Stinger, response: SECURE}
+  - {item: 'Engine Compartment', response: NO LEAKS / SECURE, default: true}
+  - {item: Engine Air Inlet / Particle Separator, response: CLEAR, tags: [turbine], default: true}
+  - {item: Exhaust, response: SECURE / NO CRACKS}
+  - {item: Pitot / Static Ports, response: CLEAR, default: true}
+  - {item: Skids / Crosstubes / Landing Gear, response: CONDITION, default: true}
+  - {item: Ground Handling Wheels, response: REMOVED, default: true}
+  - {item: Cowlings / Doors / Panels, response: SECURE, default: true}
+  - {item: 'Blade Ties / Covers / Tie-Downs', response: REMOVED, default: true}
+  - {item: Area Around Helicopter, response: CLEAR OF FOD, default: true}
+  - {note: VERIFY EVERY ITEM AGAINST THE RFM FOR YOUR MODEL}

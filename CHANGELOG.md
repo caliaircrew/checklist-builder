@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.40 | 2026-10-03 | HOTFIX: build.py 2.8.0's content-page loop reused the variable 'html', so /checklists/ was overwritten with the last content page (Terms) in 1.39; loop variables renamed and a build guard added (builder must contain the aircraft search). Helicopters: 11 pick lists (data/sections/101–111, category helicopter; 01/46/47/48 category any), LIB_CAT, heli-aware chips/picker/generic default ('single-engine piston helicopter' etc.), RFM wording. Endorsements: S73.1–S73.9 (SFAR 73 as amended 2024-07-23, eff. 2024-08-22), status draft; validity 12cm. build.py 2.9.0. |
 | 1.39 | 2026-10-03 | Content pages via site/pages + shared shell: /partners/ (live partners from the database grouped by category, labeled Sponsored; inquiry form → help_requests kind 'other'), /terms/ and /privacy/ (v0.1 drafts for attorney review: directory-not-broker/carrier, eligibility 18+, profiles as advertisements, verification badge meaning, checklist disclaimer, acceptable use, CCPA rights, providers, retention). Footer links on home, crew and new pages; Partners nav links → /partners/. build.py 2.8.0. |
 | 1.38 | 2026-10-03 | Self-service recovery: supabase/functions/recovery (Edge Function: send_confirm, check_confirm, recover_start, recover_finish; hashed codes, expiry, attempt and hourly limits, no enumeration, old-address notice, audit) + supabase/012_recovery_codes.sql (service-only codes + recovery_lookup). Crew: Confirm backup email on Account; 'Locked out of your email?' recovery flow from the sign-in box, sign-in prefilled after; clear fallback until set up. docs/RECOVERY_SETUP.md. |
 | 1.37 | 2026-10-03 | Builder restyle (roadmap 7b): clear-sky palette (light + navy dark mode), Barlow Condensed / Source Sans 3, site bar with nav + My profile/Admin (from the builder's Supabase session), phone tab bar, navy editor section bars (--bar), larger display headings/step labels/primary buttons; old Home pill removed; site Sign in opens the builder's sign-in; builder account button hidden when signed out. Printed card and Word export unchanged. |
@@ -47,6 +48,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.9.0 | 2026-10-03 | Pick-list category (LIB_CAT), endorsement validity 12cm, content-page loop fix + builder guard. Builds 1.40. |
 | 2.8.0 | 2026-10-03 | Renders site/pages/*.html into the shared shell with the homepage CSS. Builds 1.39. |
 | 2.7.0 | 2026-10-03 | Builds admin/index.html (shared crew CSS, syntax check, refuses secret keys). Builds app 1.30. |
 | 2.6.0 | 2026-10-03 | Aircraft category + turboshaft engine; 'h' flag; search words passed to crew page. Builds app 1.24. |

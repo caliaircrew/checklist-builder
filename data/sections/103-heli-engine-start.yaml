@@ -1,0 +1,24 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: ENGINE START AND ROTOR ENGAGEMENT
+order: 103
+category: helicopter
+default_section: all
+items:
+  - {item: Beacon / Strobes, response: ON, default: true}
+  - {item: '"Clear" Announced', response: ROTOR AREA CLEAR, default: true}
+  - {item: Primer (if equipped), response: AS REQUIRED, tags: [piston]}
+  - {item: Starter, response: ENGAGE, default: true}
+  - {item: Oil Pressure, response: RISING / GREEN, default: true}
+  - {item: Engine Warm-Up RPM, response: PER RFM, tags: [piston], default: true}
+  - {item: Clutch, response: ENGAGE, tags: [piston], default: true}
+  - {item: Rotor Turning, response: WITHIN RFM LIMIT, tags: [piston], default: true}
+  - {item: Clutch Light, response: OUT BEFORE TAKEOFF, tags: [piston], default: true}
+  - {item: N1 / Ng, response: RISING, tags: [turbine], default: true}
+  - {item: Throttle to Idle, response: AT RFM N1, tags: [turbine], default: true}
+  - {item: TOT / MGT, response: MONITOR / WITHIN START LIMITS, tags: [turbine], default: true}
+  - {item: Starter, response: DISENGAGED, tags: [turbine], default: true}
+  - {item: Generator, response: ON, tags: [turbine], default: true}
+  - {item: Engine & Transmission Oil Pressure, response: GREEN, default: true}
+  - {note: HOT START / NO LIGHT-OFF → ABORT PER RFM, tags: [turbine]}

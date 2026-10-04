@@ -1,0 +1,22 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: SHUTDOWN AND ROTOR STOP
+order: 110
+category: helicopter
+default_section: all
+items:
+  - {item: Collective, response: DOWN / FRICTION ON, default: true}
+  - {item: Cyclic & Pedals, response: NEUTRAL, default: true}
+  - {item: Engine Cooldown, response: PER RFM, default: true}
+  - {item: Avionics, response: OFF, default: true}
+  - {item: Carburetor Heat, response: OFF, tags: [piston]}
+  - {item: Clutch, response: DISENGAGE, tags: [piston], default: true}
+  - {item: Mixture, response: IDLE CUTOFF, tags: [piston], default: true}
+  - {item: Throttle / Twist Grip, response: CUTOFF, tags: [turbine], default: true}
+  - {item: Rotor Brake (if equipped), response: APPLY PER RFM}
+  - {item: Magnetos, response: OFF, tags: [piston], default: true}
+  - {item: Battery / Master, response: OFF, default: true}
+  - {item: Rotor, response: STOPPED BEFORE EXITING, default: true}
+  - {item: 'Blade Ties / Covers', response: INSTALLED, default: true}
+  - {item: Hobbs / Tach Time, response: RECORDED, default: true}

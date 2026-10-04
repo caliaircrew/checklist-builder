@@ -1,4 +1,6 @@
 # CFI logbook endorsements — FAA AC 61-65K (11/14/2025), Appendix A.
+# SFAR 73 entries (S73.x) follow SFAR No. 73 as amended July 23, 2024 (eff. Aug 22, 2024; expires Aug 22, 2029); they are
+#   drafts written from the regulation text — instructors must be authorized under SFAR 73 para 2(b)(5)(iv).
 # status: faa = checked word-for-word against the AC; draft = from earlier AC revisions, compare before signing;
 #         none = no wording stored (instructor pastes it in the app). validity: 90d | 24cm | 2cm | flight | none
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
@@ -791,3 +793,75 @@ endorsements:
     validity: none
     text: I certify that I meet the requirements of 14 CFR § 61.195(h) to provide the training and endorsement for
       a first-time flight instructor applicant, [First name, MI, Last name], under [§ 61.195(h)(2)(i), (ii), or (iii)].
+  - id: S73.1
+    category: SFAR 73 — Robinson R22 / R44
+    title: Ground training (formerly awareness training), R22 and R44
+    regulation: 14 CFR part 61, SFAR No. 73, paragraph 2(a)(1)–(3)
+    ac_page: —
+    status: draft
+    validity: none
+    text: 'I certify that [First name, MI, Last name] has completed the ground training required by SFAR No. 73, paragraph 2(a)(3), for the Robinson model R-22 and R-44 helicopters: energy management; mast bumping; low rotor RPM and rotor stall; low G conditions, effects, and proper recovery procedures; and rotor RPM decay.'
+  - id: S73.2
+    category: SFAR 73 — Robinson R22 / R44
+    title: Pilot in command, R22 (less than 200 helicopter / 50 R22 hours)
+    regulation: SFAR No. 73, paragraph 2(b)(1)(ii)
+    ac_page: —
+    status: draft
+    validity: 12cm
+    text: 'I certify that [First name, MI, Last name] has received at least 10 hours of flight training in the Robinson model R-22 helicopter, including autorotation procedures and energy management; autorotations from an entry altitude that permits safe maneuvering and recovery using maximum glide configuration; engine rotor RPM control without the use of the governor; and low rotor RPM recognition and recovery, as required by SFAR No. 73, paragraph 2(b)(1)(ii), and is proficient to act as pilot in command of an R-22.'
+  - id: S73.3
+    category: SFAR 73 — Robinson R22 / R44
+    title: Pilot in command, R44 (less than 200 helicopter / 50 R44 hours)
+    regulation: SFAR No. 73, paragraph 2(b)(2)(ii)
+    ac_page: —
+    status: draft
+    validity: 12cm
+    text: 'I certify that [First name, MI, Last name] has received at least 10 hours of flight training in Robinson helicopters, at least 5 hours of which were in the Robinson model R-44, including autorotation procedures and energy management; autorotations from an entry altitude that permits safe maneuvering and recovery using minimum rate of descent and maximum glide configurations; engine rotor RPM control without the use of the governor; and low rotor RPM recognition and recovery, as required by SFAR No. 73, paragraph 2(b)(2)(ii), and is proficient to act as pilot in command of an R-44.'
+  - id: S73.4
+    category: SFAR 73 — Robinson R22 / R44
+    title: Annual flight review for less-experienced pilots, R22
+    regulation: SFAR No. 73, paragraph 2(b)(1)(iii)
+    ac_page: —
+    status: draft
+    validity: 12cm
+    text: 'I certify that [First name, MI, Last name] has completed the flight review required by SFAR No. 73, paragraph 2(b)(1)(iii), in a Robinson model R-22 helicopter, including the ground training subject areas of SFAR No. 73, paragraph 2(a)(3) and the flight training of paragraph 2(b)(1)(ii).'
+  - id: S73.5
+    category: SFAR 73 — Robinson R22 / R44
+    title: Annual flight review for less-experienced pilots, R44
+    regulation: SFAR No. 73, paragraph 2(b)(2)(iii)
+    ac_page: —
+    status: draft
+    validity: 12cm
+    text: 'I certify that [First name, MI, Last name] has completed the flight review required by SFAR No. 73, paragraph 2(b)(2)(iii), in a Robinson model R-44 helicopter, including the ground training subject areas of SFAR No. 73, paragraph 2(a)(3) and the flight training of paragraph 2(b)(2)(ii).'
+  - id: S73.6
+    category: SFAR 73 — Robinson R22 / R44
+    title: Solo in an R22 (no rotorcraft-helicopter rating)
+    regulation: SFAR No. 73, paragraph 2(b)(3)
+    ac_page: —
+    status: draft
+    validity: 90d
+    text: 'I certify that [First name, MI, Last name] has received at least 20 hours of flight training in the Robinson model R-22 helicopter, including autorotation procedures and energy management; autorotations from an entry altitude that permits safe maneuvering and recovery using maximum glide configuration; engine rotor RPM control without the use of the governor; and low rotor RPM recognition and recovery, as required by SFAR No. 73, paragraph 2(b)(3), and I have found them proficient to solo a Robinson model R-22 helicopter.'
+  - id: S73.7
+    category: SFAR 73 — Robinson R22 / R44
+    title: Solo in an R44 (no rotorcraft-helicopter rating)
+    regulation: SFAR No. 73, paragraph 2(b)(4)
+    ac_page: —
+    status: draft
+    validity: 90d
+    text: 'I certify that [First name, MI, Last name] has received at least 20 hours of flight training in the Robinson model R-44 helicopter, including autorotation procedures and energy management; autorotations from an entry altitude that permits safe maneuvering and recovery using minimum rate of descent and maximum glide configurations; engine rotor RPM control without the use of the governor; and low rotor RPM recognition and recovery, as required by SFAR No. 73, paragraph 2(b)(4), and I have found them proficient to solo a Robinson model R-44 helicopter.'
+  - id: S73.8
+    category: SFAR 73 — Robinson R22 / R44
+    title: Flight review in an R22
+    regulation: SFAR No. 73, paragraph 2(c)(1) and (3); 14 CFR § 61.56
+    ac_page: —
+    status: draft
+    validity: 24cm
+    text: 'I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has satisfactorily completed a flight review under 14 CFR § 61.56(a) in a Robinson model R-22 helicopter, including the ground training subject areas of SFAR No. 73, paragraph 2(a)(3) and flight training in the abnormal and emergency procedures of paragraph 2(b), as required by SFAR No. 73, paragraph 2(c).'
+  - id: S73.9
+    category: SFAR 73 — Robinson R22 / R44
+    title: Flight review in an R44
+    regulation: SFAR No. 73, paragraph 2(c)(2) and (3); 14 CFR § 61.56
+    ac_page: —
+    status: draft
+    validity: 24cm
+    text: 'I certify that [First name, MI, Last name], [grade of pilot certificate], [certificate number], has satisfactorily completed a flight review under 14 CFR § 61.56(a) in a Robinson model R-44 helicopter, including the ground training subject areas of SFAR No. 73, paragraph 2(a)(3) and flight training in the abnormal and emergency procedures of paragraph 2(b), as required by SFAR No. 73, paragraph 2(c).'

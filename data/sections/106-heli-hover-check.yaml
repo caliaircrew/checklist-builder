@@ -1,0 +1,15 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: HOVER CHECK
+order: 106
+category: helicopter
+default_section: all
+items:
+  - {item: Hover, response: STABLE / IN GROUND EFFECT, default: true}
+  - {item: Rotor & Engine RPM, response: GREEN, default: true}
+  - {item: Power Required at Hover, response: NOTED / MARGIN AVAILABLE, default: true}
+  - {item: Cyclic Position / CG, response: NORMAL, default: true}
+  - {item: Control Response, response: NORMAL, default: true}
+  - {item: Warning / Caution Lights, response: OUT, default: true}
+  - {note: INSUFFICIENT POWER MARGIN → DO NOT DEPART}

@@ -2,6 +2,7 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 title: AIRWORTHINESS / INSPECTIONS DUE
 order: 1
+category: any
 when: Before accepting the airplane — is it legal to fly?      # shown under the section heading
 items:
   - {item: Airworthiness Certificate, response: ON BOARD / DISPLAYED}

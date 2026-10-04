@@ -2,6 +2,7 @@
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 title: REFERENCE – PHONE NUMBERS
 order: 48
+category: any
 when: Fill in      # shown under the section heading
 plain: true          # reference block: no line numbers
 items:

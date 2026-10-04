@@ -1,0 +1,22 @@
+# Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
+# Helicopter pick list: general items for single- and twin-engine piston and turbine helicopters.
+# Values that differ by model say PER RFM. Always verify against the Rotorcraft Flight Manual (RFM/POH).
+title: RUN-UP / SYSTEMS CHECK
+order: 104
+category: helicopter
+default_section: all
+items:
+  - {item: Alternator / Generator, response: ON, default: true}
+  - {item: Avionics, response: ON / SET, default: true}
+  - {item: Engine & Transmission Gauges, response: GREEN, default: true}
+  - {item: Magneto Check, response: DROP WITHIN RFM LIMITS, tags: [piston], default: true}
+  - {item: Carburetor Heat Check, response: CHECKED, tags: [piston], default: true}
+  - {item: Governor, response: ON, tags: [piston], default: true}
+  - {item: Low Rotor RPM Warning, response: TESTED, default: true}
+  - {item: Hydraulics (if equipped), response: TESTED / ON}
+  - {item: Engine Power Check, response: PER RFM, tags: [turbine]}
+  - {item: Engine / Inlet Anti-Ice, response: AS REQUIRED, tags: [turbine]}
+  - {item: Flight Controls, response: FREE / CORRECT, default: true}
+  - {item: Frictions, response: AS REQUIRED, default: true}
+  - {item: Rotor / Engine RPM, response: 100% / GREEN, default: true}
+  - {item: Caution / Warning Panel, response: CLEAR, default: true}
