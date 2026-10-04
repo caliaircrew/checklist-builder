@@ -33,10 +33,13 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [ ] 15b. Review queue: approve, hide, mark FAA verified (with FAA registry link), notes; re-review when a listed profile's free text changes
   - [ ] 15c. User management: search users by email, last sign-in, view profile, hide/unhide, make or remove admin, delete account (with confirmation)
   - [ ] 15d. Sign-in help: no passwords exist (email codes); "lost phone" reset removes a user's Microsoft Authenticator so they can sign in with an email code and set it up again
+  - [ ] 15d2. Locked out of email: admin moves the account to a new sign-in email ONLY after identity is confirmed outside email (phone call, known contact, name + FAA certificate matched on the FAA registry); logged in the audit log
   - [ ] 15e. Get-notified list: view, export CSV, remove
   - [ ] 15f. Reports from users ("report this profile") and an audit log of admin actions
   - [ ] 15g. Database update 005 (admin functions: list users, remove authenticator, delete user, audit log)
 - [ ] 16. Homepage update; invite James's network
+- [ ] 16a. Account settings for users: change my sign-in email (confirmed from the new inbox), turn Microsoft Authenticator on/off, download my data, delete my account
+- [ ] 16b. Later: optional Sign in with Apple / Google linked to the same account as a backup way in
 
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile
