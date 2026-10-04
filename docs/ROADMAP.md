@@ -8,7 +8,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 3f. Run supabase/010_crew_private.sql
 - [x] 3g. Run supabase/011_account.sql
 - [x] 3i. Run supabase/013_reminders.sql (2026-10-03)
-- [ ] 3j. Reminders setup (docs/REMINDERS_SETUP.md): deploy reminders function, REMINDER_KEY secret, vault secret, run 014
+- [x] 3j. Reminders setup (docs/REMINDERS_SETUP.md; scheduled 2026-10-03: cali-currency-reminders, 0 16 * * *, active): deploy reminders function, REMINDER_KEY secret, vault secret, run 014
 - [ ] 3k. Run the "missing objects" audit query after every database update (expect no rows)
 - [x] 3h. Recovery setup (docs/RECOVERY_SETUP.md): Resend account + GoDaddy DNS, run 012, deploy the recovery Edge Function, set 3 secrets (Account page: recovery contacts, help requests, delete my account) (private FAA-verification details) (operator profiles)
 - [x] 3d. supabase/008_metrics_fix.sql and supabase/001_checklists.sql applied 2026-10-03 (checklist sync tables were missing in production until now)
@@ -83,7 +83,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 20. Verification badges (FAA airmen database match; sim training checked by James)
   - [x] 20a. Private legal name + FAA address city/state on crew profiles, shown in admin review; FAA button copies the legal last name (v1.32)
   - [ ] 20b. Monthly import of the FAA Airmen Certification Releasable Database (GitHub Action), storing only what matching needs; automatic "Likely FAA match: certificate level, ratings, type ratings, city/state" or "No FAA match found" in admin review. Admin always confirms; withheld addresses and common names handled as suggestions, never auto-approval
-- [ ] 21. Currency & expiration tracker: [x] "current" badge (v1.28/1.29) · [x] email reminders for aircraft currency, FA recurrent, CPR (v1.44) · [ ] setup: 013 + reminders function + REMINDER_KEY + vault + 014 (docs/REMINDERS_SETUP.md) · [ ] FAA medical and flight review dates · [ ] owner aircraft inspections due
+- [ ] 21. Currency & expiration tracker: [x] "current" badge (v1.28/1.29) · [x] email reminders for aircraft currency, FA recurrent, CPR (v1.44) · [x] setup done 2026-10-03 · [ ] FAA medical and flight review dates · [ ] owner aircraft inspections due
 
 ## F. Business & launch
 - [ ] 22. LLC / insurance decision; attorney sign-off on terms. Cali Aircrew is currently a DBA of James Bailey; James decided (2026-10-03) to form an LLC. Then: update Terms/Privacy to name the LLC, refile the fictitious business name under the LLC if keeping "Cali Aircrew" as a DBA, business bank account, insurance (general + professional/tech E&O), and Stripe/partners under the LLC
