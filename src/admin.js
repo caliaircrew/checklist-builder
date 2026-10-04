@@ -72,7 +72,7 @@ async function load(){
 /* ---------------- quality flags ---------------- */
 const thisYM = () => { const n = new Date(); return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0"); };
 function flags(p){
-  const f = [], ac = D.acBy.get(p.user_id) || [], d = p.details || {}, text = (D.pend.get(p.user_id) || {}).bio || p.bio || "";
+  const f = [], ac = D.acBy.get(p.user_id) || [], d = p.details || {}, text = ((D.pend.get(p.user_id) || {}).bio || p.bio || "") + " " + (d.jobs || []).map(j => j.company || "").join(" ");
   if (!ac.length) f.push(["bad", "No aircraft"]);
   if (p.total_time && ac.some(a => (a.hours || 0) > p.total_time)) f.push(["bad", "Hours on a type exceed total time"]);
   if (ac.some(a => a.is_current && a.current_until && String(a.current_until).slice(0, 7) < thisYM())) f.push(["", "Currency date has passed"]);
