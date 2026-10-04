@@ -28,6 +28,9 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 7b. Checklist builder theme matches the rest of the site: clear-sky palette, white top bar with Cali Aircrew logo and the same menu (Checklists, Crew, Partners, Sign in), Barlow Condensed + Source Sans 3, sky-blue main buttons, 8 px spacing, phone bottom tab bar (printed card keeps its black-and-white print style)
 - [x] 7a. Fly mode (v1.43) (iPad landscape): one section at a time, large type, tap to check each line, swipe to next section, Reset; optional night mode (dim red on black); "verify against AFM/POH" note
 
+- [x] 7c. Download PDF that matches See & print exactly; Word kept for editing (v1.50)
+- [x] 7d. Menu name: Aircraft Checklists (v1.50)
+
 ## C. Website
 - [x] 8. Partners page (small): insurance, sim training, flight schools; labeled sponsored; "Become a partner" contact
 - [ ] 9. Terms of Use + Privacy Policy: [x] drafts v0.1 published as drafts (v1.39) · [ ] fill [brackets] (entity, address, county, retention) · [ ] California attorney review · [ ] set effective date

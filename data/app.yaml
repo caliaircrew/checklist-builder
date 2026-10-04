@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.49'
+app_version: '1.50'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,10 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.50'
+    notes:
+      - "Download PDF: a checklist file that looks exactly like See & print (both sizes); the Word file is still there for editing"
+      - "Menu says Aircraft Checklists"
   - version: '1.49'
     notes:
       - "Admins get an email (checked hourly) when new profiles are waiting for review, text is waiting for approval, or a help request or partner inquiry arrives; switch on the Admin dashboard"
