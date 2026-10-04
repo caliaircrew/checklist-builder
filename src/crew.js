@@ -84,9 +84,11 @@ function signIn(after){
     b.onclick = go; c.onkeydown = ev => { if (ev.key === "Enter") go(); }; };
   if (user) s3(); else s1();
 }
+let IS_ADMIN = false;
+function showAdmin(){ const al = $("adminLink"); if (al) al.hidden = !IS_ADMIN; document.querySelectorAll(".adminbtn").forEach(b => b.hidden = !IS_ADMIN); }
 function drawAcct(){ const b = $("acctBtn"); if (!b) return; b.textContent = user ? "My profile" : "Sign in";
-  const al = $("adminLink"); if (al) al.hidden = true;
-  if (user && sb && al) sb.rpc("is_admin").then(r => { if (r && r.data === true) al.hidden = false; }, () => {}); }
+  IS_ADMIN = false; showAdmin();
+  if (user && sb) sb.rpc("is_admin").then(r => { IS_ADMIN = !!(r && r.data === true); showAdmin(); }, () => {}); }
 async function drawBanner(){
   if (!sb) return; try { const {data} = await sb.from("site_settings").select("value").eq("key", "banner").maybeSingle();
     const v = data && data.value; const el = $("sitebanner"); if (!el) return;
@@ -355,7 +357,7 @@ async function viewMe(){
   const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
   app.innerHTML = `
   <div class="pagehead"><div><h1>My crew profile</h1><p>Signed in as ${esc(user.email || "")}. Mostly taps: choose what fits, then Save.</p></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn secondary" href="#/op">Operator profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/op">Operator profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
   <div class="split" id="split">
    <div class="formcol">
     <section class="panel" aria-labelledby="h1a"><h2 id="h1a">About you</h2>
@@ -637,7 +639,7 @@ async function viewOpMe(){
   const sel = (id, k, label, val) => `<div class="f"><label for="${id}">${label}</label><select id="${id}"><option value="">Choose…</option>${OPT[k].map(([v, l]) => `<option value="${v}"${v === val ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`;
   const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
   app.innerHTML = `<div class="pagehead"><div><h1>My operator profile</h1><p>For owners, charter operators and flight departments. Mostly taps.</p></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn secondary" href="#/me">Crew profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/me">Crew profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button></div></div>
   <div class="split" id="split"><div class="formcol">
     <section class="panel"><h2>Who you are</h2>
       <div class="grid2">${sel("ok", "opkind", "Type of operator", P.kind)}<div class="f"><label for="on">Company name</label><input id="on" maxlength="120" value="${esc(D.private ? "" : P.name)}" placeholder="e.g. Coastal Jets LLC"${D.private ? " disabled" : ""}></div></div>
@@ -726,7 +728,8 @@ async function viewOpMe(){
 }
 
 /* ---------------- router ---------------- */
-async function route(){
+async function route(){ await route0(); showAdmin(); }
+async function route0(){
   const h = location.hash.replace(/^#\/?/, "");
   window.onbeforeunload = null;
   if (h === "me") return viewMe();

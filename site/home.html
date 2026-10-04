@@ -88,6 +88,7 @@ fieldset.field{border:0;margin:0;padding:0}
 footer{background:#E9EFF5;color:var(--sub)}
 .sitebanner{background:#DCEBF8;color:var(--ink);text-align:center;padding:10px 20px;font-weight:600;border-bottom:1px solid var(--line)}.sitebanner.warn{background:#FFF4DE;color:#6A4A00}.sitebanner[hidden]{display:none}
 #ptlist a{font-weight:600}
+#homeAdmin[hidden]{display:none}
 footer .wrap{padding-top:32px;padding-bottom:48px;display:flex;flex-wrap:wrap;gap:16px 40px;font-size:15px}
 footer strong{font:700 22px/1 var(--display);color:var(--ink)}
 footer p{margin:0;flex:1 1 100%;max-width:72ch}
@@ -119,7 +120,8 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
       <a href="checklists/">Checklists</a>
       <a href="crew/">Find crew</a>
       <a href="#partners">Partners</a>
-      <a class="btn primary" href="crew/#/me">Sign in</a>
+      <a href="admin/" id="homeAdmin" hidden>Admin</a>
+      <a class="btn primary" href="crew/#/me" id="homeAcct">Sign in</a>
     </nav>
   </div>
 </header>
@@ -235,7 +237,7 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
   <a href="./" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</a>
   <a href="checklists/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Checklists</a>
   <a href="crew/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Find crew</a>
-  <a href="crew/#/me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Sign in</a>
+  <a href="crew/#/me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span id="homeAcctTab">Sign in</span></a>
 </nav>
 <footer>
   <div class="wrap">
@@ -249,6 +251,17 @@ document.getElementById("yr").textContent=new Date().getFullYear();
 (function(){const svg=document.querySelector(".scene");const fit=()=>{const r=svg.getBoundingClientRect();svg.setAttribute("viewBox",r.width/r.height<1.1?"445 0 560 520":"0 0 1440 520")};fit();addEventListener("resize",fit)})();
 (function(){
   const CLOUD={{CLOUD_JSON}};
+  /* Signed in? The site's sign-in (shared with the checklist builder and crew pages) is kept in this browser under "acb-auth".
+     Show "My profile" instead of "Sign in", and an Admin link for admins (the database answers is_admin; nothing is trusted from the browser). */
+  try {
+    const ses = JSON.parse(localStorage.getItem("acb-auth") || "null");
+    if (ses && ses.user && ses.refresh_token) {
+      document.getElementById("homeAcct").textContent = "My profile"; document.getElementById("homeAcctTab").textContent = "My profile";
+      if (CLOUD.enabled && ses.access_token && (!ses.expires_at || ses.expires_at * 1000 > Date.now()))
+        fetch(CLOUD.url + "/rest/v1/rpc/is_admin", {method:"POST", headers:{"apikey":CLOUD.key, "Authorization":"Bearer " + ses.access_token, "Content-Type":"application/json"}, body:"{}"})
+          .then(r => r.ok ? r.json() : false).then(v => { if (v === true) document.getElementById("homeAdmin").hidden = false; }).catch(() => {});
+    }
+  } catch (_) {}
   /* Banner and partner listings, managed on the admin page (database update 007). Read-only, public data. */
   if(CLOUD.enabled){
     const H={"apikey":CLOUD.key};
