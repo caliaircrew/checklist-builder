@@ -7,7 +7,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 3e. Run supabase/009_operators.sql
 - [x] 3f. Run supabase/010_crew_private.sql
 - [x] 3g. Run supabase/011_account.sql
-- [ ] 3h. Recovery setup (docs/RECOVERY_SETUP.md): Resend account + GoDaddy DNS, run 012, deploy the recovery Edge Function, set 3 secrets (Account page: recovery contacts, help requests, delete my account) (private FAA-verification details) (operator profiles)
+- [x] 3h. Recovery setup (docs/RECOVERY_SETUP.md): Resend account + GoDaddy DNS, run 012, deploy the recovery Edge Function, set 3 secrets (Account page: recovery contacts, help requests, delete my account) (private FAA-verification details) (operator profiles)
 - [x] 3d. supabase/008_metrics_fix.sql and supabase/001_checklists.sql applied 2026-10-03 (checklist sync tables were missing in production until now)
 - [x] 3c. Run supabase/007_admin.sql (admin page, review of free text, search metrics, banner, partners, requests)
 - [x] 3b. Run supabase/006_currency_details.sql (includes 005: Current checkbox, current-through month, training school)
@@ -58,7 +58,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [ ] Face ID / Touch ID passkeys (when Supabase passkeys leave beta)
   - [ ] Continue with Apple (needs Apple Developer account, $99/yr)
   - [ ] Microsoft Authenticator as optional two-step (already built)
-  - [ ] Recovery email (Google style, self-service): user adds and confirms a backup email on Account. Sign-in screen: "Locked out? Send a recovery link to my backup email" → one-time link (short expiry, rate-limited) lets them set a new main sign-in email. If Microsoft Authenticator is on, the recovery still asks for its code. The old address gets a "your sign-in email changed" notice. Needs a Supabase Edge Function (server-side, holds the service key; never in the browser)
+  - [x] Recovery email (Google style, self-service; live 2026-10-03: backup-email confirmation verified end to end): user adds and confirms a backup email on Account. Sign-in screen: "Locked out? Send a recovery link to my backup email" → one-time link (short expiry, rate-limited) lets them set a new main sign-in email. If Microsoft Authenticator is on, the recovery still asks for its code. The old address gets a "your sign-in email changed" notice. Needs a Supabase Edge Function (server-side, holds the service key; never in the browser)
   - [x] If all else fails: "Still locked out? Ask Cali Aircrew" form → appears in the admin page's help queue and emails James; he confirms identity outside email (15d2) before moving the account
   - [ ] Recovery phone number (optional) used only by an admin to confirm identity; no SMS codes ($75/mo add-on, weaker)
 
