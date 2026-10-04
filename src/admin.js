@@ -191,7 +191,7 @@ function itemHTML(p, mode){
       ${mode === "text" ? `<button class="btn primary sm" data-a="approvetext">Approve new text</button><button class="btn secondary sm" data-a="declinetext">Decline new text</button>`
         : `<button class="btn primary sm" data-a="approve">Approve</button><button class="btn secondary sm" data-a="approvever">Approve + FAA verified</button>`}
       <button class="btn secondary sm" data-a="hide">${m.hidden ? "Unhide" : "Hide"}</button>
-      <button class="btn secondary sm" data-a="faa">FAA registry</button>
+      <a class="btn secondary sm" data-a="faa" href="${FAA_URL}" target="_blank" rel="noopener">FAA registry</a>
       <a class="btn secondary sm" href="../crew/#/p/${esc(p.user_id)}" target="_blank" rel="noopener">View as public</a>
     </div></article>`;
 }
@@ -237,9 +237,10 @@ function bindReview(){
   $("body").addEventListener("click", async e => {
     const b = e.target.closest("[data-a]"); if (!b) return; const it = b.closest(".item"), id = it.dataset.id, m = D.mod.get(id) || {}, note = it.querySelector(".note").value;
     const a = b.dataset.a;
-    if (a === "faa") { const p = D.profiles.find(x => x.user_id === id), pv = D.priv.get(id); const last = pv && pv.legal_last ? pv.legal_last : (p.display_name || "");
-      try { await navigator.clipboard.writeText(last); } catch (_) {} window.open(FAA_URL, "_blank", "noopener");
-      say(pv && pv.legal_last ? `Opened the FAA Airmen Inquiry and copied the last name "${pv.legal_last}". Paste it, type the first name "${pv.legal_first}", then match the city and certificate.` : "Opened the FAA Airmen Inquiry. This pilot hasn't added a legal name yet; the profile name was copied.", true); return; }
+    if (a === "faa") {   // a real link opens the FAA page (Safari blocks script-opened tabs); copy the last name in the same tap
+      const p = D.profiles.find(x => x.user_id === id), pv = D.priv.get(id); const last = pv && pv.legal_last ? pv.legal_last : (p.display_name || "");
+      try { navigator.clipboard.writeText(last).catch(() => {}); } catch (_) {}
+      say(pv && pv.legal_last ? `FAA Airmen Inquiry opened in a new tab. Search: Last name "${pv.legal_last}" (copied), First name "${pv.legal_first}"${pv.faa_state && pv.faa_state !== "XX" ? `, State ${pv.faa_state}` : ""}. Match the certificate level, then come back and tap Approve + FAA verified.` : "Opened the FAA Airmen Inquiry. This pilot hasn't added a legal name yet; the profile name was copied.", true); return; }
     if (a === "approve") return act(() => sb.rpc("admin_moderate", {p_user:id, p_approved:true, p_hidden:false, p_verified:!!m.verified_faa, p_note:note, p_approve_text:true}), "Approved.");
     if (a === "approvever") return act(() => sb.rpc("admin_moderate", {p_user:id, p_approved:true, p_hidden:false, p_verified:true, p_note:note, p_approve_text:true}), "Approved and marked FAA verified.");
     if (a === "hide") return act(() => sb.rpc("admin_moderate", {p_user:id, p_approved:!!m.approved, p_hidden:!m.hidden, p_verified:!!m.verified_faa, p_note:note, p_approve_text:false}), m.hidden ? "Unhidden." : "Hidden from the directory.");

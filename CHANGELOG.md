@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.35 | 2026-10-03 | Fix: FAA registry is a real link (target _blank) so Safari doesn't block it as a pop-up; copies legal last name in the same tap; instructions list last/first name and state. |
 | 1.34 | 2026-10-03 | Fix: admins' own bio/About saves no pending copy (database already lets admins change public text); admin review filters pending rows identical to public text (crew + operators). |
 | 1.33 | 2026-10-03 | Homepage reads the shared acb-auth session: My profile vs Sign in (top bar + phone tab), Admin link when rpc is_admin answers true. Crew: Admin button on #/me and #/op for admins (is_admin re-applied after every route). |
 | 1.32 | 2026-10-03 | Private FAA-verification details (supabase/010_crew_private.sql: crew_private, owner + admin read, owner write with aal2 when enrolled); profile editor section; admin review line + 'No legal name for FAA check' flag; FAA button copies legal last name; backup includes crew_private. |

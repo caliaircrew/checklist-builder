@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.34'
+app_version: '1.35'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,9 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.35'
+    notes:
+      - "Admin: the FAA registry button now opens the FAA Airmen Inquiry on iPad and iPhone, copies the pilot's legal last name, and lists what to type"
   - version: '1.34'
     notes:
       - "Admins' own profile text goes public right away instead of also waiting for review; the review list ignores waiting text that already matches the public text"
