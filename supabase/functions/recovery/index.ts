@@ -7,7 +7,7 @@
 //   RESEND_API_KEY   from resend.com (domain caliaircrew.com verified)
 //   MAIL_FROM        e.g.  Cali Aircrew <no-reply@caliaircrew.com>
 //   RECOVERY_PEPPER  any long random text (used when hashing codes)
-// SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase automatically.
+// SUPABASE_URL and the server key (SUPABASE_SECRET_KEYS or SUPABASE_SERVICE_ROLE_KEY) are provided by Supabase automatically.
 //
 // Actions (POST JSON {action, ...}):
 //   send_confirm              signed in · emails a 6-digit code to the member's saved backup email
@@ -18,8 +18,14 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const URL_ = Deno.env.get("SUPABASE_URL")!;
-const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
-const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// The server key: projects on Supabase's new API keys expose SUPABASE_SECRET_KEYS; older ones SUPABASE_SERVICE_ROLE_KEY.
+// A manually added secret named SERVICE_KEY (your sb_secret_… key) also works.
+function firstKey(raw: string | undefined): string {
+  if (!raw) return "";
+  try { const v = JSON.parse(raw); if (typeof v === "string") return v; if (Array.isArray(v)) return String(v[0] ?? ""); if (v && typeof v === "object") return String(Object.values(v)[0] ?? ""); } catch (_) { /* plain string */ }
+  return raw;
+}
+const SERVICE = Deno.env.get("SERVICE_KEY") || firstKey(Deno.env.get("SUPABASE_SECRET_KEYS")) || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const PEPPER = Deno.env.get("RECOVERY_PEPPER") ?? "";
 const RESEND = Deno.env.get("RESEND_API_KEY") ?? "";
 const FROM = Deno.env.get("MAIL_FROM") ?? "Cali Aircrew <no-reply@caliaircrew.com>";
@@ -82,6 +88,7 @@ async function signedInUser(req: Request) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  if (!SERVICE) return reply({ ok: false, message: "Recovery isn't set up yet (server key missing)." }, 500);
   if (req.method !== "POST") return reply({ ok: false, message: "POST only" }, 405);
   let body: Record<string, string> = {};
   try { body = await req.json(); } catch { return reply({ ok: false, message: "Bad request" }, 400); }
