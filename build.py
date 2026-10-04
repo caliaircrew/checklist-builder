@@ -478,6 +478,9 @@ def main(argv=None):
     need('id="aQ"' in html and "Checklist builder" in html, "checklist builder page is missing its aircraft search; refusing to publish")
     os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)
     shutil.copyfile(os.path.join(ROOT, "data", "airports-us.json"), os.path.join(a.out, "crew", "airports.json"))
+    # seq -> "Make Model" for the reminder emails (read by the reminders Edge Function)
+    open(os.path.join(a.out, "crew", "aircraft-names.json"), "w", encoding="utf-8").write(
+        json.dumps({str(r[0]): (r[1] + " " + r[2]).strip() for r in acft_rows}, ensure_ascii=False, separators=(",", ":")))
     for page_name, page_html in pages_out.items():   # distinct names: 'html' is the checklist builder, written below
         os.makedirs(os.path.join(a.out, page_name), exist_ok=True)
         open(os.path.join(a.out, page_name, "index.html"), "w", encoding="utf-8").write(page_html)

@@ -904,6 +904,9 @@ async function viewAccount(){
       <div id="bconf">${R.backup_email ? (R.backup_confirmed ? `<p class="okmsg" style="margin:0">✓ Backup email confirmed. If you're ever locked out of your sign-in email, use "Locked out of your email?" in the sign-in box.</p>`
         : `<p class="hint" style="margin:0">Not confirmed yet. Confirm it so you can recover your account on your own.</p><div><button class="btn secondary" id="bcs" type="button">Confirm backup email</button></div>`) : ""}</div>
       <div class="savebar"><button class="btn primary" id="rs" type="button">Save recovery contacts</button><span id="rsm" role="status"></span></div>` : `<p class="hint" style="margin:0">Recovery contacts switch on after a Cali Aircrew setup step.</p>`}</section>
+    <section class="panel"><h2>Email reminders</h2>
+      <label class="switch"><input type="checkbox" id="remind"> Email me 60 and 30 days before an aircraft currency, flight attendant recurrent or CPR date runs out, and when it lapses</label>
+      <p class="hint" style="margin:0">Uses the "current through" months on your crew profile. Sent to ${esc(user.email || "your sign-in email")}.</p><span id="remmsg" role="status"></span></section>
     <section class="panel"><h2>Your data</h2><p class="hint">Download everything Cali Aircrew holds about your account: profiles, aircraft, saved checklists and recovery contacts.</p>
       <div><button class="btn secondary" id="dl" type="button">Download my data</button></div></section>
     <section class="panel" style="border-color:#E4B7B2"><h2>Delete my account</h2><p class="hint">Permanently deletes your account, crew and operator profiles, aircraft, saved checklists and recovery contacts. This can't be undone.</p>
@@ -911,6 +914,12 @@ async function viewAccount(){
       <div class="savebar"><button class="btn danger" id="del" type="button" style="background:#fff;color:#8A2A20;border:2px solid #8A2A20">Delete my account</button><span class="err" id="dem" role="status"></span></div></section>
   </div>`;
   $("so").onclick = async () => { await sb.auth.signOut(); location.hash = "#/"; };
+  const ms = await sb.from("member_settings").select("currency_emails").eq("user_id", uid).maybeSingle();
+  const remOk = !(ms && ms.error); $("remind").checked = !(ms && ms.data && ms.data.currency_emails === false); $("remind").disabled = !remOk;
+  if (!remOk) $("remmsg").textContent = "Reminders switch on after a Cali Aircrew setup step.";
+  $("remind").onchange = async () => { const on = $("remind").checked;
+    const {error} = await sb.from("member_settings").upsert({user_id:uid, currency_emails:on, updated_at:new Date().toISOString()}, {onConflict:"user_id"});
+    $("remmsg").className = error ? "err" : "okmsg"; $("remmsg").textContent = error ? "Not saved: " + error.message : on ? "Reminders on." : "Reminders off."; };
   $("nes").onclick = async () => { const ne = $("ne").value.trim().toLowerCase(); const msg = t => { $("nem").textContent = t; };
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ne)) return msg("Enter the new email address.");
     if (ne === (user.email || "").toLowerCase()) return msg("That's already your sign-in email.");

@@ -80,7 +80,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 20. Verification badges (FAA airmen database match; sim training checked by James)
   - [x] 20a. Private legal name + FAA address city/state on crew profiles, shown in admin review; FAA button copies the legal last name (v1.32)
   - [ ] 20b. Monthly import of the FAA Airmen Certification Releasable Database (GitHub Action), storing only what matching needs; automatic "Likely FAA match: certificate level, ratings, type ratings, city/state" or "No FAA match found" in admin review. Admin always confirms; withheld addresses and common names handled as suggestions, never auto-approval
-- [ ] 21. Currency & expiration tracker with email reminders; "current" badge; owner aircraft inspections due
+- [ ] 21. Currency & expiration tracker: [x] "current" badge (v1.28/1.29) · [x] email reminders for aircraft currency, FA recurrent, CPR (v1.44) · [ ] setup: 013 + reminders function + REMINDER_KEY + vault + 014 (docs/REMINDERS_SETUP.md) · [ ] FAA medical and flight review dates · [ ] owner aircraft inspections due
 
 ## F. Business & launch
 - [ ] 22. LLC / insurance decision; attorney sign-off on terms. Cali Aircrew is currently a DBA of James Bailey; James decided (2026-10-03) to form an LLC. Then: update Terms/Privacy to name the LLC, refile the fictitious business name under the LLC if keeping "Cali Aircrew" as a DBA, business bank account, insurance (general + professional/tech E&O), and Stripe/partners under the LLC
