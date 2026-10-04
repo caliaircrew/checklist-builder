@@ -3,10 +3,13 @@
 Tick items as they are done (edit this file, or ask Claude to). Order = planned order of work.
 
 ## A. Housekeeping
-- [x] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor
+- [x] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor — actually applied 2026-10-03 21:11 (earlier it had not run: details/part135 were missing in production, so tap-to-choose profile answers could not be saved before this)
 - [x] 3e. Run supabase/009_operators.sql
 - [x] 3f. Run supabase/010_crew_private.sql
 - [x] 3g. Run supabase/011_account.sql
+- [x] 3i. Run supabase/013_reminders.sql (2026-10-03)
+- [ ] 3j. Reminders setup (docs/REMINDERS_SETUP.md): deploy reminders function, REMINDER_KEY secret, vault secret, run 014
+- [ ] 3k. Run the "missing objects" audit query after every database update (expect no rows)
 - [x] 3h. Recovery setup (docs/RECOVERY_SETUP.md): Resend account + GoDaddy DNS, run 012, deploy the recovery Edge Function, set 3 secrets (Account page: recovery contacts, help requests, delete my account) (private FAA-verification details) (operator profiles)
 - [x] 3d. supabase/008_metrics_fix.sql and supabase/001_checklists.sql applied 2026-10-03 (checklist sync tables were missing in production until now)
 - [x] 3c. Run supabase/007_admin.sql (admin page, review of free text, search metrics, banner, partners, requests)
