@@ -8,7 +8,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 3f. Run supabase/010_crew_private.sql
 - [x] 3g. Run supabase/011_account.sql
 - [x] 3i. Run supabase/013_reminders.sql (2026-10-03)
-- [ ] 3m. Redeploy the reminders Edge Function after v1.48 (type-rating searches in saved-search alerts)
+- [ ] 3m. Redeploy the reminders Edge Function (v1.48 type ratings + v1.49 admin alerts), then run supabase/016_admin_alerts.sql
 - [x] 3l. Run supabase/015_saved.sql and redeploy the reminders Edge Function (done 2026-10-03)
 - [x] 3j. Reminders setup (docs/REMINDERS_SETUP.md; scheduled 2026-10-03: cali-currency-reminders, 0 16 * * *, active): deploy reminders function, REMINDER_KEY secret, vault secret, run 014
 - [ ] 3k. Run the "missing objects" audit query after every database update (expect no rows)
@@ -96,6 +96,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 48. FAA type rating designators (e.g. CE-560XL, CL-30) with single-pilot (S); search by designator
 - [ ] 49. Later (revenue): featured profiles listed first
 - Not copying: public job board (directory-not-broker guardrail) and a forum (moderation load)
+
+- [x] 50. Email alerts to admins: profiles waiting for review, text to approve, help requests, partner inquiries (hourly, new items only, per-admin switch) — v1.49
 
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile

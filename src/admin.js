@@ -22,6 +22,9 @@ const FREE = {db:500 * 1024 * 1024, mau:50000};            // Supabase free plan
 const FAA_URL = "https://amsrvs.registry.faa.gov/airmeninquiry/";
 
 let sb = null, user = null, D = null;
+document.addEventListener("change", async e => { if (e.target.id !== "admAlerts") return; const on = e.target.checked;
+  const {error} = await sb.from("member_settings").upsert({user_id:user.id, admin_emails:on, updated_at:new Date().toISOString()}, {onConflict:"user_id"});
+  if (error) { e.target.checked = !on; alert("Not saved: " + error.message); return; } D.adminEmails = on; });
 if (CLOUD.enabled && window.supabase) sb = window.supabase.createClient(CLOUD.url, CLOUD.key, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true, storageKey:"acb-auth"}});
 
 /* ---------------- gate: signed in, authenticator passed if enrolled, admin ---------------- */
@@ -57,6 +60,8 @@ async function load(){
   const soft = fn => fn.then(r => r.error ? [] : (r.data || []), () => []);
   const [ops, opac, oppend, priv, help, recov] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*")), soft(sb.from("crew_private").select("*")),
     soft(sb.from("help_requests").select("*").order("created_at", {ascending:false})), soft(sb.from("account_recovery").select("*"))]);
+  const msr = await sb.from("member_settings").select("admin_emails").eq("user_id", user.id).maybeSingle();
+  const adminEmails = msr && !msr.error ? !(msr.data && msr.data.admin_emails === false) : null;   // null = alerts not set up yet
   // Waiting text that is identical to the public text isn't really waiting.
   const pubBio = new Map(profiles.map(p => [p.user_id, p.bio || ""]));
   const mod = new Map(mods.map(m => [m.user_id, m])), acBy = new Map(), pend = new Map(pending.filter(p => (p.bio || "") !== pubBio.get(p.user_id)).map(p => [p.user_id, p]));
@@ -66,7 +71,7 @@ async function load(){
   const opAcBy = new Map(); opac.forEach(a => { if (!opAcBy.has(a.user_id)) opAcBy.set(a.user_id, []); opAcBy.get(a.user_id).push(a); });
   const opStatus = o => { const m = mod.get(o.user_id); if (m && m.op_hidden) return "hidden"; if (!o.published) return "draft"; return m && m.op_approved ? "listed" : "waiting"; };
   D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf,
-       ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p])), help, recov:new Map(recov.map(r => [r.user_id, r]))};
+       ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p])), help, recov:new Map(recov.map(r => [r.user_id, r])), adminEmails};
 }
 
 /* ---------------- quality flags ---------------- */
@@ -130,6 +135,7 @@ function viewDash(){
   const opsListed = D.ops.filter(o => D.opStatus(o) === "listed"), opTypes = new Set(); opsListed.forEach(o => (D.opAcBy.get(o.user_id) || []).forEach(a => opTypes.add(a.acft_seq)));
   const both = [...types].filter(t => opTypes.has(t)).length;
   return `
+  ${D.adminEmails === null ? "" : `<label class="switch" style="margin:0 0 12px"><input type="checkbox" id="admAlerts"${D.adminEmails ? " checked" : ""}> Email me admin alerts (new profiles to review, help requests, partner inquiries; checked hourly)</label>`}
   <h2 class="sect" style="margin-top:0">At a glance</h2>
   <div class="kgrid">
     ${kpi(fmt(listed.length), "Listed crew", `${by("waiting")} waiting · ${by("draft")} drafts · ${by("hidden")} hidden`)}

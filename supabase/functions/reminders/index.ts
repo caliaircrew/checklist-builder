@@ -14,6 +14,9 @@
 // Each reminder is logged (reminder_log) and never sent twice.
 // Saved-search alerts: for each saved search with alerts on, crew newly matching it (not in its "seen" list) are
 //   emailed to the search's owner in one digest per owner, then added to "seen" so each pilot is announced once.
+// Admin alerts (POST {"mode": "admin"}, hourly): emails every admin (unless they turned it off) about NEW items since
+//   the last alert: crew/operator profiles waiting for review, text waiting for approval, open help requests and
+//   partner inquiries. admin_alert_state remembers what was announced, so each item is emailed once.
 // POST {"dry": true} returns the plan without sending.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -192,13 +195,50 @@ async function searchAlerts(admin, dry: boolean) {
   return out;
 }
 
+/* ---------------- admin alerts ---------------- */
+async function adminAlerts(admin, dry: boolean) {
+  const out = { recipients: 0, waiting: 0, newItems: 0, emails: 0, failed: 0, preview: null as unknown };
+  const [{ data: rcp }, { data: st }, { data: crew }, { data: ops }, { data: mods }, { data: bios }, { data: abouts }, { data: help }] = await Promise.all([
+    admin.rpc("admin_alert_recipients"), admin.from("admin_alert_state").select("*").eq("id", 1).maybeSingle(),
+    admin.from("crew_profiles").select("user_id,display_name,updated_at").eq("published", true), admin.from("operator_profiles").select("user_id,name,details,updated_at").eq("published", true),
+    admin.from("moderation").select("user_id,approved,hidden,op_approved,op_hidden"), admin.from("crew_bio_pending").select("user_id,updated_at"),
+    admin.from("operator_about_pending").select("user_id,updated_at"), admin.from("help_requests").select("id,email,message,kind,created_at").eq("status", "open")]);
+  const emails = (rcp ?? []).map((r: Record<string, string>) => r.email).filter(Boolean); out.recipients = emails.length;
+  const mod = new Map((mods ?? []).map((m: Record<string, unknown>) => [m.user_id, m]));
+  const nameOf = new Map((crew ?? []).map((p: Record<string, unknown>) => [p.user_id, p.display_name || "Unnamed"]));
+  const items: { key: string, group: string, text: string }[] = [];
+  for (const p of crew ?? []) { const m = mod.get(p.user_id) as Record<string, unknown> | undefined; if (!m || (!m.approved && !m.hidden)) items.push({ key: "crew:" + p.user_id, group: "Crew profiles waiting for review", text: String(p.display_name || "Unnamed") }); }
+  for (const o of ops ?? []) { const m = mod.get(o.user_id) as Record<string, unknown> | undefined; if (!m || (!m.op_approved && !m.op_hidden)) items.push({ key: "op:" + o.user_id, group: "Operator profiles waiting for review", text: (o.details && o.details.private) || !o.name ? "Private owner" : String(o.name) }); }
+  for (const b of bios ?? []) items.push({ key: "bio:" + b.user_id + ":" + b.updated_at, group: "Profile text waiting for approval", text: String(nameOf.get(b.user_id) || "A crew member") });
+  for (const a of abouts ?? []) items.push({ key: "about:" + a.user_id + ":" + a.updated_at, group: "Operator text waiting for approval", text: "An operator" });
+  for (const h of help ?? []) { const partner = /^\[Partner inquiry\]/.test(h.message || "");
+    items.push({ key: "help:" + h.id, group: partner ? "Partner inquiries" : "Sign-in help requests", text: partner ? String(h.message).split("\n")[0].replace("[Partner inquiry] ", "") + " · " + h.email : h.email + (h.message ? " · " + String(h.message).slice(0, 80) : "") }); }
+  out.waiting = items.length;
+  const before = new Set(((st && st.notified) || []) as string[]);
+  const fresh = items.filter(i => !before.has(i.key)); out.newItems = fresh.length;
+  if (!fresh.length || !emails.length) { if (!dry && st) await admin.from("admin_alert_state").update({ notified: items.map(i => i.key), updated_at: new Date().toISOString() }).eq("id", 1); return out; }
+  const groups = new Map<string, string[]>(); for (const i of fresh) { const l = groups.get(i.group) ?? []; l.push(i.text); groups.set(i.group, l); }
+  const SHORT: Record<string, string[]> = { "Crew profiles waiting for review": ["crew profile to review", "crew profiles to review"], "Operator profiles waiting for review": ["operator profile to review", "operator profiles to review"],
+    "Profile text waiting for approval": ["profile text to approve", "profile texts to approve"], "Operator text waiting for approval": ["operator text to approve", "operator texts to approve"],
+    "Sign-in help requests": ["help request", "help requests"], "Partner inquiries": ["partner inquiry", "partner inquiries"] };
+  const subject = "Cali Aircrew admin: " + [...groups].map(([g, l]) => l.length + " " + (SHORT[g] ? SHORT[g][l.length === 1 ? 0 : 1] : g.toLowerCase())).join(", ");
+  const text = "New since the last alert:\n\n" + [...groups].map(([g, l]) => `${g} (${l.length}):\n` + l.slice(0, 20).map(x => "• " + x).join("\n") + (l.length > 20 ? `\n• …and ${l.length - 20} more` : "")).join("\n\n") +
+    `\n\nIn total, ${items.length} item${items.length === 1 ? "" : "s"} waiting.\nReview: ${SITE}/admin/#review\nRequests: ${SITE}/admin/#requests\n\nTo stop these emails, turn off "Email me admin alerts" on the Admin page.\n\nCali Aircrew`;
+  if (dry) { out.preview = { subject, to: emails.length }; return out; }
+  let sentOk = false;
+  for (const e of emails) { try { await sendMail(e, subject.slice(0, 180), text); out.emails++; sentOk = true; } catch (_) { out.failed++; } }
+  if (sentOk) await admin.from("admin_alert_state").update({ notified: items.map(i => i.key), last_sent: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", 1);
+  return out;
+}
+
 Deno.serve(async (req) => {
   const reply = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "Content-Type": "application/json" } });
   if (req.method !== "POST") return reply({ ok: false, message: "POST only" }, 405);
   if (!KEY || req.headers.get("x-cron-key") !== KEY) return reply({ ok: false, message: "Not authorized" }, 401);
   if (!SERVICE) return reply({ ok: false, message: "Server key missing" }, 500);
-  let body: { dry?: boolean } = {}; try { body = await req.json(); } catch (_) { /* empty body is fine */ }
+  let body: { dry?: boolean, mode?: string } = {}; try { body = await req.json(); } catch (_) { /* empty body is fine */ }
   const admin = createClient(URL_, SERVICE, { auth: { persistSession: false, autoRefreshToken: false } });
+  if (body.mode === "admin") { try { return reply({ ok: true, dry: !!body.dry, admin: await adminAlerts(admin, !!body.dry) }); } catch (e) { return reply({ ok: false, message: (e as Error).message }, 500); } }
   const { data: rows, error } = await admin.rpc("reminder_candidates"); if (error) return reply({ ok: false, message: error.message }, 500);
   const ids = [...new Set((rows as Row[]).map(r => r.user_id))];
   const sent = new Set<string>();
