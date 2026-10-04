@@ -62,7 +62,8 @@ async function mfaVerify(code){
 }
 function modal(html){ const m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="box2" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(m); m.addEventListener("click", e => { if (e.target === m) m.remove(); }); return m; }
 function signIn(after){
-  const m = modal(`<h2>Sign in</h2><p class="hint" style="margin:0">Same sign-in as the checklist builder. We email you a code; no passwords.</p><div id="si"></div><div class="err" id="sim" role="status"></div><button class="btn secondary" id="six" type="button">Close</button>`);
+  const m = modal(`<h2>Sign in</h2><p class="hint" style="margin:0">Same sign-in as the checklist builder. We email you a code; no passwords.</p><div id="si"></div><div class="err" id="sim" role="status"></div><button class="btn secondary" id="six" type="button">Close</button><p class="hint" style="margin:0"><a href="#" id="sihelp">Can't get in? Ask Cali Aircrew</a></p>`);
+  m.querySelector("#sihelp").onclick = e => { e.preventDefault(); m.remove(); helpRequest(); };
   const box = m.querySelector("#si"), msg = t => { m.querySelector("#sim").textContent = t || ""; };
   m.querySelector("#six").onclick = () => m.remove();
   let email = "";
@@ -86,6 +87,19 @@ function signIn(after){
 }
 let IS_ADMIN = false;
 function showAdmin(){ const al = $("adminLink"); if (al) al.hidden = !IS_ADMIN; document.querySelectorAll(".adminbtn").forEach(b => b.hidden = !IS_ADMIN); }
+function helpRequest(){
+  const m = modal(`<h2>Can't get in?</h2><p class="hint" style="margin:0">Lost access to your email or your phone? Tell us and Cali Aircrew will contact you to confirm it's you, usually within a day or two. We never ask for passwords or codes.</p>
+    <div class="f"><label for="hre">Email you can read now</label><input id="hre" type="email" autocomplete="email" autocapitalize="none" maxlength="254"></div>
+    <div class="f"><label for="hrm">What happened (include your old sign-in email)</label><textarea id="hrm" maxlength="1000" style="min-height:110px"></textarea></div>
+    <div class="err" id="hrx" role="status"></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="hrs" type="button">Send</button><button class="btn secondary" id="hrc" type="button">Cancel</button></div>`);
+  m.querySelector("#hrc").onclick = () => m.remove();
+  m.querySelector("#hrs").onclick = async () => { const email = m.querySelector("#hre").value.trim(), message = m.querySelector("#hrm").value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { m.querySelector("#hrx").textContent = "Enter an email you can read now."; return; }
+    const {error} = sb ? await sb.from("help_requests").insert({email, message, kind:"locked_out"}) : {error:true};
+    if (error) { m.querySelector("#hrx").textContent = "Couldn't send it right now. Please try again later."; return; }
+    m.querySelector(".box2").innerHTML = `<h2>Request sent</h2><p style="margin:0">Cali Aircrew will email ${esc(email)} to confirm it's you. Watch for it, including your spam folder.</p><button class="btn primary" type="button" id="hrok">Done</button>`;
+    m.querySelector("#hrok").onclick = () => m.remove(); };
+}
 function drawAcct(){ const b = $("acctBtn"); if (!b) return; b.textContent = user ? "My profile" : "Sign in";
   IS_ADMIN = false; showAdmin();
   if (user && sb) sb.rpc("is_admin").then(r => { IS_ADMIN = !!(r && r.data === true); showAdmin(); }, () => {}); }
@@ -357,7 +371,7 @@ async function viewMe(){
   const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
   app.innerHTML = `
   <div class="pagehead"><div><h1>My crew profile</h1><p>Signed in as ${esc(user.email || "")}. Mostly taps: choose what fits, then Save.</p></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/op">Operator profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/account">Account</a><a class="btn secondary" href="#/op">Operator profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
   <div class="split" id="split">
    <div class="formcol">
     <section class="panel" aria-labelledby="h1a"><h2 id="h1a">About you</h2>
@@ -640,7 +654,7 @@ async function viewOpMe(){
   const sel = (id, k, label, val) => `<div class="f"><label for="${id}">${label}</label><select id="${id}"><option value="">Choose…</option>${OPT[k].map(([v, l]) => `<option value="${v}"${v === val ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`;
   const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
   app.innerHTML = `<div class="pagehead"><div><h1>My operator profile</h1><p>For owners, charter operators and flight departments. Mostly taps.</p></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/me">Crew profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/account">Account</a><a class="btn secondary" href="#/me">Crew profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button></div></div>
   <div class="split" id="split"><div class="formcol">
     <section class="panel"><h2>Who you are</h2>
       <div class="grid2">${sel("ok", "opkind", "Type of operator", P.kind)}<div class="f"><label for="on">Company name</label><input id="on" maxlength="120" value="${esc(D.private ? "" : P.name)}" placeholder="e.g. Coastal Jets LLC"${D.private ? " disabled" : ""}></div></div>
@@ -728,6 +742,70 @@ async function viewOpMe(){
   window.onbeforeunload = () => dirty ? "You have unsaved changes." : undefined;
 }
 
+/* ---------------- account ---------------- */
+async function viewAccount(){
+  if (!sb) return;
+  if (!user) { app.innerHTML = `<div class="center"><h1>Account</h1><p>Sign in to manage your account.</p><button class="btn primary" id="go" type="button">Sign in</button></div>`; $("go").onclick = () => signIn(route); return; }
+  if (await needMfa()) { app.innerHTML = `<div class="center"><h1>One more step</h1><p>Enter your Microsoft Authenticator code to manage your account.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`; $("go").onclick = () => signIn(route); return; }
+  const uid = user.id, {data:f} = await sb.auth.mfa.listFactors(), mfaOn = ((f && f.totp) || []).some(x => x.status === "verified");
+  const rr = await sb.from("account_recovery").select("*").eq("user_id", uid).maybeSingle(), R = (rr && !rr.error && rr.data) || {backup_email:"", phone:"", backup_confirmed:false}, recOk = !(rr && rr.error);
+  app.innerHTML = `<div class="pagehead"><div><h1>Account</h1><p>Signed in as ${esc(user.email || "")}</p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/me">Crew profile</a><a class="btn secondary" href="#/op">Operator profile</a><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
+  <div style="display:flex;flex-direction:column;gap:24px;max-width:760px">
+    <section class="panel"><h2>Sign-in email</h2><p class="hint">You sign in with a code sent to this address. To change it, enter the new address; we'll email a confirmation link, and the change finishes when you tap it.</p>
+      <div class="grid2"><div class="f"><label for="ne">New sign-in email</label><input id="ne" type="email" autocomplete="email" autocapitalize="none" maxlength="254"></div></div>
+      <div class="savebar"><button class="btn primary" id="nes" type="button">Change email</button><span class="err" id="nem" role="status"></span></div></section>
+    <section class="panel"><h2>Two-step sign-in</h2><div id="mfa"></div></section>
+    <section class="panel"><h2>Recovery contacts</h2>
+      <p class="hint">If you ever lose access to your email or phone, Cali Aircrew uses these to confirm it's you. Private: only you and Cali Aircrew admins can see them.</p>
+      ${recOk ? `<div class="grid2"><div class="f"><label for="rbe">Backup email</label><input id="rbe" type="email" autocapitalize="none" maxlength="254" value="${esc(R.backup_email)}"></div><div class="f"><label for="rph">Mobile phone (optional)</label><input id="rph" type="tel" autocomplete="tel" maxlength="30" value="${esc(R.phone)}"></div></div>
+      <p class="hint" style="margin:0">${R.backup_email ? (R.backup_confirmed ? "✓ Backup email confirmed." : "Not confirmed yet. Self-service recovery links to this address are coming soon.") : ""}</p>
+      <div class="savebar"><button class="btn primary" id="rs" type="button">Save recovery contacts</button><span id="rsm" role="status"></span></div>` : `<p class="hint" style="margin:0">Recovery contacts switch on after a Cali Aircrew setup step.</p>`}</section>
+    <section class="panel"><h2>Your data</h2><p class="hint">Download everything Cali Aircrew holds about your account: profiles, aircraft, saved checklists and recovery contacts.</p>
+      <div><button class="btn secondary" id="dl" type="button">Download my data</button></div></section>
+    <section class="panel" style="border-color:#E4B7B2"><h2>Delete my account</h2><p class="hint">Permanently deletes your account, crew and operator profiles, aircraft, saved checklists and recovery contacts. This can't be undone.</p>
+      <div class="grid2"><div class="f"><label for="de">Type your sign-in email to confirm</label><input id="de" type="email" autocapitalize="none"></div></div>
+      <div class="savebar"><button class="btn danger" id="del" type="button" style="background:#fff;color:#8A2A20;border:2px solid #8A2A20">Delete my account</button><span class="err" id="dem" role="status"></span></div></section>
+  </div>`;
+  $("so").onclick = async () => { await sb.auth.signOut(); location.hash = "#/"; };
+  $("nes").onclick = async () => { const ne = $("ne").value.trim().toLowerCase(); const msg = t => { $("nem").textContent = t; };
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ne)) return msg("Enter the new email address.");
+    if (ne === (user.email || "").toLowerCase()) return msg("That's already your sign-in email.");
+    const {error} = await sb.auth.updateUser({email:ne}, {emailRedirectTo:location.origin + location.pathname + "#/account"});
+    if (error) return msg(error.message);
+    $("nem").className = "okmsg"; msg(`Check ${ne} (and, if asked, your current inbox) for a confirmation link. Your sign-in email changes after you tap it.`); };
+  const box = $("mfa");
+  const drawM = on => { box.innerHTML = on ? `<p style="margin:0">✓ On. After the email code, Microsoft Authenticator asks for a 6-digit code.</p><div><button class="btn secondary" id="mfoff" type="button">Turn off two-step sign-in</button></div>`
+      : `<p class="hint" style="margin:0">Extra security: after the email code, you also type a code from <b>Microsoft Authenticator</b> on your phone. Tip: add it on two devices so losing one doesn't lock you out.</p><div><button class="btn primary" id="mfon" type="button">Turn on with Microsoft Authenticator</button></div>`;
+    if (on) $("mfoff").onclick = async () => { if (!confirm("Turn off two-step sign-in?")) return; const {data:ff} = await sb.auth.mfa.listFactors(); for (const x of (ff && ff.all) || []) if (x.factor_type === "totp") await sb.auth.mfa.unenroll({factorId:x.id}); try { await sb.auth.refreshSession(); } catch (_) {} drawM(false); };
+    else $("mfon").onclick = enroll; };
+  const enroll = async () => { const {data:ff} = await sb.auth.mfa.listFactors(); for (const x of (ff && ff.all) || []) if (x.factor_type === "totp" && x.status !== "verified") await sb.auth.mfa.unenroll({factorId:x.id});
+    const {data, error} = await sb.auth.mfa.enroll({factorType:"totp", friendlyName:"Microsoft Authenticator " + new Date().toISOString().slice(0, 16), issuer:"Cali Aircrew"});
+    if (error) { box.insertAdjacentHTML("beforeend", `<p class="err">${esc(error.message)}</p>`); return; }
+    box.innerHTML = `<ol style="padding-left:20px;margin:0"><li>Open <b>Microsoft Authenticator</b>, tap <b>＋</b>, then <b>Other account</b>.</li><li>Scan this code. (On this same phone? Choose <b>Enter code manually</b>.)</li><li>Type the 6-digit code it shows, then tap Confirm.</li></ol>
+      <div style="text-align:center"><img src="${data.totp.qr_code}" alt="QR code for Microsoft Authenticator" style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px"></div>
+      <p class="hint" style="margin:0">Manual setup key: <code style="user-select:all;word-break:break-all">${esc(data.totp.secret)}</code></p>
+      <div class="grid2"><div class="f"><label for="mfc">6-digit code</label><input id="mfc" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div><button class="btn primary" id="mfok" type="button">Confirm</button></div><p class="err" id="mfe"></p>`;
+    $("mfok").onclick = async () => { const code = $("mfc").value.trim(); if (!/^\d{6}$/.test(code)) { $("mfe").textContent = "Enter the 6-digit code."; return; }
+      const {data:ch, error:e1} = await sb.auth.mfa.challenge({factorId:data.id}); if (e1) { $("mfe").textContent = e1.message; return; }
+      const {error:e2} = await sb.auth.mfa.verify({factorId:data.id, challengeId:ch.id, code}); if (e2) { $("mfe").textContent = e2.message; return; } drawM(true); }; };
+  drawM(mfaOn);
+  if (recOk) $("rs").onclick = async () => { const be = $("rbe").value.trim().toLowerCase(), ph = $("rph").value.trim();
+    if (be && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(be)) { $("rsm").className = "err"; $("rsm").textContent = "Enter a valid backup email, or leave it blank."; return; }
+    if (be && be === (user.email || "").toLowerCase()) { $("rsm").className = "err"; $("rsm").textContent = "Use a different address from your sign-in email."; return; }
+    const {error} = await sb.from("account_recovery").upsert({user_id:uid, backup_email:be, phone:ph}, {onConflict:"user_id"});
+    $("rsm").className = error ? "err" : "okmsg"; $("rsm").textContent = error ? "Not saved: " + error.message : "Saved."; };
+  $("dl").onclick = async () => { const get = (t, k) => sb.from(t).select("*").eq(k || "user_id", uid).then(r => r.error ? [] : r.data || [], () => []);
+    const [cp, ca, cv, cb, op, oa, ob, ck, mi, ar] = await Promise.all(["crew_profiles", "crew_aircraft", "crew_private", "crew_bio_pending", "operator_profiles", "operator_aircraft", "operator_about_pending", "checklists", "my_items", "account_recovery"].map(t => get(t)));
+    const out = {exported_at:new Date().toISOString(), account:{id:uid, email:user.email}, crew_profile:cp, crew_aircraft:ca, crew_private:cv, crew_text_waiting_for_review:cb, operator_profile:op, operator_aircraft:oa, operator_text_waiting_for_review:ob, checklists:ck, my_items:mi, recovery_contacts:ar};
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], {type:"application/json"})); a.download = "my-cali-aircrew-data.json"; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); };
+  $("del").onclick = async () => { const typed = $("de").value.trim(); if (!typed) { $("dem").textContent = "Type your sign-in email first."; return; }
+    if (!confirm("Delete your Cali Aircrew account permanently? This can't be undone.")) return;
+    const {error} = await sb.rpc("delete_my_account", {p_confirm_email:typed}); if (error) { $("dem").textContent = error.message; return; }
+    location.hash = "#/deleted";   // the sign-out below redraws the page; this route shows the confirmation
+    try { await sb.auth.signOut(); } catch (_) {} try { localStorage.removeItem("acb-auth"); } catch (_) {} route(); };
+}
+
 /* ---------------- router ---------------- */
 async function route(){ await route0(); showAdmin(); }
 async function route0(){
@@ -738,6 +816,8 @@ async function route0(){
   if (h === "aircraft") return viewBrowse();
   if (h.startsWith("a/")) { const [n, w] = h.slice(2).split("/"); return viewAircraft(+n, w); }
   if (h === "op") return viewOpMe();
+  if (h === "account") return viewAccount();
+  if (h === "deleted") { app.innerHTML = `<div class="center"><h1>Account deleted</h1><p>Your account and everything in it have been removed. Thanks for flying with Cali Aircrew.</p><a class="btn secondary" href="../">Home</a></div>`; return; }
   if (h === "operators") return viewOperators();
   if (h.startsWith("o/")) return viewOperator(h.slice(2));
   return viewFind();

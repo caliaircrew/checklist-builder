@@ -5,7 +5,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 ## A. Housekeeping
 - [x] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor
 - [x] 3e. Run supabase/009_operators.sql
-- [x] 3f. Run supabase/010_crew_private.sql (private FAA-verification details) (operator profiles)
+- [x] 3f. Run supabase/010_crew_private.sql
+- [ ] 3g. Run supabase/011_account.sql (Account page: recovery contacts, help requests, delete my account) (private FAA-verification details) (operator profiles)
 - [x] 3d. supabase/008_metrics_fix.sql and supabase/001_checklists.sql applied 2026-10-03 (checklist sync tables were missing in production until now)
 - [x] 3c. Run supabase/007_admin.sql (admin page, review of free text, search metrics, banner, partners, requests)
 - [x] 3b. Run supabase/006_currency_details.sql (includes 005: Current checkbox, current-through month, training school)
@@ -49,7 +50,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [ ] 15f. Reports from users ("report this profile") — audit log of admin actions [x] done (v1.30)
   - [x] 15g. Database update 005 (admin functions: list users, remove authenticator, delete user, audit log)
 - [ ] 16. Homepage update; invite James's network
-- [ ] 16a. Account settings for users: change my sign-in email (confirmed from the new inbox), turn Microsoft Authenticator on/off, download my data, delete my account
+- [x] 16a. Account settings for users: change my sign-in email (confirmed from the new inbox), turn Microsoft Authenticator on/off, download my data, delete my account (v1.36)
 - [ ] 16b. Several ways in, one account (Supabase identity linking), shown on Account → Ways to sign in:
   - [ ] Email code (always; the fallback)
   - [ ] Continue with Google (free; Google Cloud OAuth client + Supabase provider, ~15 min setup)
@@ -57,7 +58,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [ ] Continue with Apple (needs Apple Developer account, $99/yr)
   - [ ] Microsoft Authenticator as optional two-step (already built)
   - [ ] Recovery email (Google style, self-service): user adds and confirms a backup email on Account. Sign-in screen: "Locked out? Send a recovery link to my backup email" → one-time link (short expiry, rate-limited) lets them set a new main sign-in email. If Microsoft Authenticator is on, the recovery still asks for its code. The old address gets a "your sign-in email changed" notice. Needs a Supabase Edge Function (server-side, holds the service key; never in the browser)
-  - [ ] If all else fails: "Still locked out? Ask Cali Aircrew" form → appears in the admin page's help queue and emails James; he confirms identity outside email (15d2) before moving the account
+  - [x] If all else fails: "Still locked out? Ask Cali Aircrew" form → appears in the admin page's help queue and emails James; he confirms identity outside email (15d2) before moving the account
   - [ ] Recovery phone number (optional) used only by an admin to confirm identity; no SMS codes ($75/mo add-on, weaker)
 
 ## E. Crew directory — Phase 2

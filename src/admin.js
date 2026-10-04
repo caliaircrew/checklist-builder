@@ -55,7 +55,8 @@ async function load(){
     q("audit", sb.from("admin_audit").select("*").order("id", {ascending:false}).limit(300))]);
   // Operator profiles (database update 009). Older databases simply show none.
   const soft = fn => fn.then(r => r.error ? [] : (r.data || []), () => []);
-  const [ops, opac, oppend, priv] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*")), soft(sb.from("crew_private").select("*"))]);
+  const [ops, opac, oppend, priv, help, recov] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*")), soft(sb.from("crew_private").select("*")),
+    soft(sb.from("help_requests").select("*").order("created_at", {ascending:false})), soft(sb.from("account_recovery").select("*"))]);
   // Waiting text that is identical to the public text isn't really waiting.
   const pubBio = new Map(profiles.map(p => [p.user_id, p.bio || ""]));
   const mod = new Map(mods.map(m => [m.user_id, m])), acBy = new Map(), pend = new Map(pending.filter(p => (p.bio || "") !== pubBio.get(p.user_id)).map(p => [p.user_id, p]));
@@ -65,7 +66,7 @@ async function load(){
   const opAcBy = new Map(); opac.forEach(a => { if (!opAcBy.has(a.user_id)) opAcBy.set(a.user_id, []); opAcBy.get(a.user_id).push(a); });
   const opStatus = o => { const m = mod.get(o.user_id); if (m && m.op_hidden) return "hidden"; if (!o.published) return "draft"; return m && m.op_approved ? "listed" : "waiting"; };
   D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf,
-       ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p]))};
+       ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p])), help, recov:new Map(recov.map(r => [r.user_id, r]))};
 }
 
 /* ---------------- quality flags ---------------- */
@@ -94,7 +95,7 @@ let tab = "dash";
 function shell(body){
   const waiting = new Set([...D.profiles.filter(p => D.statusOf(p) === "waiting").map(p => p.user_id), ...D.pend.keys()]).size
     + new Set([...D.ops.filter(o => D.opStatus(o) === "waiting").map(o => o.user_id), ...D.opPend.keys()]).size;
-  const reqs = D.acreq.filter(r => r.status === "open").length + D.privacy.filter(r => r.status === "open").length;
+  const reqs = D.acreq.filter(r => r.status === "open").length + D.privacy.filter(r => r.status === "open").length + D.help.filter(r => r.status === "open").length;
   app.innerHTML = `<div class="pagehead"><div><h1>Admin</h1><p>Signed in as ${esc(user.email)} · <a href="#" id="rl">Refresh</a></p></div></div>
     <nav class="atabs" aria-label="Admin sections">${TABS.map(([k, l]) => `<a href="#${k}" class="${k === tab ? "on" : ""}">${l}${k === "review" && waiting ? ` <span class="n">${waiting}</span>` : ""}${k === "requests" && reqs ? ` <span class="n">${reqs}</span>` : ""}</a>`).join("")}</nav>
     <div id="body">${body}</div><p class="err" id="msg" role="status"></p>`;
@@ -258,7 +259,7 @@ function viewUsers(){
   const st = u => !u.has_profile ? "" : u.hidden ? `<span class="tag bad">hidden</span>` : !u.published ? `<span class="tag">draft</span>` : u.approved ? `<span class="tag ok">listed</span>` : `<span class="tag warn">waiting</span>`;
   return `<div class="toolbar"><div class="f"><label for="uq">Search users</label><input id="uq" type="search" value="${esc(uq)}" placeholder="email or name"></div><span class="hint">${rows.length} of ${D.users.length}</span></div>
   <div class="tblwrap"><table class="tbl"><thead><tr><th>Email</th><th>Name</th><th>Joined</th><th>Last sign-in</th><th>Profile</th><th>Security</th><th>Actions</th></tr></thead><tbody>
-  ${rows.map(u => `<tr data-id="${esc(u.user_id)}" data-email="${esc(u.email)}"><td>${esc(u.email)}${u.is_admin ? ' <span class="tag ok">admin</span>' : ""}</td><td>${esc(u.display_name)}</td><td>${day(u.created_at)}</td><td>${day(u.last_sign_in_at)}</td><td>${st(u)}</td><td>${u.has_mfa ? "Authenticator on" : "Email only"}</td>
+  ${rows.map(u => `<tr data-id="${esc(u.user_id)}" data-email="${esc(u.email)}"><td>${esc(u.email)}${u.is_admin ? ' <span class="tag ok">admin</span>' : ""}</td><td>${esc(u.display_name)}</td><td>${day(u.created_at)}</td><td>${day(u.last_sign_in_at)}</td><td>${st(u)}</td><td>${u.has_mfa ? "Authenticator on" : "Email only"}${(() => { const r = D.recov.get(u.user_id); return r && (r.backup_email || r.phone) ? `<br><small>Recovery: ${esc([r.backup_email, r.phone].filter(Boolean).join(" · "))}</small>` : ""; })()}</td>
     <td><div class="acts">${u.has_profile ? `<a class="btn secondary sm" href="../crew/#/p/${esc(u.user_id)}" target="_blank" rel="noopener">View</a><button class="btn secondary sm" data-u="hide">${u.hidden ? "Unhide" : "Hide"}</button>` : ""}
       ${u.has_mfa ? `<button class="btn secondary sm" data-u="mfa">Lost phone reset</button>` : ""}
       <button class="btn secondary sm" data-u="admin">${u.is_admin ? "Remove admin" : "Make admin"}</button>
@@ -296,7 +297,12 @@ function bindSignups(){
 }
 
 function viewRequests(){
-  return `<h2 class="sect" style="margin-top:0">Aircraft requests</h2>
+  return `<h2 class="sect" style="margin-top:0">Sign-in help ("Can't get in?")</h2>
+  <p class="hint">Confirm who they are <b>outside email</b> (phone call, someone you know, FAA registry, their saved recovery contacts in Users) before changing anything. Then use Users → Lost phone reset, or ask Steve/Claude to move their account to a new email.</p>
+  <div class="tblwrap"><table class="tbl"><thead><tr><th>Received</th><th>Reply to</th><th>What happened</th><th>Status</th><th></th></tr></thead><tbody>
+  ${D.help.map(r => `<tr><td>${day(r.created_at)}</td><td>${esc(r.email)}</td><td>${esc(r.message)}</td><td><span class="tag ${r.status === "open" ? "warn" : "ok"}">${esc(r.status)}</span></td><td>${r.status === "open" ? `<button class="btn secondary sm" data-h="${r.id}">Mark done</button>` : ""}</td></tr>`).join("") || '<tr><td colspan="5" class="empty">No requests.</td></tr>'}
+  </tbody></table></div>
+  <h2 class="sect">Aircraft requests</h2>
   <div class="tblwrap"><table class="tbl"><thead><tr><th>Request</th><th>From</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody>
   ${D.acreq.map(r => `<tr><td>${esc(r.request)}</td><td>${esc(D.email.get(r.user_id) || "")}</td><td>${day(r.created_at)}</td><td><span class="tag ${r.status === "open" ? "warn" : r.status === "added" ? "ok" : ""}">${esc(r.status)}</span></td>
     <td><div class="acts">${r.status === "open" ? `<button class="btn secondary sm" data-r="${r.id}" data-s="added">Added</button><button class="btn secondary sm" data-r="${r.id}" data-s="declined">Decline</button>` : `<button class="btn secondary sm" data-r="${r.id}" data-s="open">Reopen</button>`}</div></td></tr>`).join("") || '<tr><td colspan="5" class="empty">No requests yet.</td></tr>'}
@@ -314,6 +320,7 @@ function viewRequests(){
 }
 function bindRequests(){
   $("body").addEventListener("click", e => {
+    const hq = e.target.closest("[data-h]"); if (hq) return act(() => sb.from("help_requests").update({status:"done"}).eq("id", +hq.dataset.h), "Marked done.");
     const r = e.target.closest("[data-r]"); if (r) return act(() => sb.from("aircraft_requests").update({status:r.dataset.s}).eq("id", +r.dataset.r), "Updated.");
     const p = e.target.closest("[data-p]"); if (p) return act(() => sb.from("privacy_requests").update({status:"done", completed_on:new Date().toISOString().slice(0, 10)}).eq("id", +p.dataset.p), "Marked done.");
   });
@@ -351,7 +358,7 @@ function bindSite(){
 }
 
 function viewAudit(){
-  const what = {moderate_operator:"Operator review", decline_operator_text:"Declined operator text", moderate:"Review decision", decline_text:"Declined new text", remove_authenticator:"Lost phone reset", make_admin:"Made admin", remove_admin:"Removed admin", delete_account:"Deleted account", banner:"Changed banner"};
+  const what = {self_delete:"Member deleted own account", moderate_operator:"Operator review", decline_operator_text:"Declined operator text", moderate:"Review decision", decline_text:"Declined new text", remove_authenticator:"Lost phone reset", make_admin:"Made admin", remove_admin:"Removed admin", delete_account:"Deleted account", banner:"Changed banner"};
   return `<p class="hint">The latest 300 admin actions. Entries can't be edited or deleted from here.</p><div class="tblwrap"><table class="tbl"><thead><tr><th>When</th><th>Admin</th><th>Action</th><th>Account</th><th>Details</th></tr></thead><tbody>
   ${D.audit.map(a => `<tr><td>${esc(new Date(a.at).toLocaleString("en-US"))}</td><td>${esc(a.admin_email)}</td><td>${esc(what[a.action] || a.action)}</td><td>${esc(a.target_email)}</td><td><small>${esc(Object.entries(a.detail || {}).map(([k, v]) => k + ": " + v).join(", "))}</small></td></tr>`).join("") || '<tr><td colspan="5" class="empty">Nothing yet.</td></tr>'}
   </tbody></table></div>`;

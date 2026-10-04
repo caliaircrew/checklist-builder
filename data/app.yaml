@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.35'
+app_version: '1.36'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,11 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.36'
+    notes:
+      - "New Account page (My profile → Account): change your sign-in email, turn Microsoft Authenticator on or off, save recovery contacts (backup email and phone), download your data, or delete your account"
+      - "Sign-in box: 'Can't get in? Ask Cali Aircrew' sends a help request to the admins"
+      - "Admin: sign-in help requests under Requests, and members' recovery contacts in Users"
   - version: '1.35'
     notes:
       - "Admin: the FAA registry button now opens the FAA Airmen Inquiry on iPad and iPhone, copies the pilot's legal last name, and lists what to type"
