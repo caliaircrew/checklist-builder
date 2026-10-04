@@ -162,7 +162,7 @@ training[], tr_des{seq}, tr_sp{seq}, jobs[], initials, fa_* , mx_*, heli_ops, sf
 
 Immediate: §0 (deploy reminders v1.49; finish auto-deploy token or choose a fallback).
 Code next (agreed order): one-tap résumé PDF → messaging → availability calendar → automatic FAA airmen
-database match (monthly import) → more reminders (medical, flight review, owner inspections) → "report this
+database match (monthly import) → "report this
 profile" → Google sign-in (Steve does ~15 min setup) → two admin levels → FAQ/Help page → Stripe/pricing +
 featured profiles → day-rate survey → AI features (ask-the-data, market insights, explained matching,
 profile helper, moderation pre-screen, checklist suggestions).
