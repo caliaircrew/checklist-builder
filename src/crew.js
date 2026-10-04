@@ -61,12 +61,13 @@ async function mfaVerify(code){
   const {error:e3} = await sb.auth.mfa.verify({factorId:t.id, challengeId:ch.id, code}); return e3 ? e3.message : "";
 }
 function modal(html){ const m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="box2" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(m); m.addEventListener("click", e => { if (e.target === m) m.remove(); }); return m; }
-function signIn(after){
-  const m = modal(`<h2>Sign in</h2><p class="hint" style="margin:0">Same sign-in as the checklist builder. We email you a code; no passwords.</p><div id="si"></div><div class="err" id="sim" role="status"></div><button class="btn secondary" id="six" type="button">Close</button><p class="hint" style="margin:0"><a href="#" id="sihelp">Can't get in? Ask Cali Aircrew</a></p>`);
+function signIn(after, presetEmail){
+  const m = modal(`<h2>Sign in</h2><p class="hint" style="margin:0">Same sign-in as the checklist builder. We email you a code; no passwords.</p><div id="si"></div><div class="err" id="sim" role="status"></div><button class="btn secondary" id="six" type="button">Close</button><p class="hint" style="margin:0"><a href="#" id="sirec">Locked out of your email? Use your backup email</a> · <a href="#" id="sihelp">Can't get in? Ask Cali Aircrew</a></p>`);
+  m.querySelector("#sirec").onclick = e => { e.preventDefault(); m.remove(); recoverFlow(); };
   m.querySelector("#sihelp").onclick = e => { e.preventDefault(); m.remove(); helpRequest(); };
   const box = m.querySelector("#si"), msg = t => { m.querySelector("#sim").textContent = t || ""; };
   m.querySelector("#six").onclick = () => m.remove();
-  let email = "";
+  let email = presetEmail || "";
   const s1 = () => { box.innerHTML = `<div class="f"><label for="sie">Email</label><input id="sie" type="email" autocomplete="email" autocapitalize="none" placeholder="you@example.com"></div><button class="btn primary" id="sis" type="button" style="width:100%;margin-top:12px">Email me a sign-in code</button>`;
     const e = box.querySelector("#sie"), b = box.querySelector("#sis"); e.value = email; e.focus();
     const go = async () => { email = e.value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg("Enter a valid email address."); msg(""); b.disabled = true; b.textContent = "Sending…";
@@ -87,6 +88,34 @@ function signIn(after){
 }
 let IS_ADMIN = false;
 function showAdmin(){ const al = $("adminLink"); if (al) al.hidden = !IS_ADMIN; document.querySelectorAll(".adminbtn").forEach(b => b.hidden = !IS_ADMIN); }
+async function recoveryCall(body){
+  // Calls the "recovery" Edge Function. Returns {ok, message, ...}. Works signed in or out.
+  try {
+    const {data, error} = await sb.functions.invoke("recovery", {body});
+    if (!error) return data || {ok:false, message:"No answer"};
+    let j = null; try { j = await error.context.json(); } catch (_) {}
+    if (j && j.message) return j;
+    return {ok:false, off:true, message:"Self-service recovery isn't switched on yet. Use \"Can't get in? Ask Cali Aircrew\" instead."};
+  } catch (e) { return {ok:false, off:true, message:"Self-service recovery isn't available right now. Use \"Can't get in? Ask Cali Aircrew\" instead."}; }
+}
+function recoverFlow(){
+  const m = modal(`<h2>Use your backup email</h2><div id="rf"></div><div class="err" id="rfm" role="status"></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn secondary" id="rfx" type="button">Close</button></div>
+    <p class="hint" style="margin:0"><a href="#" id="rfh">Still stuck? Ask Cali Aircrew</a></p>`);
+  const box = m.querySelector("#rf"), msg = (t, ok) => { const e = m.querySelector("#rfm"); e.className = ok ? "okmsg" : "err"; e.textContent = t || ""; };
+  m.querySelector("#rfx").onclick = () => m.remove(); m.querySelector("#rfh").onclick = e => { e.preventDefault(); m.remove(); helpRequest(); };
+  let email = "";
+  box.innerHTML = `<p style="margin:0">If you confirmed a backup email on your Account page, we'll send a code there and make it your new sign-in email.</p>
+    <div class="f" style="margin-top:12px"><label for="rfe">The email you used to sign in</label><input id="rfe" type="email" autocomplete="email" autocapitalize="none"></div><button class="btn primary" id="rfs" type="button" style="width:100%;margin-top:12px">Send a code to my backup email</button>`;
+  m.querySelector("#rfs").onclick = async () => { email = m.querySelector("#rfe").value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg("Enter the email you used to sign in.");
+    m.querySelector("#rfs").disabled = true; const r = await recoveryCall({action:"recover_start", email}); m.querySelector("#rfs").disabled = false;
+    if (!r.ok) return msg(r.message); msg(r.message, true);
+    box.innerHTML = `<div class="f"><label for="rfc">6-digit code from your backup email</label><input id="rfc" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div><button class="btn primary" id="rfv" type="button" style="width:100%;margin-top:12px">Make my backup my sign-in email</button>`;
+    m.querySelector("#rfv").onclick = async () => { const code = m.querySelector("#rfc").value.trim(); if (!/^\d{6}$/.test(code)) return msg("Enter the 6-digit code.");
+      m.querySelector("#rfv").disabled = true; const f = await recoveryCall({action:"recover_finish", email, code}); m.querySelector("#rfv").disabled = false;
+      if (!f.ok) return msg(f.message); msg("");
+      box.innerHTML = `<p style="margin:0">✓ ${esc(f.message)}</p><button class="btn primary" id="rfgo" type="button" style="width:100%;margin-top:12px">Sign in with ${esc(f.new_email || "my backup email")}</button>`;
+      m.querySelector("#rfgo").onclick = () => { m.remove(); signIn(route, f.new_email || ""); }; }; };
+}
 function helpRequest(){
   const m = modal(`<h2>Can't get in?</h2><p class="hint" style="margin:0">Lost access to your email or your phone? Tell us and Cali Aircrew will contact you to confirm it's you, usually within a day or two. We never ask for passwords or codes.</p>
     <div class="f"><label for="hre">Email you can read now</label><input id="hre" type="email" autocomplete="email" autocapitalize="none" maxlength="254"></div>
@@ -759,7 +788,8 @@ async function viewAccount(){
     <section class="panel"><h2>Recovery contacts</h2>
       <p class="hint">If you ever lose access to your email or phone, Cali Aircrew uses these to confirm it's you. Private: only you and Cali Aircrew admins can see them.</p>
       ${recOk ? `<div class="grid2"><div class="f"><label for="rbe">Backup email</label><input id="rbe" type="email" autocapitalize="none" maxlength="254" value="${esc(R.backup_email)}"></div><div class="f"><label for="rph">Mobile phone (optional)</label><input id="rph" type="tel" autocomplete="tel" maxlength="30" value="${esc(R.phone)}"></div></div>
-      <p class="hint" style="margin:0">${R.backup_email ? (R.backup_confirmed ? "✓ Backup email confirmed." : "Not confirmed yet. Self-service recovery links to this address are coming soon.") : ""}</p>
+      <div id="bconf">${R.backup_email ? (R.backup_confirmed ? `<p class="okmsg" style="margin:0">✓ Backup email confirmed. If you're ever locked out of your sign-in email, use "Locked out of your email?" in the sign-in box.</p>`
+        : `<p class="hint" style="margin:0">Not confirmed yet. Confirm it so you can recover your account on your own.</p><div><button class="btn secondary" id="bcs" type="button">Confirm backup email</button></div>`) : ""}</div>
       <div class="savebar"><button class="btn primary" id="rs" type="button">Save recovery contacts</button><span id="rsm" role="status"></span></div>` : `<p class="hint" style="margin:0">Recovery contacts switch on after a Cali Aircrew setup step.</p>`}</section>
     <section class="panel"><h2>Your data</h2><p class="hint">Download everything Cali Aircrew holds about your account: profiles, aircraft, saved checklists and recovery contacts.</p>
       <div><button class="btn secondary" id="dl" type="button">Download my data</button></div></section>
@@ -795,6 +825,13 @@ async function viewAccount(){
     if (be && be === (user.email || "").toLowerCase()) { $("rsm").className = "err"; $("rsm").textContent = "Use a different address from your sign-in email."; return; }
     const {error} = await sb.from("account_recovery").upsert({user_id:uid, backup_email:be, phone:ph}, {onConflict:"user_id"});
     $("rsm").className = error ? "err" : "okmsg"; $("rsm").textContent = error ? "Not saved: " + error.message : "Saved."; };
+  const bcs = $("bcs");
+  if (bcs) bcs.onclick = async () => { bcs.disabled = true; const r = await recoveryCall({action:"send_confirm"}); bcs.disabled = false;
+    const box = $("bconf"); if (!r.ok) { box.insertAdjacentHTML("beforeend", `<p class="err" style="margin:0">${esc(r.message)}</p>`); return; }
+    box.innerHTML = `<p class="okmsg" style="margin:0">${esc(r.message)}</p><div class="grid2"><div class="f"><label for="bcc">6-digit code</label><input id="bcc" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div><button class="btn primary" id="bcv" type="button">Confirm</button></div><p class="err" id="bcm" style="margin:0"></p>`;
+    $("bcv").onclick = async () => { const code = $("bcc").value.trim(); if (!/^\d{6}$/.test(code)) { $("bcm").textContent = "Enter the 6-digit code."; return; }
+      const c = await recoveryCall({action:"check_confirm", code}); if (!c.ok) { $("bcm").textContent = c.message; return; }
+      box.innerHTML = `<p class="okmsg" style="margin:0">✓ Backup email confirmed. If you're ever locked out of your sign-in email, use "Locked out of your email?" in the sign-in box.</p>`; }; };
   $("dl").onclick = async () => { const get = (t, k) => sb.from(t).select("*").eq(k || "user_id", uid).then(r => r.error ? [] : r.data || [], () => []);
     const [cp, ca, cv, cb, op, oa, ob, ck, mi, ar] = await Promise.all(["crew_profiles", "crew_aircraft", "crew_private", "crew_bio_pending", "operator_profiles", "operator_aircraft", "operator_about_pending", "checklists", "my_items", "account_recovery"].map(t => get(t)));
     const out = {exported_at:new Date().toISOString(), account:{id:uid, email:user.email}, crew_profile:cp, crew_aircraft:ca, crew_private:cv, crew_text_waiting_for_review:cb, operator_profile:op, operator_aircraft:oa, operator_text_waiting_for_review:ob, checklists:ck, my_items:mi, recovery_contacts:ar};
