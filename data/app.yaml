@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.59'
+app_version: '1.60'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,9 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.60'
+    notes:
+      - "Crew profile: cleaner aircraft rows with labeled Total, PIC and SIC hours, Part 135 and day rate"
   - version: '1.59'
     notes:
       - "Résumé tip: if your own résumé shows fewer than three jobs, a link takes you straight to Work history to add more"
