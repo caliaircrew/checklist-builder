@@ -96,7 +96,7 @@ function cardHTML(p, aircraft, mod, opts){
       <div class="meta">${base ? "Based in " + esc(base) : '<span class="empty">Home base</span>'}</div></div></div>
     ${badges.length ? `<div class="badges">${badges.join("")}</div>` : ""}
     <section><h3>Aircraft and time</h3>
-      ${ac.length ? ac.map(a => `<div class="row"><span>${esc(a.info.name)}${a.type_rated ? " · type rated" : ""}${a.part135 ? " · 135 " + esc(a.part135) : ""}</span><b>${a.hours ? fmt(a.hours) + " hrs" : ""}</b></div>`).join("") : '<p class="empty">Add the aircraft you fly.</p>'}
+      ${ac.length ? ac.map(a => `<div class="row"><span>${esc(a.info.name)}${a.type_rated ? " · type rated" : ""}${a.is_current ? " · current" : ""}${a.part135 ? " · 135 " + esc(a.part135) : ""}</span><b>${a.hours ? fmt(a.hours) + " hrs" : ""}</b></div>`).join("") : '<p class="empty">Add the aircraft you fly.</p>'}
       ${p.total_time ? `<div class="row"><span>Total time</span><b>${fmt(p.total_time)} hrs</b></div>` : ""}
     </section>
     ${block("Ratings", chips("ratings", d.ratings) + (d.medical ? `<span class="badge">Medical: ${esc(lbl("medical", d.medical))}</span>` : ""))}
@@ -139,13 +139,13 @@ function matches(p, ac){
   return true;
 }
 function rank(p, ac, mod){
-  const d = p.details || {}, onType = F.seq != null ? (ac.find(a => a.acft_seq === F.seq) || {}).hours || 0 : 0;
-  return (d.status === "now" ? 2e9 : d.status === "notice" ? 1e9 : 0) + (mod && mod.verified_faa ? 1e8 : 0) + onType * 1000 + (p.total_time || 0);
+  const d = p.details || {}, t = F.seq != null ? (ac.find(a => a.acft_seq === F.seq) || {}) : {}, onType = t.hours || 0;
+  return (d.status === "now" ? 2e9 : d.status === "notice" ? 1e9 : 0) + (t.is_current ? 4e8 : 0) + (mod && mod.verified_faa ? 1e8 : 0) + onType * 1000 + (p.total_time || 0);
 }
 function resultHTML(p, ac, mod, active){
   const d = p.details || {};
   const top = (F.seq != null ? ac.filter(a => a.acft_seq === F.seq) : ac.slice().sort((x, y) => (y.hours || 0) - (x.hours || 0))).slice(0, 2)
-    .map(a => { const i = BYSEQ.get(a.acft_seq); return i ? `${esc(i.name)}${a.hours ? " · " + fmt(a.hours) + " hrs" : ""}${a.part135 ? " · 135 " + esc(a.part135) : ""}` : ""; }).filter(Boolean);
+    .map(a => { const i = BYSEQ.get(a.acft_seq); return i ? `${esc(i.name)}${a.is_current ? " · current" : ""}${a.hours ? " · " + fmt(a.hours) + " hrs" : ""}${a.part135 ? " · 135 " + esc(a.part135) : ""}` : ""; }).filter(Boolean);
   const meta = [lbl("cert", d.cert) && d.cert !== "none" ? lbl("cert", d.cert) : "", lbl("role", d.role)].filter(Boolean).join(" · ") || [p.certificate, p.headline].filter(Boolean).join(" · ");
   const base = [d.airport, lbl("region", d.region)].filter(Boolean).join(" · ") || p.home_base;
   const b = [];
@@ -294,7 +294,7 @@ async function viewMe(){
     sb.from("moderation").select("*").eq("user_id", uid).maybeSingle()]);
   const P = Object.assign({display_name:"", crew_types:[], certificate:"", headline:"", home_base:"", travel:"", experience:"", bio:"", total_time:null, availability:"", published:false, details:{}}, p0 || {});
   P.details = Object.assign({role:"", cert:"", ratings:[], medical:"", region:"", airport:"", status:"", looking:[], travel:"", passport:false, experience:[], languages:[]}, P.details || {});
-  let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, type_rated:!!a.type_rated, hours:a.hours, part135:a.part135 || ""}));
+  let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, type_rated:!!a.type_rated, is_current:!!a.is_current, hours:a.hours, part135:a.part135 || ""}));
   let dirty = false;
   const statusOf = () => {
     if (!p0) return ["", "Not saved yet"];
@@ -369,6 +369,7 @@ async function viewMe(){
   const drawAc = () => {
     $("aclist").innerHTML = AC.length ? AC.map((a, i) => { const info = BYSEQ.get(a.acft_seq); return `<div class="acrow"><span class="nm">${esc(info ? info.name : "Aircraft #" + a.acft_seq)}</span>
       <label class="tr"><input type="checkbox" data-tr="${i}"${a.type_rated ? " checked" : ""}> Type rated</label>
+      <label class="tr"><input type="checkbox" data-cur="${i}"${a.is_current ? " checked" : ""}> Current</label>
       <input class="hrs" data-hr="${i}" inputmode="numeric" placeholder="Hours" aria-label="Hours in ${esc(info ? info.name : "")}" value="${a.hours ?? ""}">
       <select class="p135" data-p135="${i}" aria-label="Part 135 currency in ${esc(info ? info.name : "")}"><option value=""${!a.part135 ? " selected" : ""}>Not 135 current</option><option value="SIC"${a.part135 === "SIC" ? " selected" : ""}>135 current · SIC</option><option value="PIC"${a.part135 === "PIC" ? " selected" : ""}>135 current · PIC</option></select>
       <button class="iconbtn" type="button" data-rm="${i}" aria-label="Remove ${esc(info ? info.name : "aircraft")}">✕</button></div>`; }).join("") : '<p class="empty" style="margin:0">No aircraft yet.</p>';
@@ -380,7 +381,7 @@ async function viewMe(){
     if (t.dataset.hr != null) { const v = t.value.replace(/[^\d]/g, ""); AC[+t.dataset.hr].hours = v ? Math.min(50000, +v) : null; }
     if (t.id !== "acq") changed();
   });
-  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.p135 != null) { AC[+t.dataset.p135].part135 = t.value; changed(); } else if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.tagName === "SELECT" || t.type === "checkbox") changed(); });
+  app.querySelector(".formcol").addEventListener("change", e => { const t = e.target; if (t.dataset.p135 != null) { AC[+t.dataset.p135].part135 = t.value; changed(); } else if (t.dataset.tr != null) { AC[+t.dataset.tr].type_rated = t.checked; changed(); } else if (t.dataset.cur != null) { AC[+t.dataset.cur].is_current = t.checked; changed(); } else if (t.tagName === "SELECT" || t.type === "checkbox") changed(); });
   $("aclist").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (!b) return; AC.splice(+b.dataset.rm, 1); drawAc(); if (!$("acbrowse").hidden) drawBrowse(); changed(); });
   /* browse: category -> manufacturer -> model tiles; tap to add or remove */
   const CATS = [["jet","Jets"],["turboprop","Turboprops"],["ptwin","Piston twins"],["psingle","Piston singles"],["heli","Helicopters"]];
@@ -406,7 +407,7 @@ async function viewMe(){
     const c = e.target.closest("[data-cat]"), m = e.target.closest("[data-make]"), t = e.target.closest("[data-tog]");
     if (c) { bcat = c.dataset.cat === bcat ? null : c.dataset.cat; bmake = null; drawBrowse(); return; }
     if (m) { bmake = m.dataset.make === bmake ? null : m.dataset.make; drawBrowse(); return; }
-    if (t) { const seq = +t.dataset.tog, i = AC.findIndex(a => a.acft_seq === seq); if (i >= 0) AC.splice(i, 1); else AC.push({acft_seq:seq, type_rated:false, hours:null, part135:""}); drawAc(); drawBrowse(); changed(); }
+    if (t) { const seq = +t.dataset.tog, i = AC.findIndex(a => a.acft_seq === seq); if (i >= 0) AC.splice(i, 1); else AC.push({acft_seq:seq, type_rated:false, is_current:false, hours:null, part135:""}); drawAc(); drawBrowse(); changed(); }
   });
   const q = $("acq"), res = $("acres");
   q.addEventListener("input", () => {
@@ -418,7 +419,7 @@ async function viewMe(){
     res.innerHTML = hits.length ? hits.map(a => `<button type="button" data-add="${a.seq}">${esc(a.name)}<small>${esc(a.years)} · ${a.heli ? "Helicopter · " + (a.engine === "piston" ? "piston" : "turbine") : a.engine[0].toUpperCase() + a.engine.slice(1)}${a.twin ? " · twin" : ""}</small></button>`).join("") : '<div style="padding:12px;color:var(--muted)">No match. Try a shorter name.</div>';
     res.hidden = false;
   });
-  res.addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return; AC.push({acft_seq:+b.dataset.add, type_rated:false, hours:null, part135:""}); q.value = ""; res.hidden = true; drawAc(); changed(); const last = app.querySelector(`[data-hr="${AC.length - 1}"]`); if (last) last.focus(); });
+  res.addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return; AC.push({acft_seq:+b.dataset.add, type_rated:false, is_current:false, hours:null, part135:""}); q.value = ""; res.hidden = true; drawAc(); changed(); const last = app.querySelector(`[data-hr="${AC.length - 1}"]`); if (last) last.focus(); });
   document.addEventListener("click", e => { if (!e.target.closest(".acsearch")) res.hidden = true; });
   $("tp").onclick = () => { const s = $("split"); s.classList.toggle("showprev"); $("tp").textContent = s.classList.contains("showprev") ? "Edit" : "Preview"; window.scrollTo(0, 0); };
   $("so").onclick = async () => { await sb.auth.signOut(); location.hash = "#/"; };
@@ -435,13 +436,17 @@ async function viewMe(){
       if (r1.error) throw r1.error;
       const r2 = await sb.from("crew_aircraft").delete().eq("user_id", uid); if (r2.error) throw r2.error;
       if (AC.length) {
-        let r3 = await sb.from("crew_aircraft").insert(AC.map(a => ({user_id:uid, acft_seq:a.acft_seq, type_rated:a.type_rated, hours:a.hours, part135:a.part135 || ""})));
-        if (r3.error && /part135/i.test(r3.error.message || "")) {   // database not yet upgraded (supabase/003): save without it
-          r3 = await sb.from("crew_aircraft").insert(AC.map(a => ({user_id:uid, acft_seq:a.acft_seq, type_rated:a.type_rated, hours:a.hours})));
-          if (!r3.error) $("se").textContent = "Saved, but Part 135 isn't switched on yet (Cali Aircrew setup step pending).";
+        // Newer columns (part135 from 004, is_current from 005) are dropped one by one if the database hasn't been upgraded yet.
+        const cols = ["part135", "is_current"], skipped = [];
+        const rowsOf = () => AC.map(a => { const r = {user_id:uid, acft_seq:a.acft_seq, type_rated:a.type_rated, hours:a.hours, part135:a.part135 || "", is_current:!!a.is_current}; skipped.forEach(k => delete r[k]); return r; });
+        let r3 = await sb.from("crew_aircraft").insert(rowsOf());
+        for (let tries = 0; r3.error && tries < 2; tries++) {
+          const miss = cols.find(k => !skipped.includes(k) && new RegExp(k, "i").test(r3.error.message || "")); if (!miss) break;
+          skipped.push(miss); r3 = await sb.from("crew_aircraft").insert(rowsOf());
         }
+        if (!r3.error && skipped.length) $("se").textContent = "Saved, but " + skipped.map(k => k === "part135" ? "Part 135" : "Current").join(" and ") + " isn't switched on yet (Cali Aircrew setup step pending).";
         if (r3.error) throw r3.error; }
-      dirty = false; Object.assign(P, row); if (!p0) { await viewMe(); return; }
+      dirty = false; Object.assign(P, row); if (!p0) { const note = $("se").textContent; await viewMe(); if (note && $("se")) $("se").textContent = note; return; }
       drawStatus(); $("se").textContent = "";
       const ok = document.createElement("span"); ok.className = "status ok"; ok.textContent = "Saved"; $("st").appendChild(ok); setTimeout(() => ok.remove(), 2500);
     } catch (e) { $("se").textContent = "Not saved: " + ((e && e.message) || "check your connection and try again."); }

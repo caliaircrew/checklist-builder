@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.28 | 2026-10-03 | Per-aircraft Current checkbox (crew_aircraft.is_current, supabase/005_aircraft_current.sql); shown on cards/results; ranking boost on the searched type; save falls back column by column (part135, is_current) until the database is upgraded, note kept after a first save. |
 | 1.27 | 2026-10-03 | Find crew availability: 'Now or with notice' quick link + Availability dropdown (any / now / now or with notice), ranking now > notice > others, notice badge. |
 | 1.26 | 2026-10-03 | Find crew (#/): filters + quick links, ranking (available now, FAA verified, hours on type, total time), master-detail on wide/landscape; Browse by aircraft (#/aircraft) listed-only by default with counts; aircraft pages (#/a/<seq>); builder deep link #acft=<seq>; homepage directory live, tiles → aircraft pages; phone layout (scrolling quick links, More filters). |
 | 1.25 | 2026-10-03 | Tap-to-choose profile (details jsonb: role, cert, ratings, medical, region, airport, status, looking, travel, passport, experience, languages) with plain-text copies kept in the old columns; profile card shows them as chips; supabase/004_profile_choices.sql (includes 003). |

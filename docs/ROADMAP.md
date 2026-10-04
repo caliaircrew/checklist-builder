@@ -4,6 +4,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 
 ## A. Housekeeping
 - [ ] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor
+- [ ] 3b. Run supabase/005_aircraft_current.sql (Current checkbox per aircraft)
 - [x] 1. Supabase URL Configuration: Site URL `https://caliaircrew.com/checklists/`; Redirect URLs include `https://caliaircrew.com/**` (keep the github.io entries)
 - [x] 2. GitHub Pages: Enforce HTTPS on once the certificate is issued
 - [x] 3. Delete Steve's old "Supabase checklist" Gmail app password (James's account is the sender now)
