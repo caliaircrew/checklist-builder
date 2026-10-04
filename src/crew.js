@@ -85,6 +85,7 @@ function cardHTML(p, aircraft, mod, opts){
   if (mod && mod.verified_faa) badges.push(`<span class="badge ok">✓ FAA certificate verified</span>`);
   if ((aircraft || []).some(a => a.part135)) badges.push(`<span class="badge ok">✓ Part 135 current</span>`);
   if (d.status === "now") badges.push(`<span class="badge ok">Available now</span>`);
+  else if (d.status === "notice") badges.push(`<span class="badge">Available with notice</span>`);
   types.forEach(t => badges.push(`<span class="badge">${esc(t)}</span>`));
   const block = (title, html) => html ? `<section><h3>${title}</h3><div class="chips2">${html}</div></section>` : "";
   const availText = [lbl("status", d.status), d.travel ? "Will travel: " + lbl("travel", d.travel) : "", d.passport ? "Valid passport" : ""].filter(Boolean).join(" · ");
@@ -123,22 +124,23 @@ async function loadDir(force){
   DIR = {at:Date.now(), listed, acBy, mod, count};
   return DIR;
 }
-const QUICK = [["contract","Contract pilots"],["now","Available now"],["p135","Part 135 current"],["cfi","CFIs"],["heli","Helicopter pilots"]];
-let F = {seq:null, type:"", region:"", cert:"", now:false, p135:false, contract:false};
+const QUICK = [["contract","Contract pilots"],["now","Available now"],["soon","Now or with notice"],["p135","Part 135 current"],["cfi","CFIs"],["heli","Helicopter pilots"]];
+let F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false};
 function matches(p, ac){
   const d = p.details || {};
   if (F.type && !(p.crew_types || []).includes(F.type)) return false;
   if (F.seq != null && !ac.some(a => a.acft_seq === F.seq)) return false;
   if (F.region && d.region !== F.region) return false;
   if (F.cert && d.cert !== F.cert) return false;
-  if (F.now && d.status !== "now") return false;
+  if (F.avail === "now" && d.status !== "now") return false;
+  if (F.avail === "soon" && d.status !== "now" && d.status !== "notice") return false;
   if (F.contract && !(d.looking || []).includes("contract")) return false;
   if (F.p135 && !ac.some(a => a.part135 && (F.seq == null || a.acft_seq === F.seq))) return false;
   return true;
 }
 function rank(p, ac, mod){
   const d = p.details || {}, onType = F.seq != null ? (ac.find(a => a.acft_seq === F.seq) || {}).hours || 0 : 0;
-  return (d.status === "now" ? 1e9 : 0) + (mod && mod.verified_faa ? 1e8 : 0) + onType * 1000 + (p.total_time || 0);
+  return (d.status === "now" ? 2e9 : d.status === "notice" ? 1e9 : 0) + (mod && mod.verified_faa ? 1e8 : 0) + onType * 1000 + (p.total_time || 0);
 }
 function resultHTML(p, ac, mod, active){
   const d = p.details || {};
@@ -150,6 +152,7 @@ function resultHTML(p, ac, mod, active){
   if (mod && mod.verified_faa) b.push(`<span class="badge ok">✓ FAA verified</span>`);
   if (ac.some(a => a.part135)) b.push(`<span class="badge ok">Part 135</span>`);
   if (d.status === "now") b.push(`<span class="badge ok">Available now</span>`);
+  else if (d.status === "notice") b.push(`<span class="badge">Available with notice</span>`);
   return `<a class="res${active ? " on" : ""}" href="#/p/${esc(p.user_id)}" data-id="${esc(p.user_id)}">
     <span class="avatar sm" aria-hidden="true">${esc(initials(p.display_name))}</span>
     <span class="rbody"><b class="rname">${esc(p.display_name)}</b><span class="rmeta">${esc(meta)}${base ? " · " + esc(base) : ""}</span>
@@ -173,13 +176,14 @@ async function viewFind(){
       <div class="f"><label for="ft">Crew type</label><select id="ft"><option value="">Any crew</option>${CREW_TYPES.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select></div>
       ${selectHTML("fr", "region", "Region", F.region, "Anywhere")}
       ${selectHTML("fc", "cert", "Certificate", F.cert, "Any certificate")}
+      <div class="f"><label for="fv">Availability</label><select id="fv"><option value="">Any</option><option value="now">Available now</option><option value="soon">Now or with notice</option></select></div>
     </div></details>
-    <div class="savebar"><label class="switch"><input type="checkbox" id="fn"> Available now</label><label class="switch"><input type="checkbox" id="fp"> Part 135 current</label><button class="btn secondary" id="fx" type="button" style="margin-left:auto">Clear</button></div>
+    <div class="savebar"><label class="switch"><input type="checkbox" id="fp"> Part 135 current</label><button class="btn secondary" id="fx" type="button" style="margin-left:auto">Clear</button></div>
   </section>
   <div class="mdsplit"><div class="results" id="res" aria-live="polite"><p>Loading crew…</p></div><aside class="detail" id="det" aria-label="Selected profile"></aside></div>`;
-  const ui = () => { $("fa").value = F.seq != null && BYSEQ.get(F.seq) ? BYSEQ.get(F.seq).name : ""; $("ft").value = F.type; $("fr").value = F.region; $("fc").value = F.cert; $("fn").checked = F.now; $("fp").checked = F.p135;
-    app.querySelectorAll("[data-q]").forEach(b => { const k = b.dataset.q, on = k === "now" ? F.now : k === "p135" ? F.p135 : k === "contract" ? F.contract : k === "cfi" ? F.type === "cfi" : F.type === "helicopter_pilot"; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); };
-  if (wide() || F.type || F.region || F.cert) $("more").open = true;
+  const ui = () => { $("fa").value = F.seq != null && BYSEQ.get(F.seq) ? BYSEQ.get(F.seq).name : ""; $("ft").value = F.type; $("fr").value = F.region; $("fc").value = F.cert; $("fv").value = F.avail; $("fp").checked = F.p135;
+    app.querySelectorAll("[data-q]").forEach(b => { const k = b.dataset.q, on = k === "now" ? F.avail === "now" : k === "soon" ? F.avail === "soon" : k === "p135" ? F.p135 : k === "contract" ? F.contract : k === "cfi" ? F.type === "cfi" : F.type === "helicopter_pilot"; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); };
+  if (wide() || F.type || F.region || F.cert || F.avail) $("more").open = true;
   let D; try { D = await loadDir(); } catch (e) { $("res").innerHTML = `<p class="err">Couldn't load the directory. Check your connection and try again.</p>`; return; }
   let active = null;
   const show = id => { active = id; const p = D.listed.find(x => x.user_id === id); $("det").innerHTML = p ? cardHTML(p, D.acBy.get(id) || [], D.mod.get(id)) : ""; app.querySelectorAll(".res").forEach(r => r.classList.toggle("on", r.dataset.id === id)); };
@@ -193,10 +197,10 @@ async function viewFind(){
   };
   $("res").addEventListener("click", e => { const r = e.target.closest(".res"); if (!r || !wide()) return; e.preventDefault(); show(r.dataset.id); });
   app.querySelector(".quick").addEventListener("click", e => { const b = e.target.closest("[data-q]"); if (!b) return; const k = b.dataset.q;
-    if (k === "now") F.now = !F.now; else if (k === "p135") F.p135 = !F.p135; else if (k === "contract") F.contract = !F.contract;
+    if (k === "now" || k === "soon") F.avail = F.avail === k ? "" : k; else if (k === "p135") F.p135 = !F.p135; else if (k === "contract") F.contract = !F.contract;
     else if (k === "cfi") F.type = F.type === "cfi" ? "" : "cfi"; else if (k === "heli") F.type = F.type === "helicopter_pilot" ? "" : "helicopter_pilot"; draw(); });
-  app.querySelector(".filters").addEventListener("change", e => { const t = e.target; if (t.id === "ft") F.type = t.value; if (t.id === "fr") F.region = t.value; if (t.id === "fc") F.cert = t.value; if (t.id === "fn") F.now = t.checked; if (t.id === "fp") F.p135 = t.checked; draw(); });
-  $("fx").onclick = () => { F = {seq:null, type:"", region:"", cert:"", now:false, p135:false, contract:false}; draw(); };
+  app.querySelector(".filters").addEventListener("change", e => { const t = e.target; if (t.id === "ft") F.type = t.value; if (t.id === "fr") F.region = t.value; if (t.id === "fc") F.cert = t.value; if (t.id === "fv") F.avail = t.value; if (t.id === "fp") F.p135 = t.checked; draw(); });
+  $("fx").onclick = () => { F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false}; draw(); };
   const fa = $("fa"), fr = $("fares");
   fa.addEventListener("input", () => { const words = fa.value.toUpperCase().replace(/[-–]/g, " ").split(/\s+/).filter(Boolean);
     if (!words.length) { fr.hidden = true; if (F.seq != null) { F.seq = null; draw(); } return; }
@@ -252,7 +256,7 @@ async function viewAircraft(seq){
       <section class="panel"><h2>Training</h2><p class="hint" style="font-size:16px">Training partners for this type will appear here.</p><a href="../#partners">Become a partner</a></section>
     </div></div>`;
   let D; try { D = await loadDir(); } catch (e) { $("acrew").innerHTML = `<p class="err">Couldn't load crew.</p>`; return; }
-  const saved = F; F = {seq, type:"", region:"", cert:"", now:false, p135:false, contract:false};
+  const saved = F; F = {seq, type:"", region:"", cert:"", avail:"", p135:false, contract:false};
   const hits = D.listed.filter(p => (D.acBy.get(p.user_id) || []).some(x => x.acft_seq === seq)).sort((x, y) => rank(y, D.acBy.get(y.user_id) || [], D.mod.get(y.user_id)) - rank(x, D.acBy.get(x.user_id) || [], D.mod.get(x.user_id)));
   $("acrew").innerHTML = `<h2 style="margin:0 0 8px;font:700 26px/1.1 var(--display);color:var(--ink)">Crew current on this aircraft</h2><p class="count">${hits.length} listed crew</p>` +
     (hits.length ? hits.slice(0, 8).map(p => resultHTML(p, D.acBy.get(p.user_id) || [], D.mod.get(p.user_id))).join("") + (hits.length > 8 ? `<a class="btn primary" href="#/?acft=${seq}">See all ${hits.length} crew</a>` : "")
