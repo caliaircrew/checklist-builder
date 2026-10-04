@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Checklist builder · Cali Aircrew</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232470B3'/%3E%3Cpath d='M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2470B3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Checklists">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -204,6 +211,49 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 .badge{display:inline-block;font-size:12px;font-weight:600;background:#f5c542;color:#2a2000;border-radius:6px;padding:1px 6px;margin-left:6px}
 #measure{position:absolute;left:-9999px;top:0;visibility:hidden}
 .empty{color:#888;font-style:italic;text-align:center;padding:40px}
+/* ---- Fly mode: full screen, one section at a time ---- */
+.flybtn{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important;font-weight:700}
+#fly{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;background:#fff;color:#111;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);-webkit-user-select:none;user-select:none}
+#fly[hidden]{display:none}
+#fly .fbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #d0d7de;flex-wrap:wrap}
+#fly .fbar .ttl{flex:1;min-width:140px;font:700 20px/1.1 var(--display);color:inherit}
+#fly .fbar .ttl small{display:block;font:400 14px var(--body,sans-serif);opacity:.7}
+#fly .fb{min-height:48px;min-width:48px;padding:0 14px;border-radius:10px;border:1px solid #c5ced8;background:transparent;color:inherit;font:600 16px var(--body,sans-serif);cursor:pointer}
+#fly .fbody{flex:1;display:grid;grid-template-columns:minmax(0,1fr);min-height:0}
+#fly .flist{display:none;overflow:auto;border-right:1px solid #d0d7de;padding:8px}
+#fly .flist button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;min-height:52px;padding:8px 12px;border:0;border-radius:10px;background:transparent;color:inherit;font:600 16px var(--body,sans-serif);cursor:pointer}
+#fly .flist button.on{background:#E4EEF8}
+#fly .flist button .ck{margin-left:auto;font-weight:700}
+#fly .fsec{overflow:auto;padding:12px 16px 24px;touch-action:pan-y}
+#fly .shead{display:flex;align-items:center;gap:8px;margin:4px 0 12px}
+#fly .shead h2{flex:1;margin:0;text-align:center;font:700 clamp(24px,3.4vw,34px)/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+#fly .shead .when{display:block;font:400 15px var(--body,sans-serif);letter-spacing:0;text-transform:none;opacity:.75;margin-top:4px}
+#fly .frow{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 12px;margin:0 0 8px;border:2px solid #d0d7de;border-radius:12px;background:transparent;color:inherit;text-align:left;font:600 clamp(19px,2.4vw,24px)/1.25 var(--body,sans-serif);cursor:pointer}
+#fly .frow .n{min-width:28px;opacity:.6;font-weight:600}
+#fly .frow .it{flex:1}
+#fly .frow .rs{font-weight:800;text-align:right;max-width:45%}
+#fly .frow .bx{width:32px;height:32px;border:3px solid currentColor;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+#fly .frow.done{opacity:.45;border-style:dashed}
+#fly .frow.done .bx{background:#1f7a3a;border-color:#1f7a3a;color:#fff}
+#fly .frow .ff{display:block;font:700 12px var(--body,sans-serif);letter-spacing:.06em;opacity:.8}
+#fly .fnote{margin:0 0 8px;padding:12px;border-radius:12px;background:#fff4de;color:#6a4a00;font:700 italic clamp(17px,2vw,21px)/1.3 var(--body,sans-serif);text-align:center}
+#fly .fdiv{margin:16px 0 8px;font:700 18px var(--display);letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid currentColor;padding-bottom:4px}
+#fly .fnext{display:block;width:100%;min-height:64px;margin-top:8px;border:0;border-radius:12px;background:#2470B3;color:#fff;font:700 22px var(--display);letter-spacing:.04em;cursor:pointer}
+#fly .fdone{text-align:center;font:700 20px var(--display);color:#1f7a3a;margin:12px 0 4px}
+#fly .ffoot{padding:6px 14px 10px;font-size:13px;opacity:.7;text-align:center;border-top:1px solid #d0d7de}
+@media (min-width:900px),(min-width:700px) and (orientation:landscape){#fly .fbody{grid-template-columns:minmax(220px,300px) minmax(0,1fr)}#fly .flist{display:block}}
+/* night: dim red on black */
+#fly.night{background:#000;color:#d33}
+#fly.night .fbar,#fly.night .flist,#fly.night .ffoot{border-color:#3a0000}
+#fly.night .fb,#fly.night .frow{border-color:#5a0b0b}
+#fly.night .flist button.on{background:#200}
+#fly.night .frow.done .bx{background:#5a0b0b;border-color:#5a0b0b;color:#000}
+#fly.night .fnote{background:#200;color:#e44}
+#fly.night .fnext{background:#5a0b0b;color:#f55}
+#fly.night .fdone{color:#e44}
+
+#installTip{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;background:#E4EEF8;color:#234A6E;padding:10px 16px;font-size:15px}
+#installTip[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -217,9 +267,11 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
   <a href="../crew/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Crew</a>
   <a href="../crew/#/me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span id="tabAcct">Sign in</span></a>
 </nav>
+<div id="installTip" role="note" hidden><span>📲 Use it offline: tap <b>Share</b> then <b>Add to Home Screen</b>.</span><button class="btn small" type="button">Got it</button></div>
+<div id="fly" hidden role="dialog" aria-modal="true" aria-label="Fly mode"></div>
 <div id="sitebanner" class="sitebanner" role="status" hidden></div>
 <header class="top">
-  <h1>Checklist builder</h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="acctBtn" hidden>👤 Sign in</button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button>
+  <h1>Checklist builder</h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="acctBtn" hidden>👤 Sign in</button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button><button class="ver flybtn" id="flyBtn" title="Fly mode: one section at a time, tap to check">✈ Fly</button>
   <div class="tabs" id="tabs"><button data-v="edit" class="on">1 · Type it in</button><button data-v="preview">2 · See &amp; print</button></div>
 </header>
 <main id="main" data-view="edit">
@@ -1014,6 +1066,71 @@ if(sb){
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible") syncAll()});
 }
 drawAcct();
+/* ---------- Fly mode: one section at a time, tap to check, swipe to move on ---------- */
+(function(){
+  const FKEY="acb-fly-v1";
+  let F={sig:"",sec:0,done:{},night:false}, wake=null;
+  const fly=$("fly");
+  const secs=()=>S.sections.filter(s=>s.rows.some(r=>r.type==="item"||r.type==="note"));
+  const items=s=>s.rows.filter(r=>r.type==="item");
+  const secDone=s=>{const it=items(s); return it.length>0&&it.every(r=>F.done[r.id])};
+  const saveF=()=>{try{localStorage.setItem(FKEY,JSON.stringify(F))}catch(_){}};
+  const keepAwake=async()=>{try{if("wakeLock" in navigator&&!fly.hidden){wake=await navigator.wakeLock.request("screen")}}catch(_){}};
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&!fly.hidden) keepAwake()});
+  function draw(){
+    const L=secs(); if(F.sec>=L.length) F.sec=Math.max(0,L.length-1);
+    const s=L[F.sec], acft=S.acftId!=null&&ACFT[S.acftId]?acftName(ACFT[S.acftId]):(S.aircraft||"");
+    fly.classList.toggle("night",!!F.night);
+    if(!s){fly.innerHTML=`<div class="fbar"><div class="ttl">Fly mode</div><button class="fb" data-f="x">✕ Close</button></div><div class="fsec"><p style="font-size:20px">This checklist has no lines yet. Add some, then come back to Fly mode.</p></div>`;return}
+    let n=0;
+    const rows=s.rows.map(r=>{
+      if(r.type==="note") return `<p class="fnote">${esc(r.text)}</p>`;
+      if(r.type==="divider") return `<div class="fdiv">${esc(r.text)}</div>`;
+      if(r.type!=="item") return "";
+      n++; const d=!!F.done[r.id];
+      return `<button class="frow${d?" done":""}" data-row="${esc(r.id)}" aria-pressed="${d}"><span class="n">${s.plain?"":n+"."}</span><span class="it">${esc(r.item)}${r.ff?'<span class="ff">FIRST FLIGHT OF DAY</span>':""}</span><span class="rs">${esc(r.resp)}</span><span class="bx" aria-hidden="true">${d?"✓":""}</span></button>`}).join("");
+    const next=L[F.sec+1], done=secDone(s), allDone=L.every(x=>!items(x).length||secDone(x));
+    fly.innerHTML=`<div class="fbar"><div class="ttl">${esc(acft||"Checklist")}<small>Section ${F.sec+1} of ${L.length}${allDone?" · all complete ✓":""}</small></div>
+      <button class="fb" data-f="night" aria-pressed="${!!F.night}">${F.night?"☀ Day":"🌙 Night"}</button><button class="fb" data-f="rsec">Reset section</button><button class="fb" data-f="rall">Reset all</button><button class="fb" data-f="x" aria-label="Close Fly mode">✕</button></div>
+      <div class="fbody"><nav class="flist" aria-label="Sections">${L.map((x,i)=>`<button data-go="${i}" class="${i===F.sec?"on":""}">${esc(x.title)}<span class="ck">${secDone(x)?"✓":""}</span></button>`).join("")}</nav>
+      <section class="fsec" id="fsec" aria-live="polite"><div class="shead"><button class="fb" data-f="prev" aria-label="Previous section"${F.sec===0?" disabled":""}>‹</button><h2>${esc(s.title)}${s.when?`<span class="when">${esc(s.when)}</span>`:""}</h2><button class="fb" data-f="next" aria-label="Next section"${!next?" disabled":""}>›</button></div>
+      ${rows}${done?`<p class="fdone">${esc(s.title)} complete ✓</p>${next?`<button class="fnext" data-f="next">Next: ${esc(next.title)} →</button>`:`<p class="fdone">Checklist complete</p>`}`:""}</section></div>
+      <div class="ffoot">Suggestions only, not FAA-approved. Verify against the approved AFM/POH${S.acftId!=null&&ACFT[S.acftId]&&ACFT[S.acftId].heli?"/RFM":""}. The pilot in command is responsible.</div>`;
+  }
+  const go=i=>{const L=secs(); F.sec=Math.max(0,Math.min(L.length-1,i)); saveF(); draw(); const f=$("fsec"); if(f) f.scrollTop=0};
+  fly.addEventListener("click",e=>{
+    const r=e.target.closest("[data-row]"); if(r){const id=r.dataset.row; if(F.done[id]) delete F.done[id]; else F.done[id]=true; saveF(); const y=$("fsec").scrollTop; draw(); $("fsec").scrollTop=y; return}
+    const g=e.target.closest("[data-go]"); if(g){go(+g.dataset.go);return}
+    const b=e.target.closest("[data-f]"); if(!b) return; const f=b.dataset.f;
+    if(f==="x") closeFly(); else if(f==="next") go(F.sec+1); else if(f==="prev") go(F.sec-1);
+    else if(f==="night"){F.night=!F.night; saveF(); draw()}
+    else if(f==="rsec"){const s=secs()[F.sec]; if(s) items(s).forEach(x=>delete F.done[x.id]); saveF(); draw()}
+    else if(f==="rall"){if(confirm("Reset every section of this checklist?")){F.done={}; F.sec=0; saveF(); draw()}}
+  });
+  let tx=null,ty=null;
+  fly.addEventListener("touchstart",e=>{if(!e.target.closest("#fsec"))return; tx=e.touches[0].clientX; ty=e.touches[0].clientY},{passive:true});
+  fly.addEventListener("touchend",e=>{if(tx==null)return; const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty; tx=null;
+    if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.5) go(F.sec+(dx<0?1:-1))},{passive:true});
+  document.addEventListener("keydown",e=>{if(fly.hidden)return; if(e.key==="ArrowRight")go(F.sec+1); else if(e.key==="ArrowLeft")go(F.sec-1); else if(e.key==="Escape")closeFly()});
+  function openFly(){
+    let saved=null; try{saved=JSON.parse(localStorage.getItem(FKEY)||"null")}catch(_){}
+    const sig=sigOf(S.sections);
+    F=saved&&saved.sig===sig?saved:{sig,sec:0,done:{},night:saved?!!saved.night:false};   // same checklist: keep progress
+    fly.hidden=false; document.body.style.overflow="hidden"; draw(); keepAwake();
+  }
+  function closeFly(){fly.hidden=true; document.body.style.overflow=""; try{wake&&wake.release()}catch(_){} wake=null}
+  $("flyBtn").onclick=openFly;
+  window.__fly={open:openFly,close:closeFly};
+})();
+/* Offline: install the app shell so the builder opens without signal (https only). */
+if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+/* iPad/iPhone tip: add to Home Screen for offline use (shown until dismissed). */
+(function(){const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  const standalone=window.navigator.standalone||window.matchMedia("(display-mode: standalone)").matches;
+  let seen=false; try{seen=localStorage.getItem("acb-install-tip")==="1"}catch(_){}
+  const t=$("installTip"); if(!t||!ios||standalone||seen) return; t.hidden=false;
+  t.querySelector("button").onclick=()=>{t.hidden=true; try{localStorage.setItem("acb-install-tip","1")}catch(_){}};})();
+
 renderChips(); renderEditor(); renderPreview(); drawSel(); drawLib();
 })();
 </script>

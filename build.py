@@ -17,6 +17,9 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.10.0 2026-10-03  Steve  Offline install for /checklists/: manifest, icons
+                            (site/icons), service worker (network-first page,
+                            cached fonts, network-only database). Builds 1.43.
   2.9.0  2026-10-03  Steve  Pick-list 'category' (airplane | helicopter | any)
                             -> LIB_CAT; endorsement validity '12cm'.
                             Builds 1.40 (helicopter lists, SFAR 73).
@@ -67,7 +70,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.9.0"
+SCRIPT_VERSION = "2.10.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -340,6 +343,31 @@ def check_output(html, notes):
         notes.append("Node.js not found — JavaScript syntax check skipped")
 
 
+# Service worker for /checklists/: the page itself is network-first (so updates arrive as soon as you're online) with the
+# saved copy as the offline fallback; fonts are cached; sign-in and database calls always go to the network.
+SW_JS = r"""// Cali Aircrew checklist builder: offline support. Version __VERSION__ (changes with every build).
+const CACHE = "cali-checklists-__VERSION__";
+const SHELL = ["./", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
+self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
+self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("cali-checklists-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+self.addEventListener("fetch", e => {
+  const r = e.request; if (r.method !== "GET") return;
+  const u = new URL(r.url);
+  if (u.origin === location.origin && (r.mode === "navigate" || u.pathname.endsWith("/checklists/") || u.pathname.endsWith("/checklists/index.html"))) {
+    e.respondWith(fetch(r).then(res => { if (res.ok) { const c = res.clone(); caches.open(CACHE).then(k => k.put("./", c)); } return res; })
+      .catch(() => caches.match("./").then(m => m || caches.match(r))));
+    return;
+  }
+  if (u.origin === location.origin && SHELL.some(p => u.pathname.endsWith(p.replace("./", "")) && p !== "./")) {
+    e.respondWith(caches.match(r).then(m => m || fetch(r))); return;
+  }
+  if (u.hostname === "fonts.googleapis.com" || u.hostname === "fonts.gstatic.com") {
+    e.respondWith(caches.open(CACHE).then(c => c.match(r).then(m => { const net = fetch(r).then(res => { c.put(r, res.clone()); return res; }).catch(() => m); return m || net; })));
+  }
+});
+"""
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Build the Aircraft Checklist Builder.")
     ap.add_argument("--out", default="dist")
@@ -460,6 +488,19 @@ def main(argv=None):
     os.makedirs(os.path.join(a.out, "checklists"), exist_ok=True)
     data = html.encode("utf-8")
     open(os.path.join(a.out, "checklists", "index.html"), "wb").write(data)
+    # Offline install (PWA): manifest, icons and a service worker that keeps the builder on the device.
+    ck = os.path.join(a.out, "checklists")
+    os.makedirs(os.path.join(ck, "icons"), exist_ok=True)
+    for f in glob.glob(os.path.join(ROOT, "site", "icons", "*.png")):
+        shutil.copyfile(f, os.path.join(ck, "icons", os.path.basename(f)))
+    manifest = {"name": "Cali Aircrew Checklists", "short_name": "Checklists", "start_url": "./", "scope": "./", "display": "standalone",
+                "background_color": "#F4F8FC", "theme_color": "#2470B3", "description": "Build, print and fly aircraft checklists, online or offline.",
+                "icons": [{"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+                          {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+                          {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]}
+    open(os.path.join(ck, "manifest.webmanifest"), "w", encoding="utf-8").write(json.dumps(manifest, indent=1))
+    sw_version = hashlib.sha256(data).hexdigest()[:12]
+    open(os.path.join(ck, "sw.js"), "w", encoding="utf-8").write(SW_JS.replace("__VERSION__", sw_version))
     open(os.path.join(a.out, "index.html"), "w", encoding="utf-8").write(home)
     inputs = {os.path.relpath(p, ROOT).replace(os.sep, "/"): sha256(open(p, "rb").read())
               for p in files("data/**/*.yaml") + files("data/*.yaml") + [os.path.join(ROOT, "src", "app_template.html")]}

@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.43 | 2026-10-03 | Fly mode overlay (#fly): sections with lines, tap rows to check (state in localStorage acb-fly-v1 keyed by the checklist signature), section list in landscape ≥700px / ≥900px, swipe (70px), arrow keys, Esc, Next button on completion, Reset section / all, night mode, Wake Lock. PWA: manifest.webmanifest, icons (site/icons), sw.js (network-first page with cached fallback, cached fonts, network-only database), registered on https; iOS install tip (dismissible). build.py 2.10.0. Tested offline reload + Fly mode offline. |
 | 1.42 | 2026-10-03 | Find crew role filters (ROLEF): shown for the chosen crew type, cleared on type change; FA 'current' tests compare the current-through month with this month; mechanic engine dropdown; quick links fa/mx. |
 | 1.41 | 2026-10-03 | Profile upgrade (roadmap 34/35, James): details jsonb gains past[] (previously flown seqs), hrs_pic/turbine/heli/heli_turbine/heli_piston, rate (band) + rate_exp/rate_neg, fa_* (school, year, recurrent YYYY-MM, cpr_until, food_safety, fa_skills), mx_* (certs, engines, spec, exp, aog, tools), heli_ops, sfar73 — all dropdowns/checkboxes; role sections show only for chosen crew types and are cleared when a type is removed. data/airports-us.json (OurAirports, public domain, 26,274 codes) → /crew/airports.json, lazy-loaded; editor confirms codes. Find crew: day-rate filter (keeps Ask me / not stated), city + rate in results. No database update needed. |
 | 1.40 | 2026-10-03 | HOTFIX: build.py 2.8.0's content-page loop reused the variable 'html', so /checklists/ was overwritten with the last content page (Terms) in 1.39; loop variables renamed and a build guard added (builder must contain the aircraft search). Helicopters: 11 pick lists (data/sections/101–111, category helicopter; 01/46/47/48 category any), LIB_CAT, heli-aware chips/picker/generic default ('single-engine piston helicopter' etc.), RFM wording. Endorsements: S73.1–S73.9 (SFAR 73 as amended 2024-07-23, eff. 2024-08-22), status draft; validity 12cm. build.py 2.9.0. |
@@ -50,6 +51,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.10.0 | 2026-10-03 | Offline install files for /checklists/ (manifest, icons, service worker). Builds 1.43. |
 | 2.9.0 | 2026-10-03 | Pick-list category (LIB_CAT), endorsement validity 12cm, content-page loop fix + builder guard. Builds 1.40. |
 | 2.8.0 | 2026-10-03 | Renders site/pages/*.html into the shared shell with the homepage CSS. Builds 1.39. |
 | 2.7.0 | 2026-10-03 | Builds admin/index.html (shared crew CSS, syntax check, refuses secret keys). Builds app 1.30. |
