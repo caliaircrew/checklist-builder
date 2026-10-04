@@ -16,7 +16,8 @@
 //   emailed to the search's owner in one digest per owner, then added to "seen" so each pilot is announced once.
 // Admin alerts (POST {"mode": "admin"}, hourly): emails every admin (unless they turned it off) about NEW items since
 //   the last alert: crew/operator profiles waiting for review, text waiting for approval, open help requests and
-//   partner inquiries. admin_alert_state remembers what was announced, so each item is emailed once.
+//   partner inquiries, reported contact requests and unusual contact-request volume (a sender at 8+ in 24 hours,
+//   or 30+ requests site-wide in the last hour). admin_alert_state remembers what was announced, so each item is emailed once.
 // POST {"dry": true} returns the plan without sending.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -203,6 +204,11 @@ async function adminAlerts(admin, dry: boolean) {
     admin.from("crew_profiles").select("user_id,display_name,updated_at").eq("published", true), admin.from("operator_profiles").select("user_id,name,details,updated_at").eq("published", true),
     admin.from("moderation").select("user_id,approved,hidden,op_approved,op_hidden"), admin.from("crew_bio_pending").select("user_id,updated_at"),
     admin.from("operator_about_pending").select("user_id,updated_at"), admin.from("help_requests").select("id,email,message,kind,created_at").eq("status", "open")]);
+  // Contact requests (database update 017). Older databases simply have none.
+  const dayAgo = new Date(Date.now() - 86400000).toISOString(), hourAgo = new Date(Date.now() - 3600000).toISOString();
+  const [{ data: reported }, { data: recent }] = await Promise.all([
+    admin.from("contact_requests").select("id,sender_id,recipient_id,sender_label,report_reason,reported_at").eq("status", "reported"),
+    admin.from("contact_requests").select("sender_id,sender_label,created_at").neq("status", "failed").gte("created_at", dayAgo)]);
   const emails = (rcp ?? []).map((r: Record<string, string>) => r.email).filter(Boolean); out.recipients = emails.length;
   const mod = new Map((mods ?? []).map((m: Record<string, unknown>) => [m.user_id, m]));
   const nameOf = new Map((crew ?? []).map((p: Record<string, unknown>) => [p.user_id, p.display_name || "Unnamed"]));
@@ -213,6 +219,12 @@ async function adminAlerts(admin, dry: boolean) {
   for (const a of abouts ?? []) items.push({ key: "about:" + a.user_id + ":" + a.updated_at, group: "Operator text waiting for approval", text: "An operator" });
   for (const h of help ?? []) { const partner = /^\[Partner inquiry\]/.test(h.message || "");
     items.push({ key: "help:" + h.id, group: partner ? "Partner inquiries" : "Sign-in help requests", text: partner ? String(h.message).split("\n")[0].replace("[Partner inquiry] ", "") + " · " + h.email : h.email + (h.message ? " · " + String(h.message).slice(0, 80) : "") }); }
+  for (const c of reported ?? []) items.push({ key: "report:" + c.id, group: "Reported contact requests", text: `${c.sender_label || "A member"} → ${nameOf.get(c.recipient_id) || "a crew member"}` + (c.report_reason ? " · " + String(c.report_reason).slice(0, 80) : "") });
+  const bySender = new Map<string, { n: number, label: string }>(); let lastHour = 0;
+  for (const c of recent ?? []) { const b = bySender.get(c.sender_id) ?? { n: 0, label: c.sender_label || "A member" }; b.n++; bySender.set(c.sender_id, b); if (c.created_at >= hourAgo) lastHour++; }
+  const today = new Date().toISOString().slice(0, 10);
+  for (const [sid, b] of bySender) if (b.n >= 8) items.push({ key: "volume:" + sid + ":" + today, group: "Unusual contact-request volume", text: `${b.label}: ${b.n} requests in 24 hours` });
+  if (lastHour >= 30) items.push({ key: "volume:site:" + new Date().toISOString().slice(0, 13), group: "Unusual contact-request volume", text: `${lastHour} requests site-wide in the last hour` });
   out.waiting = items.length;
   const before = new Set(((st && st.notified) || []) as string[]);
   const fresh = items.filter(i => !before.has(i.key)); out.newItems = fresh.length;
@@ -220,7 +232,8 @@ async function adminAlerts(admin, dry: boolean) {
   const groups = new Map<string, string[]>(); for (const i of fresh) { const l = groups.get(i.group) ?? []; l.push(i.text); groups.set(i.group, l); }
   const SHORT: Record<string, string[]> = { "Crew profiles waiting for review": ["crew profile to review", "crew profiles to review"], "Operator profiles waiting for review": ["operator profile to review", "operator profiles to review"],
     "Profile text waiting for approval": ["profile text to approve", "profile texts to approve"], "Operator text waiting for approval": ["operator text to approve", "operator texts to approve"],
-    "Sign-in help requests": ["help request", "help requests"], "Partner inquiries": ["partner inquiry", "partner inquiries"] };
+    "Sign-in help requests": ["help request", "help requests"], "Partner inquiries": ["partner inquiry", "partner inquiries"],
+    "Reported contact requests": ["reported contact request", "reported contact requests"], "Unusual contact-request volume": ["contact-volume warning", "contact-volume warnings"] };
   const subject = "Cali Aircrew admin: " + [...groups].map(([g, l]) => l.length + " " + (SHORT[g] ? SHORT[g][l.length === 1 ? 0 : 1] : g.toLowerCase())).join(", ");
   const text = "New since the last alert:\n\n" + [...groups].map(([g, l]) => `${g} (${l.length}):\n` + l.slice(0, 20).map(x => "• " + x).join("\n") + (l.length > 20 ? `\n• …and ${l.length - 20} more` : "")).join("\n\n") +
     `\n\nIn total, ${items.length} item${items.length === 1 ? "" : "s"} waiting.\nReview: ${SITE}/admin/#review\nRequests: ${SITE}/admin/#requests\n\nTo stop these emails, turn off "Email me admin alerts" on the Admin page.\n\nCali Aircrew`;

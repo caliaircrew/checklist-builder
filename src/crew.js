@@ -148,6 +148,49 @@ function signIn(after, presetEmail){
 }
 let IS_ADMIN = false;
 function showAdmin(){ const al = $("adminLink"); if (al) al.hidden = !IS_ADMIN; document.querySelectorAll(".adminbtn").forEach(b => b.hidden = !IS_ADMIN); }
+async function contactCall(body){
+  // Calls the "contact" Edge Function. Returns {ok, message}.
+  try {
+    const {data, error} = await sb.functions.invoke("contact", {body});
+    if (!error) return data || {ok:false, message:"No answer"};
+    let j = null; try { j = await error.context.json(); } catch (_) {}
+    return j && j.message ? j : {ok:false, message:"Contact requests aren't switched on yet."};
+  } catch (e) { return {ok:false, message:"Contact requests aren't available right now."}; }
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-contact]"); if (!b) return; e.preventDefault();
+  if (!user) { signIn(route); return; }
+  if (b.dataset.contact === user.id) { toast("That's your own profile."); return; }
+  const seqs = (b.dataset.ac || "").split(",").filter(Boolean).map(Number).filter(n => BYSEQ.has(n)), ctx = b.dataset.ctx;
+  const m = modal(`<h2>Contact ${esc(b.dataset.name || "this pilot")}</h2>
+    <p class="hint" style="margin:0">They get your note by email from Cali Aircrew. If they're interested they reply to you directly; their address stays private until they do.</p>
+    ${seqs.length ? `<div class="f"><label for="cta">About which aircraft? (optional)</label><select id="cta"><option value="">Not about a specific aircraft</option>${seqs.map(n => `<option value="${n}"${String(n) === ctx ? " selected" : ""}>${esc(BYSEQ.get(n).name)}</option>`).join("")}</select></div>` : ""}
+    <div class="f"><label for="ctn">Your note</label><textarea id="ctn" maxlength="500" rows="5" placeholder="Dates, route, what you need. No phone numbers, emails or links."></textarea><small id="ctc">0 / 500</small></div>
+    <p class="hint" style="margin:0">Your email (${esc(user.email || "")}) is shared with this pilot as the reply address.</p>
+    <div class="err" id="ctm" role="status"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="cts" type="button">Send</button><button class="btn secondary" id="ctq" type="button">Cancel</button></div>`);
+  const n = m.querySelector("#ctn"), msg = t => { m.querySelector("#ctm").textContent = t; };
+  n.oninput = () => { m.querySelector("#ctc").textContent = n.value.length + " / 500"; msg(CONTACTISH.test(n.value) ? "Leave out phone numbers, email addresses and links. The pilot can reply to you by email." : ""); };
+  m.querySelector("#ctq").onclick = () => m.remove();
+  m.querySelector("#cts").onclick = async () => {
+    const note = n.value.trim(); if (!note) return msg("Write a short note."); if (CONTACTISH.test(note)) return msg("Leave out phone numbers, email addresses and links.");
+    const go = m.querySelector("#cts"); go.disabled = true; go.textContent = "Sending…";
+    const sel = m.querySelector("#cta"), r = await contactCall({action:"send", to:b.dataset.contact, note, seq:sel && sel.value ? +sel.value : null});
+    go.disabled = false; go.textContent = "Send";
+    if (!r.ok) return msg(r.message);
+    m.querySelector(".box2").innerHTML = `<h2>Sent</h2><p>${esc(r.message)}</p><button class="btn primary" type="button" id="ctd">Done</button>`; m.querySelector("#ctd").onclick = () => m.remove();
+  };
+});
+async function viewReport(rest){
+  const [id, code] = rest.split("/");
+  app.innerHTML = `<div class="center" style="max-width:560px"><h1>Report a contact request</h1><p>Tell Cali Aircrew what was wrong with it (optional). The sender isn't told who reported it.</p>
+    <div class="f" style="text-align:left"><label for="rpr">What happened?</label><textarea id="rpr" maxlength="500" rows="4" placeholder="e.g. spam, rude, not a real job"></textarea></div>
+    <div class="err" id="rpm" role="status"></div><button class="btn primary" id="rps" type="button">Send report</button></div>`;
+  $("rps").onclick = async () => { $("rps").disabled = true;
+    const r = await contactCall({action:"report", id, code, reason:$("rpr").value.trim()});
+    if (!r.ok) { $("rps").disabled = false; $("rpm").textContent = r.message; return; }
+    app.innerHTML = `<div class="center"><h1>Thank you</h1><p>${esc(r.message)}</p><a class="btn secondary" href="#/">Back to the crew directory</a></div>`; };
+}
 async function recoveryCall(body){
   // Calls the "recovery" Edge Function. Returns {ok, message, ...}. Works signed in or out.
   try {
@@ -268,7 +311,7 @@ function cardHTML(p, aircraft, mod, opts){
     ${block("Special training", chips("training", d.training))}
     ${block("Languages", chips("languages", d.languages))}
     ${p.bio ? `<section><h3>More about me</h3><p>${esc(p.bio)}</p></section>` : ""}
-    <div class="actions"><button class="btn primary" type="button" disabled title="Messaging opens soon" style="opacity:.6">Message (coming soon)</button>${opts && opts.preview ? "" : `<button class="btn secondary" type="button" data-fav="${esc(p.user_id)}" aria-pressed="${!!(FAV && FAV.has(p.user_id))}">${FAV && FAV.has(p.user_id) ? "★ Saved" : "☆ Save"}</button><button class="btn secondary" type="button" data-share="${esc(p.user_id)}" data-name="${esc(publicName(p))}">Share</button>`}</div>
+    <div class="actions">${opts && opts.preview ? `<button class="btn primary" type="button" disabled style="opacity:.6">Contact</button>` : `<button class="btn primary" type="button" data-contact="${esc(p.user_id)}" data-name="${esc(publicName(p))}" data-ac="${esc(ac.map(a => a.acft_seq).join(","))}" data-ctx="${ctxSeq != null ? ctxSeq : ""}">Contact</button>`}${opts && opts.preview ? "" : `<button class="btn secondary" type="button" data-fav="${esc(p.user_id)}" aria-pressed="${!!(FAV && FAV.has(p.user_id))}">${FAV && FAV.has(p.user_id) ? "★ Saved" : "☆ Save"}</button><button class="btn secondary" type="button" data-share="${esc(p.user_id)}" data-name="${esc(publicName(p))}">Share</button>`}</div>
     <div class="note">${opts && opts.preview ? "Preview: this is how owners and operators will see your profile." : "Profiles are advertisements. Verify licenses, medical and training before hiring."}</div>
   </article>`;
 }
@@ -1057,6 +1100,7 @@ async function viewAccount(){
       <div class="savebar"><button class="btn primary" id="rs" type="button">Save recovery contacts</button><span id="rsm" role="status"></span></div>` : `<p class="hint" style="margin:0">Recovery contacts switch on after a Cali Aircrew setup step.</p>`}</section>
     <section class="panel"><h2>Email reminders</h2>
       <label class="switch"><input type="checkbox" id="remind"> Email me 60 and 30 days before an aircraft currency, flight attendant recurrent or CPR date runs out, and when it lapses</label>
+      <label class="switch"><input type="checkbox" id="ctok"> Let owners and operators send me contact requests by email (your address stays private unless you reply)</label><div id="ctmsg" class="hint" role="status"></div>
       <p class="hint" style="margin:0">Uses the "current through" months on your crew profile. Sent to ${esc(user.email || "your sign-in email")}.</p><span id="remmsg" role="status"></span></section>
     <section class="panel"><h2>Your data</h2><p class="hint">Download everything Cali Aircrew holds about your account: profiles, aircraft, saved checklists and recovery contacts.</p>
       <div><button class="btn secondary" id="dl" type="button">Download my data</button></div></section>
@@ -1065,7 +1109,12 @@ async function viewAccount(){
       <div class="savebar"><button class="btn danger" id="del" type="button" style="background:#fff;color:#8A2A20;border:2px solid #8A2A20">Delete my account</button><span class="err" id="dem" role="status"></span></div></section>
   </div>`;
   $("so").onclick = async () => { await sb.auth.signOut(); location.hash = "#/"; };
-  const ms = await sb.from("member_settings").select("currency_emails").eq("user_id", uid).maybeSingle();
+  const ms = await sb.from("member_settings").select("*").eq("user_id", uid).maybeSingle();
+  const ctOk = !(ms && ms.error) && !(ms && ms.data && !("contact_requests" in ms.data));
+  $("ctok").checked = !(ms && ms.data && ms.data.contact_requests === false); $("ctok").disabled = !ctOk;
+  $("ctok").onchange = async () => { const on = $("ctok").checked;
+    const {error} = await sb.from("member_settings").upsert({user_id:uid, contact_requests:on, updated_at:new Date().toISOString()}, {onConflict:"user_id"});
+    $("ctmsg").className = error ? "err" : "okmsg"; $("ctmsg").textContent = error ? "Not saved: " + error.message : on ? "Contact requests on." : "Contact requests off."; };
   const remOk = !(ms && ms.error); $("remind").checked = !(ms && ms.data && ms.data.currency_emails === false); $("remind").disabled = !remOk;
   if (!remOk) $("remmsg").textContent = "Reminders switch on after a Cali Aircrew setup step.";
   $("remind").onchange = async () => { const on = $("remind").checked;
@@ -1127,6 +1176,7 @@ async function route0(){
   if (h.startsWith("a/")) { const [n, w] = h.slice(2).split("/"); return viewAircraft(+n, w); }
   if (h === "op") return viewOpMe();
   if (h === "account") return viewAccount();
+  if (h.startsWith("report/")) return viewReport(h.slice(7));
   if (h === "saved") return viewSaved();
   if (h === "deleted") { app.innerHTML = `<div class="center"><h1>Account deleted</h1><p>Your account and everything in it have been removed. Thanks for flying with Cali Aircrew.</p><a class="btn secondary" href="../">Home</a></div>`; return; }
   if (h === "operators") return viewOperators();

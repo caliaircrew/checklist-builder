@@ -57,7 +57,9 @@ def op(name, payload):
         if name=="select":
             where=[]; args={}
             for i,(c,v) in enumerate(p.get("filters",[])): assert IDENT.match(c); where.append(f"{c} = %(f{i})s"); args[f"f{i}"]=v
-            q=f"select * from public.{t}" + (" where "+" and ".join(where) if where else "")
+            cl=[c.strip() for c in str(p.get("cols") or "*").split(",")]   # honour a plain column list (column-level grants, e.g. 017)
+            cols="*" if cl==["*"] or not all(IDENT.match(c) for c in cl) else ", ".join(cl)
+            q=f"select {cols} from public.{t}" + (" where "+" and ".join(where) if where else "")
             if p.get("order"): q+=" order by "+", ".join(f"{c} {'asc' if a else 'desc'}" for c,a in p["order"] if IDENT.match(c))
             if p.get("limit"): q+=f" limit {int(p['limit'])}"
             return json.dumps({"rows":run(q,args)},default=jsonable)
@@ -101,7 +103,7 @@ MOCK=r'''window.supabase={createClient(url,key,opts){
    async challenge({factorId}){return {data:{id:"ch-"+factorId},error:null}},
    async verify({factorId,code}){if(code!=="654321") return {error:{message:"Invalid TOTP code entered"}}; await call("verifyfactor",{factorId}); const x=getS(); x.aal="aal2"; setS(x); return {data:{},error:null}}}};
  const from=t=>{
-  const sel=()=>{const f=[],o=[];let lim=null; const run=()=>call("select",{table:t,filters:f,order:o,limit:lim}); const q={eq(c,v){f.push([c,v]);return q}, order(c,opt){o.push([c,!opt||opt.ascending!==false]);return q}, limit(n){lim=n;return q},
+  const sel=(cols)=>{const f=[],o=[];let lim=null; const run=()=>call("select",{table:t,cols:typeof cols==="string"?cols:"*",filters:f,order:o,limit:lim}); const q={eq(c,v){f.push([c,v]);return q}, order(c,opt){o.push([c,!opt||opt.ascending!==false]);return q}, limit(n){lim=n;return q},
      maybeSingle(){return run().then(r=>({data:(r.rows||[])[0]||null,error:r.error||null}))}, then(res,rej){return run().then(r=>res({data:r.rows||null,error:r.error||null}),rej)}}; return q};
   const w=(op,extra)=>{const f=[]; const q={eq(c,v){f.push([c,v]);return q}, then(res,rej){return call(op,Object.assign({table:t,filters:f},extra)).then(r=>res({error:r.error||null}),rej)}}; return q};
   return {select:sel, upsert(rows,o){return call("upsert",{table:t,rows:Array.isArray(rows)?rows:[rows],onConflict:o&&o.onConflict}).then(r=>({error:r.error||null}))},

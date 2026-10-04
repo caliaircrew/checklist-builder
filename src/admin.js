@@ -60,6 +60,7 @@ async function load(){
   const soft = fn => fn.then(r => r.error ? [] : (r.data || []), () => []);
   const [ops, opac, oppend, priv, help, recov] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*")), soft(sb.from("crew_private").select("*")),
     soft(sb.from("help_requests").select("*").order("created_at", {ascending:false})), soft(sb.from("account_recovery").select("*"))]);
+  const contacts = await soft(sb.from("contact_requests").select("id,sender_id,recipient_id,seq,sender_label,note,status,report_reason,reported_at,created_at").order("created_at", {ascending:false}).limit(300));   // database update 017
   const msr = await sb.from("member_settings").select("admin_emails").eq("user_id", user.id).maybeSingle();
   const adminEmails = msr && !msr.error ? !(msr.data && msr.data.admin_emails === false) : null;   // null = alerts not set up yet
   // Waiting text that is identical to the public text isn't really waiting.
@@ -71,7 +72,7 @@ async function load(){
   const opAcBy = new Map(); opac.forEach(a => { if (!opAcBy.has(a.user_id)) opAcBy.set(a.user_id, []); opAcBy.get(a.user_id).push(a); });
   const opStatus = o => { const m = mod.get(o.user_id); if (m && m.op_hidden) return "hidden"; if (!o.published) return "draft"; return m && m.op_approved ? "listed" : "waiting"; };
   D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf,
-       ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p])), help, recov:new Map(recov.map(r => [r.user_id, r])), adminEmails};
+       ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p])), help, recov:new Map(recov.map(r => [r.user_id, r])), adminEmails, contacts};
 }
 
 /* ---------------- quality flags ---------------- */
@@ -308,6 +309,14 @@ function viewRequests(){
   <div class="tblwrap"><table class="tbl"><thead><tr><th>Received</th><th>Reply to</th><th>What happened</th><th>Status</th><th></th></tr></thead><tbody>
   ${D.help.map(r => `<tr><td>${day(r.created_at)}</td><td>${esc(r.email)}</td><td>${esc(r.message)}</td><td><span class="tag ${r.status === "open" ? "warn" : "ok"}">${esc(r.status)}</span></td><td>${r.status === "open" ? `<button class="btn secondary sm" data-h="${r.id}">Mark done</button>` : ""}</td></tr>`).join("") || '<tr><td colspan="5" class="empty">No requests.</td></tr>'}
   </tbody></table></div>
+  <h2 class="sect">Contact requests</h2>
+  <p class="hint">Every request members send to crew (newest first, reported ones on top). Reported: read the note, then talk to the sender or hide their profile in Users if needed, and mark it Reviewed.</p>
+  <div class="tblwrap"><table class="tbl"><thead><tr><th>Sent</th><th>From</th><th>To</th><th>Note</th><th>Status</th><th></th></tr></thead><tbody>
+  ${[...(D.contacts || [])].sort((a, b) => (b.status === "reported") - (a.status === "reported")).map(c => { const to = D.profiles.find(p => p.user_id === c.recipient_id);
+    return `<tr><td>${day(c.created_at)}</td><td>${esc(c.sender_label)}<br><small>${esc(D.email.get(c.sender_id) || "")}</small></td><td>${esc((to && to.display_name) || "")}<br><small>${esc(D.email.get(c.recipient_id) || "")}</small></td>
+    <td>${esc(c.note)}${c.report_reason ? `<br><small><b>Report:</b> ${esc(c.report_reason)}</small>` : ""}</td><td><span class="tag ${c.status === "reported" ? "warn" : c.status === "failed" ? "" : "ok"}">${esc(c.status)}</span></td>
+    <td>${c.status === "reported" ? `<button class="btn secondary sm" data-cr="${esc(c.id)}">Reviewed</button>` : ""}</td></tr>`; }).join("") || '<tr><td colspan="6" class="empty">No contact requests yet.</td></tr>'}
+  </tbody></table></div>
   <h2 class="sect">Aircraft requests</h2>
   <div class="tblwrap"><table class="tbl"><thead><tr><th>Request</th><th>From</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody>
   ${D.acreq.map(r => `<tr><td>${esc(r.request)}</td><td>${esc(D.email.get(r.user_id) || "")}</td><td>${day(r.created_at)}</td><td><span class="tag ${r.status === "open" ? "warn" : r.status === "added" ? "ok" : ""}">${esc(r.status)}</span></td>
@@ -327,6 +336,7 @@ function viewRequests(){
 function bindRequests(){
   $("body").addEventListener("click", e => {
     const hq = e.target.closest("[data-h]"); if (hq) return act(() => sb.from("help_requests").update({status:"done"}).eq("id", +hq.dataset.h), "Marked done.");
+    const cr = e.target.closest("[data-cr]"); if (cr) return act(() => sb.from("contact_requests").update({status:"cleared"}).eq("id", cr.dataset.cr), "Marked reviewed.");
     const r = e.target.closest("[data-r]"); if (r) return act(() => sb.from("aircraft_requests").update({status:r.dataset.s}).eq("id", +r.dataset.r), "Updated.");
     const p = e.target.closest("[data-p]"); if (p) return act(() => sb.from("privacy_requests").update({status:"done", completed_on:new Date().toISOString().slice(0, 10)}).eq("id", +p.dataset.p), "Marked done.");
   });

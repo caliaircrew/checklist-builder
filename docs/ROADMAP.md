@@ -50,7 +50,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 7a. Builder gets the site footer (v1.52)
 - [ ] 7b. One "My account" area: profile, saved checklists, saved crew and searches together
 - [ ] 8. Review the signed-in screens (profile editor, account, operator) for the same issues
-- [ ] 9. IMPORTANT: there is no way to contact crew yet (bios forbid phone/email, messaging not built). Messaging should come before the résumé PDF.
+- [x] 9. Contact requests (v1.53): Contact on profiles → email to the pilot, who replies directly; limits, report link, admin log and alerts. Contact-details ban in bios unchanged. [ ] Next: full messaging (inbox, threads) on the same table; [ ] contact for operator profiles.
 
 ## D. Crew directory — Phase 1 (private beta)
 - [x] 11. Supabase tables + RLS for profiles (public only when published)
