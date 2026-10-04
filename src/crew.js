@@ -80,7 +80,14 @@ function signIn(after){
     b.onclick = go; c.onkeydown = ev => { if (ev.key === "Enter") go(); }; };
   if (user) s3(); else s1();
 }
-function drawAcct(){ const b = $("acctBtn"); if (!b) return; b.textContent = user ? "My profile" : "Sign in"; }
+function drawAcct(){ const b = $("acctBtn"); if (!b) return; b.textContent = user ? "My profile" : "Sign in";
+  const al = $("adminLink"); if (al) al.hidden = true;
+  if (user && sb && al) sb.rpc("is_admin").then(r => { if (r && r.data === true) al.hidden = false; }, () => {}); }
+async function drawBanner(){
+  if (!sb) return; try { const {data} = await sb.from("site_settings").select("value").eq("key", "banner").maybeSingle();
+    const v = data && data.value; const el = $("sitebanner"); if (!el) return;
+    if (v && v.on && v.text) { el.textContent = v.text; el.className = "sitebanner" + (v.kind === "warn" ? " warn" : ""); el.hidden = false; } else el.hidden = true; } catch (e) {} }
+drawBanner();
 
 /* ---------------- shared bits ---------------- */
 const initials = n => (String(n || "").trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2) || "?").toUpperCase();
@@ -169,6 +176,14 @@ function resultHTML(p, ac, mod, active){
     <span class="rbody"><b class="rname">${esc(p.display_name)}</b><span class="rmeta">${esc(meta)}${base ? " · " + esc(base) : ""}</span>
     ${top.length ? `<span class="rac">${top.join("<br>")}</span>` : ""}${b.length ? `<span class="chips2">${b.join("")}</span>` : ""}</span></a>`;
 }
+const LOGGED = new Set(); let logTimer = null;
+function logSearch(n){
+  if (!sb || (F.seq == null && !F.region)) return;
+  const filters = {type:F.type, cert:F.cert, avail:F.avail, p135:F.p135, contract:F.contract};
+  const key = JSON.stringify([F.seq, F.region, filters]); if (LOGGED.has(key)) return;
+  clearTimeout(logTimer);
+  logTimer = setTimeout(() => { LOGGED.add(key); sb.from("search_log").insert({acft_seq:F.seq, region:F.region || "", filters, results:n}).then(() => {}, () => {}); }, 1500);
+}
 const wide = () => window.matchMedia("(min-width: 1024px), (min-width: 760px) and (orientation: landscape)").matches;
 function tabs(which){ return `<div class="seg" role="tablist" aria-label="Find crew"><a role="tab" href="#/"${which === "search" ? ' aria-selected="true" class="on"' : ""}>Search crew</a><a role="tab" href="#/aircraft"${which === "browse" ? ' aria-selected="true" class="on"' : ""}>Browse by aircraft</a></div>`; }
 function selectHTML(id, k, label, val, first){ return `<div class="f"><label for="${id}">${label}</label><select id="${id}"><option value="">${first}</option>${OPT[k].map(([v, l]) => `<option value="${v}"${v === val ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`; }
@@ -204,6 +219,7 @@ async function viewFind(){
     const label = F.seq != null && BYSEQ.get(F.seq) ? " on the " + BYSEQ.get(F.seq).name : "";
     $("res").innerHTML = `<p class="count">${hits.length} crew${esc(label)}</p>` + (hits.length ? hits.map(p => resultHTML(p, D.acBy.get(p.user_id) || [], D.mod.get(p.user_id), p.user_id === active)).join("")
       : `<div class="panel"><p style="margin:0">No listed crew match yet. Try fewer filters${D.listed.length ? "" : ". The directory is new: profiles appear here once they're reviewed"}.</p><p style="margin:0"><a href="#/me">List yourself</a> · <a href="../#notify">Get notified</a></p></div>`);
+    logSearch(hits.length);
     if (wide() && hits.length) show(hits.some(h => h.user_id === active) ? active : hits[0].user_id); else $("det").innerHTML = "";
   };
   $("res").addEventListener("click", e => { const r = e.target.closest(".res"); if (!r || !wide()) return; e.preventDefault(); show(r.dataset.id); });
@@ -299,11 +315,15 @@ async function viewMe(){
   }
   app.innerHTML = `<p>Loading your profile…</p>`;
   const uid = user.id;
-  const [{data:p0}, {data:ac0}, {data:mod}] = await Promise.all([
+  const [{data:p0}, {data:ac0}, {data:mod}, pendRes] = await Promise.all([
     sb.from("crew_profiles").select("*").eq("user_id", uid).maybeSingle(),
     sb.from("crew_aircraft").select("*").eq("user_id", uid),
-    sb.from("moderation").select("*").eq("user_id", uid).maybeSingle()]);
+    sb.from("moderation").select("*").eq("user_id", uid).maybeSingle(),
+    sb.from("crew_bio_pending").select("bio").eq("user_id", uid).maybeSingle()]);
+  const publicBio = (p0 && p0.bio) || "";
+  let pendingBio = pendRes && !pendRes.error && pendRes.data ? pendRes.data.bio : null;   // null = nothing waiting (or review not switched on yet)
   const P = Object.assign({display_name:"", crew_types:[], certificate:"", headline:"", home_base:"", travel:"", experience:"", bio:"", total_time:null, availability:"", published:false, details:{}}, p0 || {});
+  if (pendingBio != null) P.bio = pendingBio;
   P.details = Object.assign({role:"", cert:"", ratings:[], medical:"", region:"", airport:"", status:"", looking:[], travel:"", passport:false, experience:[], languages:[]}, P.details || {});
   let AC = (ac0 || []).map(a => ({acft_seq:a.acft_seq, type_rated:!!a.type_rated, is_current:!!a.is_current, current_until:a.current_until || null, training_school:a.training_school || "", training_other:a.training_other || "", hours:a.hours, part135:a.part135 || ""}));
   let dirty = false;
@@ -337,6 +357,7 @@ async function viewMe(){
       <div class="f acsearch"><label for="acq">Add an aircraft</label><input id="acq" type="search" autocomplete="off" placeholder="Type to search, e.g. Citation XLS, King Air 350"><div class="acres" id="acres" hidden></div></div>
       <div><button class="btn secondary" id="brw" type="button" aria-expanded="false" aria-controls="acbrowse">Browse the list</button></div>
       <div id="acbrowse" class="browse" hidden></div>
+      <p class="hint" style="margin:0">Can't find your aircraft? <a href="#" id="acreq">Request it</a></p>
       <div id="aclist"></div>
       <div class="grid2"><div class="f"><label for="tt">Total time (hours)</label><input id="tt" value="${P.total_time ?? ""}" inputmode="numeric" placeholder="e.g. 6800"></div></div>
     </section>
@@ -350,7 +371,7 @@ async function viewMe(){
       ${multi("lg", "languages", "Languages (optional)", D.languages)}
     </section>
     <section class="panel" aria-labelledby="h1f"><h2 id="h1f">Anything else (optional)</h2>
-      <div class="f"><label for="bio">A few words owners should know</label><textarea id="bio" maxlength="2000" placeholder="Optional.">${esc(P.bio)}</textarea><small>No phone numbers or email here. Owners will contact you through Cali Aircrew messaging.</small></div>
+      <div class="f"><label for="bio">A few words owners should know</label><textarea id="bio" maxlength="2000" placeholder="Optional.">${esc(P.bio)}</textarea><small>No phone numbers or email here. Owners will contact you through Cali Aircrew messaging. Changes to this text are reviewed before they show publicly.</small><span class="status warn" id="pendnote"${pendingBio != null ? "" : " hidden"}>Your new text is waiting for review. Owners see your previous text until then.</span></div>
     </section>
     <section class="panel" aria-labelledby="h1d"><h2 id="h1d">Publish</h2>
       <label class="switch"><input type="checkbox" id="pub"${P.published ? " checked" : ""}> Show my profile in the crew directory</label>
@@ -439,6 +460,12 @@ async function viewMe(){
   });
   res.addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return; AC.push({acft_seq:+b.dataset.add, type_rated:false, is_current:false, current_until:null, training_school:"", training_other:"", hours:null, part135:""}); q.value = ""; res.hidden = true; drawAc(); changed(); const last = app.querySelector(`[data-hr="${AC.length - 1}"]`); if (last) last.focus(); });
   document.addEventListener("click", e => { if (!e.target.closest(".acsearch")) res.hidden = true; });
+  $("acreq").onclick = e => { e.preventDefault();
+    const m = modal(`<h2>Request an aircraft</h2><p class="hint" style="margin:0">Tell us the make and model (and anything that helps, like years or variant). We'll add it to the list.</p><div class="f"><label for="rq">Aircraft</label><textarea id="rq" maxlength="200" style="min-height:90px" placeholder="e.g. Pilatus PC-24 (2024 avionics)"></textarea></div><div class="err" id="rqm" role="status"></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="rqs" type="button">Send request</button><button class="btn secondary" id="rqx" type="button">Cancel</button></div>`);
+    m.querySelector("#rqx").onclick = () => m.remove(); m.querySelector("#rq").focus();
+    m.querySelector("#rqs").onclick = async () => { const t = m.querySelector("#rq").value.trim(); if (t.length < 3) { m.querySelector("#rqm").textContent = "Type the aircraft name."; return; }
+      const {error} = await sb.from("aircraft_requests").insert({request:t}); if (error) { m.querySelector("#rqm").textContent = "Couldn't send it right now. Please try again later."; return; }
+      m.querySelector(".box2").innerHTML = `<h2>Thanks!</h2><p style="margin:0">We'll review it and add it to the list.</p><button class="btn primary" type="button" id="rqok">Done</button>`; m.querySelector("#rqok").onclick = () => m.remove(); }; };
   $("tp").onclick = () => { const s = $("split"); s.classList.toggle("showprev"); $("tp").textContent = s.classList.contains("showprev") ? "Edit" : "Preview"; window.scrollTo(0, 0); };
   $("so").onclick = async () => { await sb.auth.signOut(); location.hash = "#/"; };
   $("save").onclick = async () => {
@@ -452,6 +479,12 @@ async function viewMe(){
       let r1 = await sb.from("crew_profiles").upsert(row, {onConflict:"user_id"});
       if (r1.error && /details/i.test(r1.error.message || "")) { const {details, ...plain} = row; r1 = await sb.from("crew_profiles").upsert(plain, {onConflict:"user_id"}); if (!r1.error) $("se").textContent = "Saved. Some choices will be kept once the Cali Aircrew setup step is finished."; }
       if (r1.error) throw r1.error;
+      // Free text: with review switched on (database update 007), new text waits in crew_bio_pending.
+      if (P.bio !== publicBio) {
+        const rp = await sb.from("crew_bio_pending").upsert({user_id:uid, bio:P.bio}, {onConflict:"user_id"});
+        pendingBio = rp.error ? null : P.bio;
+      } else if (pendingBio != null) { await sb.from("crew_bio_pending").delete().eq("user_id", uid); pendingBio = null; }
+      if ($("pendnote")) $("pendnote").hidden = pendingBio == null;
       const r2 = await sb.from("crew_aircraft").delete().eq("user_id", uid); if (r2.error) throw r2.error;
       if (AC.length) {
         // Newer columns (part135 from 004, is_current from 005) are dropped one by one if the database hasn't been upgraded yet.

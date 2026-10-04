@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin · Cali Aircrew</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232470B3'/%3E%3Cpath d='M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+<<<CREW_CSS>>>
+/* ---------- admin ---------- */
+.atabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.atabs a{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid #C7D6E5;background:#fff;color:var(--ink);text-decoration:none;font:600 17px var(--display);letter-spacing:.02em}
+.atabs a.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.atabs .n{display:inline-flex;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#FFF4DE;color:#6A4A00;font:700 13px/22px var(--body);justify-content:center}
+.atabs a.on .n{background:#fff;color:var(--blue)}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:4px}
+.kpi b{font:700 34px/1 var(--display);color:var(--ink)}
+.kpi span{font-size:15px;color:var(--sub)}
+.kpi small{font-size:13px;color:var(--muted)}
+.sect{margin:32px 0 12px;font:700 28px/1.1 var(--display);color:var(--ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.blist{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.blist li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;font-size:16px}
+.bar{height:8px;border-radius:4px;background:var(--cloud);grid-column:1 / -1;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:4px}
+.meter{height:12px;border-radius:6px;background:var(--cloud);overflow:hidden}.meter i{display:block;height:100%;background:var(--sage)}
+.meter.hi i{background:#B07A00}
+.chart svg{width:100%;height:auto}
+.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.item h3{margin:0;font:700 24px/1.1 var(--display);color:var(--ink)}
+.item .meta{color:var(--muted);font-size:15px}
+.flags{display:flex;flex-wrap:wrap;gap:6px}
+.flag{padding:4px 10px;border-radius:999px;background:#FFF4DE;color:#6A4A00;font-size:14px;font-weight:600}
+.flag.bad{background:#FBE4E2;color:#8A2A20}
+.acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn.sm{min-height:40px;padding:0 14px;font-size:17px}
+.btn.danger{background:#fff;color:#8A2A20;border:2px solid #8A2A20}
+.pend{border-left:4px solid #B07A00;padding:8px 12px;background:#FFF9EC;border-radius:6px;white-space:pre-line;font-size:16px}
+.old{border-left:4px solid var(--line);padding:8px 12px;background:var(--page);border-radius:6px;white-space:pre-line;font-size:16px;color:var(--sub)}
+.tbl{width:100%;border-collapse:collapse;font-size:15px;background:#fff}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.tbl th,.tbl td{text-align:left;padding:10px 12px;border-bottom:1px solid #EEF2F6;vertical-align:top}
+.tbl th{font:700 15px var(--display);letter-spacing:.03em;color:var(--sub);background:var(--page);position:sticky;top:0}
+.tbl td .acts{gap:6px}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:13px;font-weight:700;background:var(--cloud);color:var(--ink)}
+.tag.ok{background:var(--sage-bg);color:var(--sage)}.tag.warn{background:#FFF4DE;color:#6A4A00}.tag.bad{background:#FBE4E2;color:#8A2A20}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:16px}
+.toolbar .f{min-width:220px}
+.okmsg{color:var(--sage);font-weight:600}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="../"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2470B3"/><path d="M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z" fill="#fff"/></svg>Cali Aircrew</a>
+    <nav aria-label="Main">
+      <a href="../checklists/">Checklists</a>
+      <a href="../crew/">Crew</a>
+      <a href="./" aria-current="page" style="border-bottom:3px solid var(--blue)">Admin</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap page" id="app" aria-live="polite"><p>Loading…</p></main>
+<footer>
+  <div class="wrap">
+    <strong>Cali Aircrew admin</strong>
+    <p>Every action on this page is recorded in the audit log. Admin access is checked by the database on every action.</p>
+  </div>
+</footer>
+<script>
+<<<SUPABASE_LIB>>>
+</script>
+<script>
+{{ADMIN_APP_JS}}
+</script>
+</body>
+</html>

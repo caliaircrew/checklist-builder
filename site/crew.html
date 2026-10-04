@@ -179,6 +179,9 @@ main.page{padding-top:32px;padding-bottom:64px}
 .pcard .actions{display:flex;gap:10px;padding:16px 24px 24px;border-top:1px solid #E6ECF2}
 .pcard .note{padding:0 24px 20px;color:var(--muted);font-size:14px}
 .empty{color:var(--muted);font-style:italic}
+.sitebanner{background:#DCEBF8;color:var(--ink);text-align:center;padding:10px 20px;font-weight:600;border-bottom:1px solid var(--line)}
+.sitebanner.warn{background:#FFF4DE;color:#6A4A00}
+.sitebanner[hidden],#adminLink[hidden],#pendnote[hidden]{display:none}
 .seg{display:inline-flex;gap:6px;padding:5px;background:var(--cloud);border-radius:10px;flex-wrap:wrap}
 .seg a,.seg .soon2{display:flex;align-items:center;min-height:44px;padding:0 16px;border-radius:8px;color:var(--ink);text-decoration:none;font:600 18px var(--display);letter-spacing:.02em}
 .seg a.on{background:#fff;border:1px solid var(--line);font-weight:700}
@@ -241,10 +244,12 @@ a.mtile{text-decoration:none}
       <a href="../checklists/">Checklists</a>
       <a href="#/" aria-current="page" style="border-bottom:3px solid var(--blue)">Crew</a>
       <a href="../#partners">Partners</a>
+      <a href="../admin/" id="adminLink" hidden>Admin</a>
       <a class="btn primary" id="acctBtn" href="#/me">Sign in</a>
     </nav>
   </div>
 </header>
+<div id="sitebanner" class="sitebanner" role="status" hidden></div>
 <main class="wrap page" id="app" aria-live="polite"><p>Loading…</p></main>
 <nav class="tabbar" aria-label="Main">
   <a href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</a>

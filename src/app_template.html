@@ -39,6 +39,7 @@ input[type=text],.afind input[type=search]{width:100%;font-size:16px;padding:10p
 .homebtn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
 .homebtn:hover{border-color:var(--accent)}
 @media (max-width:600px){.homebtn span{display:none}.homebtn{padding:0 10px}}
+.sitebanner{background:#DCEBF8;color:#234A6E;text-align:center;padding:10px 16px;font-weight:600;border-bottom:1px solid #D6E0EA}.sitebanner.warn{background:#FFF4DE;color:#6A4A00}.sitebanner[hidden]{display:none}
 .hdrpick{max-width:240px;font-weight:600;font-size:14px;padding:7px 8px;border:1px solid var(--line);border-radius:999px;background:var(--chip);color:var(--ink)}
 body[data-mode="end"] .hdrpick{display:none}
 @media (max-width:600px){.hdrpick{max-width:none;flex:1;min-width:0}}
@@ -183,6 +184,7 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 </style>
 </head>
 <body>
+<div id="sitebanner" class="sitebanner" role="status" hidden></div>
 <header class="top">
   <a class="homebtn" href="../" aria-label="Cali Aircrew home"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></a><h1><a href="../" style="color:inherit;text-decoration:none">✈️ Aircraft Checklist Builder</a></h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="acctBtn" hidden>👤 Sign in</button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button>
   <div class="tabs" id="tabs"><button data-v="edit" class="on">1 · Type it in</button><button data-v="preview">2 · See &amp; print</button></div>
@@ -830,6 +832,8 @@ $("libFile").onchange=e=>{const f=e.target.files[0]; if(!f) return; f.text().the
 /* ---------- Account sign-in & sync (optional; Supabase) ---------- */
 var sb=null, sbUser=null, cloudState="local", cloudMsg="", dirty=new Set(), dirtyMy=false, pushTimer=null, syncing=false, syncAgain=false;
 if(CLOUD.enabled&&window.supabase&&window.supabase.createClient){try{sb=window.supabase.createClient(CLOUD.url,CLOUD.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"acb-auth"}})}catch(e){sb=null}}
+/* Site announcement banner set on the admin page (needs database update 007; silently absent before). */
+if(sb){sb.from("site_settings").select("value").eq("key","banner").maybeSingle().then(r=>{const v=r&&r.data&&r.data.value, el=$("sitebanner"); if(el&&v&&v.on&&v.text){el.textContent=v.text; el.className="sitebanner"+(v.kind==="warn"?" warn":""); el.hidden=false;}},()=>{});}
 const myStamp=()=>+(localStorage.getItem("acb-myitems-updated")||0);
 const blankData=()=>({operator:"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]});
 function setCloud(st,msg){cloudState=st; cloudMsg=msg||""; const el=$("libSaved"); if(el) el.textContent=!sbUser?"✓ Saved on this device":

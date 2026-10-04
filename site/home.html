@@ -86,6 +86,8 @@ fieldset.field{border:0;margin:0;padding:0}
 .partners span{font-size:17px;color:var(--sub)}
 .partners a{margin-left:auto;font:600 19px/1 var(--display)}
 footer{background:#E9EFF5;color:var(--sub)}
+.sitebanner{background:#DCEBF8;color:var(--ink);text-align:center;padding:10px 20px;font-weight:600;border-bottom:1px solid var(--line)}.sitebanner.warn{background:#FFF4DE;color:#6A4A00}.sitebanner[hidden]{display:none}
+#ptlist a{font-weight:600}
 footer .wrap{padding-top:32px;padding-bottom:48px;display:flex;flex-wrap:wrap;gap:16px 40px;font-size:15px}
 footer strong{font:700 22px/1 var(--display);color:var(--ink)}
 footer p{margin:0;flex:1 1 100%;max-width:72ch}
@@ -122,6 +124,7 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
   </div>
 </header>
 
+<div id="sitebanner" class="sitebanner" role="status" hidden></div>
 <section class="hero" aria-labelledby="hero-h">
   <!-- Original illustration: daytime sky, clouds, coastal mountains, runway, aircraft climbing out -->
   <svg class="scene" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -222,7 +225,7 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
   <section class="partners" id="partners" aria-labelledby="pt-h">
     <div class="wrap">
       <h2 id="pt-h">Partners</h2>
-      <span>Aviation insurance · Simulator training · Flight schools</span>
+      <span id="ptlist">Aviation insurance · Simulator training · Flight schools</span>
       <a href="#notify">Become a partner</a>
     </div>
   </section>
@@ -246,6 +249,13 @@ document.getElementById("yr").textContent=new Date().getFullYear();
 (function(){const svg=document.querySelector(".scene");const fit=()=>{const r=svg.getBoundingClientRect();svg.setAttribute("viewBox",r.width/r.height<1.1?"445 0 560 520":"0 0 1440 520")};fit();addEventListener("resize",fit)})();
 (function(){
   const CLOUD={{CLOUD_JSON}};
+  /* Banner and partner listings, managed on the admin page (database update 007). Read-only, public data. */
+  if(CLOUD.enabled){
+    const H={"apikey":CLOUD.key};
+    fetch(CLOUD.url+"/rest/v1/site_settings?key=eq.banner&select=value",{headers:H}).then(r=>r.ok?r.json():[]).then(rows=>{const v=rows&&rows[0]&&rows[0].value, el=document.getElementById("sitebanner"); if(v&&v.on&&v.text){el.textContent=v.text; el.className="sitebanner"+(v.kind==="warn"?" warn":""); el.hidden=false;}}).catch(()=>{});
+    fetch(CLOUD.url+"/rest/v1/partners?select=name,url,category,blurb&order=sort.asc,name.asc",{headers:H}).then(r=>r.ok?r.json():[]).then(rows=>{if(!rows||!rows.length) return; const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+      document.getElementById("ptlist").innerHTML=rows.map(p=>p.url?`<a href="${esc(p.url)}" rel="noopener sponsored" target="_blank">${esc(p.name)}</a>`:esc(p.name)).join(" · ");}).catch(()=>{});
+  }
   const f=document.getElementById("nf"), msg=document.getElementById("nf-msg"), email=document.getElementById("nf-email"), btn=f.querySelector("button");
   const say=(t,ok)=>{msg.textContent=t;msg.className="msg "+(ok?"ok":"err")};
   email.addEventListener("input",()=>{msg.textContent=""});

@@ -17,6 +17,9 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.7.0  2026-10-03  Steve  Admin page: site/admin.html + src/admin.js ->
+                            admin/index.html (crew CSS shared, node syntax
+                            check, refuses secret keys). Builds app 1.30.
   2.6.0  2026-10-03  Steve  Aircraft 'category' (airplane | helicopter) and
                             engine 'turboshaft' (helicopters only); 'h' flag
                             passed to the builder and crew pages. Builds 1.24.
@@ -58,7 +61,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.6.0"
+SCRIPT_VERSION = "2.7.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -395,9 +398,25 @@ def main(argv=None):
         crew_page = (crew_html.replace("<<<SUPABASE_LIB>>>", load_vendor("supabase-js", f"supabase-js-{app['supabase_js']['version']}.umd.js", app["supabase_js"]["sha256"]))
                               .replace("{{CREW_APP_JS}}", crew_js.replace("</script", "<\\/script")))
         need("not a broker" in crew_page, "site/crew.html must keep the directory/not-a-broker note")
+        # Admin page (site/admin.html + src/admin.js) -> admin/index.html; shares the crew page's styles.
+        admin_html = open(os.path.join(ROOT, "site", "admin.html"), encoding="utf-8").read()
+        admin_js = open(os.path.join(ROOT, "src", "admin.js"), encoding="utf-8").read()
+        admin_js = admin_js.replace("{{CLOUD_JSON}}", cloud).replace("{{ACFT_JSON}}", json.dumps(acft_rows, ensure_ascii=False, separators=(",", ":")))
+        need("{{" not in admin_js, "src/admin.js has an unfilled {{placeholder}}")
+        need("sb_secret_" not in admin_js and "service_role" not in admin_js, "src/admin.js must never contain a secret/service key")
+        open(tmpjs, "w", encoding="utf-8").write(admin_js)
+        if shutil.which("node"):
+            r = subprocess.run(["node", "--check", tmpjs], capture_output=True, text=True)
+            need(r.returncode == 0, "src/admin.js JavaScript syntax error:\n" + r.stderr[-800:])
+        crew_css = re.search(r"<style>(.*?)</style>", crew_html, re.S).group(1)
+        admin_page = (admin_html.replace("<<<CREW_CSS>>>", crew_css)
+                                .replace("<<<SUPABASE_LIB>>>", load_vendor("supabase-js", f"supabase-js-{app['supabase_js']['version']}.umd.js", app["supabase_js"]["sha256"]))
+                                .replace("{{ADMIN_APP_JS}}", admin_js.replace("</script", "<\\/script")))
     except BuildError as e:
         print(f"BUILD FAILED: {e}", file=sys.stderr)
         return 1
+    os.makedirs(os.path.join(a.out, "admin"), exist_ok=True)
+    open(os.path.join(a.out, "admin", "index.html"), "w", encoding="utf-8").write(admin_page)
     os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)
     open(os.path.join(a.out, "crew", "index.html"), "w", encoding="utf-8").write(crew_page)
     os.makedirs(os.path.join(a.out, "checklists"), exist_ok=True)

@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.30 | 2026-10-03 | Admin page (admin/): dashboard (supply, demand incl. zero-result searches, growth charts, sign-ups by role, plan limits), review queue (quality flags, FAA registry shortcut, approve / approve + verified / hide / notes, new-text approve/decline, bulk), users (search, lost-phone reset, make/remove admin, delete with typed email), sign-ups CSV, aircraft + CCPA requests, banner, partners, audit log, JSON backup. supabase/007_admin.sql: admin_* functions gated by is_admin(), audit, search_log, site_settings, partners, aircraft_requests, privacy_requests, crew_bio_pending + guard trigger. Crew: pending-text note, aircraft request, anonymous search logging, Admin link, banner. Homepage/builder: banner; homepage partners from the database. Tested against real PostgreSQL. |
 | 1.29 | 2026-10-03 | Per-aircraft currency details: current_until (month), training_school (FlightSafety, CAE (SimuFlite), SIMCOM, LOFT (Carlsbad), factory, in-house, independent, other) + training_other; auto-expiry after the month; ranking uses valid currency only; supabase/006_currency_details.sql (includes 005). |
 | 1.28 | 2026-10-03 | Per-aircraft Current checkbox (crew_aircraft.is_current, supabase/005_aircraft_current.sql); shown on cards/results; ranking boost on the searched type; save falls back column by column (part135, is_current) until the database is upgraded, note kept after a first save. |
 | 1.27 | 2026-10-03 | Find crew availability: 'Now or with notice' quick link + Availability dropdown (any / now / now or with notice), ranking now > notice > others, notice badge. |
@@ -37,6 +38,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.7.0 | 2026-10-03 | Builds admin/index.html (shared crew CSS, syntax check, refuses secret keys). Builds app 1.30. |
 | 2.6.0 | 2026-10-03 | Aircraft category + turboshaft engine; 'h' flag; search words passed to crew page. Builds app 1.24. |
 | 2.5.0 | 2026-10-03 | Builds crew/index.html (site/crew.html + src/crew.js, supabase-js, aircraft list, node syntax check). Builds app 1.21. |
 | 2.4.1 | 2026-10-03 | Homepage gets the cloud config (public URL + publishable key) for the Get notified form. |

@@ -4,6 +4,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 
 ## A. Housekeeping
 - [x] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor
+- [ ] 3c. Run supabase/007_admin.sql (admin page, review of free text, search metrics, banner, partners, requests)
 - [x] 3b. Run supabase/006_currency_details.sql (includes 005: Current checkbox, current-through month, training school)
 - [x] 1. Supabase URL Configuration: Site URL `https://caliaircrew.com/checklists/`; Redirect URLs include `https://caliaircrew.com/**` (keep the github.io entries)
 - [x] 2. GitHub Pages: Enforce HTTPS on once the certificate is issued
@@ -33,15 +34,17 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
 - [ ] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)
 - [ ] 14d. Recommended crew for operators: an operator profile's aircraft + base automatically shows matching crew (type, region, available now, Part 135)
-- [ ] 15. Admin page (caliaircrew.com/admin, admins only; database functions gated by is_admin(), no secret keys in the browser):
-  - [ ] 15a. Dashboard: users, profiles by status (draft / waiting / listed / hidden), operators, Get-notified sign-ups, new this week
-  - [ ] 15b. Review queue: approve, hide, mark FAA verified (with FAA registry link), notes; re-review when a listed profile's free text changes
-  - [ ] 15c. User management: search users by email, last sign-in, view profile, hide/unhide, make or remove admin, delete account (with confirmation)
-  - [ ] 15d. Sign-in help: no passwords exist (email codes); "lost phone" reset removes a user's Microsoft Authenticator so they can sign in with an email code and set it up again
+- [x] 15. Admin page (caliaircrew.com/admin, admins only; database functions gated by is_admin(), no secret keys in the browser):
+  - [x] 15a. Dashboard: users, profiles by status (draft / waiting / listed / hidden), operators, Get-notified sign-ups, new this week
+  - [x] 15b. Review queue: approve, hide, mark FAA verified (with FAA registry link), notes; re-review when a listed profile's free text changes
+  - [x] 15c. User management: search users by email, last sign-in, view profile, hide/unhide, make or remove admin, delete account (with confirmation)
+  - [x] 15d. Sign-in help: no passwords exist (email codes); "lost phone" reset removes a user's Microsoft Authenticator so they can sign in with an email code and set it up again
+  - [x] 15h. Extras in v1.30: quality flags, FAA registry shortcut, bulk approve, zero-result searches and owner metrics, announcement banner, partner listings, aircraft requests, CCPA privacy request log, plan-limit meters, JSON backup
+  - [ ] 15i. Later: two admin levels (reviewer vs owner)
   - [ ] 15d2. Locked out of email: admin moves the account to a new sign-in email ONLY after identity is confirmed outside email (phone call, known contact, name + FAA certificate matched on the FAA registry); logged in the audit log
-  - [ ] 15e. Get-notified list: view, export CSV, remove
-  - [ ] 15f. Reports from users ("report this profile") and an audit log of admin actions
-  - [ ] 15g. Database update 005 (admin functions: list users, remove authenticator, delete user, audit log)
+  - [x] 15e. Get-notified list: view, export CSV, remove
+  - [ ] 15f. Reports from users ("report this profile") — audit log of admin actions [x] done (v1.30)
+  - [x] 15g. Database update 005 (admin functions: list users, remove authenticator, delete user, audit log)
 - [ ] 16. Homepage update; invite James's network
 - [ ] 16a. Account settings for users: change my sign-in email (confirmed from the new inbox), turn Microsoft Authenticator on/off, download my data, delete my account
 - [ ] 16b. Several ways in, one account (Supabase identity linking), shown on Account → Ways to sign in:
