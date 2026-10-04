@@ -24,6 +24,8 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%}
 /* ---- Cali Aircrew site bar + phone tab bar (same as the rest of the site) ---- */
 .sitebar{background:var(--card);border-bottom:1px solid var(--line)}
+.sitefoot{background:#E4EEF8;color:#234A6E;margin-top:24px;padding:20px 16px 90px;font-size:14px}.sitefoot .in{max-width:1500px;margin:0 auto}.sitefoot p{margin:8px 0;max-width:760px}.sitefoot .links{display:flex;flex-wrap:wrap;gap:8px 20px}.sitefoot a{color:#234A6E}
+@media print{.sitefoot{display:none}}
 .sitebar .in{max-width:1500px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap}
 .sitebar .brand{display:flex;align-items:center;gap:10px;color:var(--brand);text-decoration:none;font:700 24px/1 var(--display)}
 .sitebar .brand svg{width:32px;height:32px}
@@ -262,19 +264,19 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 <body>
 <div class="sitebar"><div class="in">
   <a class="brand" href="../"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2470B3"/><path d="M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z" fill="#fff"/></svg>Cali Aircrew</a>
-  <nav aria-label="Main"><a href="./" aria-current="page">Aircraft Checklists</a><a href="../crew/">Crew</a><a href="../partners/">Partners</a><a href="../admin/" id="siteAdmin" hidden>Admin</a><a class="cta" href="../crew/#/me" id="siteAcct">Sign in</a></nav>
+  <nav aria-label="Main" id="siteNav"><a href="../crew/">Find crew</a><a href="../crew/#/me">Get listed</a><a href="./" aria-current="page" id="navCk">Aircraft Checklists</a><a href="./#endorsements" id="navEnd">CFI Endorsements</a><a href="../admin/" id="siteAdmin" hidden>Admin</a><a class="cta" href="../crew/#/me" id="siteAcct">Sign in</a></nav>
 </div></div>
 <nav class="tabbar" aria-label="Main">
   <a href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</a>
   <a href="./" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Checklists</a>
-  <a href="../crew/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Crew</a>
+  <a href="../crew/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Find crew</a>
   <a href="../crew/#/me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span id="tabAcct">Sign in</span></a>
 </nav>
 <div id="installTip" role="note" hidden><span>📲 Use it offline: tap <b>Share</b> then <b>Add to Home Screen</b>.</span><button class="btn small" type="button">Got it</button></div>
 <div id="fly" hidden role="dialog" aria-modal="true" aria-label="Fly mode"></div>
 <div id="sitebanner" class="sitebanner" role="status" hidden></div>
 <header class="top">
-  <h1>Checklist builder</h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="acctBtn" hidden>👤 Sign in</button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button><button class="ver flybtn" id="flyBtn" title="Fly mode: one section at a time, tap to check">✈ Fly</button>
+  <h1 id="toolTitle">Aircraft Checklists</h1><button class="ver" id="verBtn" title="What's new"></button><button class="ver" id="acctBtn" hidden>👤 Sign in</button><select id="hdrPick" class="hdrpick" aria-label="Switch saved checklist" title="Your saved checklists"></select><button class="ver" id="modeBtn">🎓 CFI endorsements</button><button class="ver flybtn" id="flyBtn" title="Fly mode: one section at a time, tap to check">✈ Fly</button>
   <div class="tabs" id="tabs"><button data-v="edit" class="on">1 · Type it in</button><button data-v="preview">2 · See &amp; print</button></div>
 </header>
 <main id="main" data-view="edit">
@@ -967,7 +969,12 @@ function buildEndDoc(){
         children:[new TextRun({text:H.foot,size:15}),new TextRun({size:15,children:["\tPage ",PageNumber.CURRENT," of ",PageNumber.TOTAL_PAGES]})]})]})},
       children:body}]});
 }
-$("modeBtn").onclick=()=>{const on=document.body.dataset.mode!=="end"; document.body.dataset.mode=on?"end":""; $("modeBtn").textContent=on?"✈️ Checklists":"🎓 CFI endorsements"; if(on){renderEndList();renderEndSel();} window.scrollTo(0,0)};
+function setMode(on){document.body.dataset.mode=on?"end":""; $("toolTitle").textContent=on?"CFI Endorsements":"Aircraft Checklists"; document.title=(on?"CFI Endorsements":"Aircraft Checklists")+" · Cali Aircrew";
+  $("navCk").toggleAttribute("aria-current",!on); $("navEnd").toggleAttribute("aria-current",on); if(on) $("navEnd").setAttribute("aria-current","page"); else $("navCk").setAttribute("aria-current","page");
+  history.replaceState(null,"",location.pathname+location.search+(on?"#endorsements":""));}
+addEventListener("hashchange",()=>{const on=location.hash==="#endorsements"; if(on!==(document.body.dataset.mode==="end")) $("modeBtn").click()});
+setTimeout(()=>{ if(location.hash==="#endorsements"&&document.body.dataset.mode!=="end") $("modeBtn").click() },0);
+$("modeBtn").onclick=()=>{const on=document.body.dataset.mode!=="end"; setMode(on); $("modeBtn").textContent=on?"✈️ Checklists":"🎓 CFI endorsements"; if(on){renderEndList();renderEndSel();} window.scrollTo(0,0)};
 bindEndForm();
 function libSorted(){return Object.values(LIBR.items).sort((a,b)=>(b.updated||0)-(a.updated||0))}
 function drawLib(){const cur=LIBR.items[LIBR.current];
@@ -1235,5 +1242,6 @@ if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventLi
 renderChips(); renderEditor(); renderPreview(); drawSel(); drawLib();
 })();
 </script>
+<footer class="sitefoot"><div class="in"><strong>Cali Aircrew</strong><p>Checklists and endorsement wording here are suggestions, not FAA-approved and not the manufacturer's checklist. Always verify against your aircraft's approved AFM/POH and current FAA guidance. The instructor is responsible for every endorsement.</p><p class="links"><a href="../partners/">Partners</a><a href="../terms/">Terms of Use</a><a href="../privacy/">Privacy Policy</a><a href="mailto:caliaircrew@gmail.com">Contact</a></p><p>© 2026 Cali Aircrew</p></div></footer>
 </body>
 </html>

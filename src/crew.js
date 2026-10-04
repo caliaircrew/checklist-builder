@@ -340,7 +340,7 @@ async function viewFind(){
   const qs = new URLSearchParams((location.hash.split("?")[1]) || "");
   if (qs.has("acft")) { F = {...F, seq:+qs.get("acft")}; }
   loadAirports().then(() => { if (typeof window.__redrawFind === "function") window.__redrawFind(); });
-  app.innerHTML = `<div class="pagehead"><div><h1>Find crew</h1><p>Professional, type-current crew. Profiles are reviewed before they appear.</p><p style="margin:8px 0 0;display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" id="svs" type="button">☆ Save this search</button><a class="btn secondary" href="#/saved">★ Saved</a></p></div>${tabs("search")}</div>
+  app.innerHTML = `<div class="pagehead"><div><h1>Find crew</h1><p>Professional, type-current crew. Profiles are reviewed before they appear.</p>${user ? `<p style="margin:8px 0 0;display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" id="svs" type="button">☆ Save this search</button><a class="btn secondary" href="#/saved">★ Saved</a></p>` : ""}</div>${tabs("search")}</div>
   <div class="quick" role="group" aria-label="Quick filters">${QUICK.map(([k, l]) => `<button type="button" class="pill" data-q="${k}">${esc(l)}</button>`).join("")}</div>
   <section class="panel filters" aria-label="Filters">
     <div class="fgrid">
@@ -372,11 +372,11 @@ async function viewFind(){
     app.querySelectorAll("[data-q]").forEach(b => { const k = b.dataset.q, on = k === "now" ? F.avail === "now" : k === "soon" ? F.avail === "soon" : k === "p135" ? F.p135 : k === "contract" ? F.contract : k === "cfi" ? F.type === "cfi" : k === "fa" ? F.type === "flight_attendant" : k === "mx" ? F.type === "mechanic" : F.type === "helicopter_pilot"; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
     const rf = ROLEF[F.type], box = $("rolef"); box.hidden = !rf;
     box.innerHTML = rf ? `<span class="lbl">${esc(TYPE_LABEL[F.type])} filters</span><div class="chips">${rf.map(([k, l]) => `<label><input type="checkbox" data-x="${k}"${(F.x || []).includes(k) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div>${F.type === "mechanic" ? `<div class="f" style="max-width:340px;margin-top:8px"><label for="feng">Engine</label><select id="feng"><option value="">Any engine</option>${OPT.mx_engines.map(([v, l]) => `<option value="${v}"${v === F.eng ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>` : ""}` : ""; };
-  if (wide() || F.type || F.region || F.cert || F.avail || F.rate || F.minTT || F.minPIC || F.minTurb || F.minType || F.near || F.trn || F.tr) $("more").open = true;
+  if (F.type || F.region || F.cert || F.avail || F.rate || F.minTT || F.minPIC || F.minTurb || F.minType || F.near || F.trn || F.tr) $("more").open = true;
   let D; try { D = await loadDir(); } catch (e) { $("res").innerHTML = `<p class="err">Couldn't load the directory. Check your connection and try again.</p>`; return; }
   let active = null, lastHits = [];
   await loadFav();
-  $("svs").onclick = async () => {
+  if ($("svs")) $("svs").onclick = async () => {
     if (!user) { signIn(route); return; }
     const m = modal(`<h2>Save this search</h2><div class="f"><label for="ssn">Name</label><input id="ssn" maxlength="80" value="${esc(describeF(F))}"></div>
       <label class="switch"><input type="checkbox" id="ssa" checked> Email me when new crew match (checked daily)</label><p class="hint" style="margin:0">Find it again under ★ Saved.</p>

@@ -39,6 +39,19 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 9b. Testimonials section on the homepage (once James's network is using it; real quotes with permission only)
 - [ ] 10. Contact address (caliaircrew@gmail.com or @caliaircrew.com mailbox); move sign-in email sender to it
 
+## C2. Site feels like one product (review 2026-10-04)
+- [x] 1. One menu on every page: Find crew · Get listed · Aircraft Checklists · CFI Endorsements; Partners moved to the footer (v1.52)
+- [x] 2. Same names everywhere (Find crew, Get listed, Aircraft Checklists); builder heading follows the mode (v1.52)
+- [x] 3. CFI Endorsements reachable by link (/checklists/#endorsements) and from the menu (v1.52)
+- [x] 4. Home page: one sentence tying it together; step 3 no longer promises messaging that isn't built ("coming soon") (v1.52) — [ ] James to approve the wording
+- [ ] 4b. Home "Stay in the loop" says private beta while the hero says get listed free — James to decide what's open to whom
+- [ ] 5. Home partners strip: keep, shrink or move (James)
+- [x] 6. Find crew for visitors: Save search / Saved only when signed in; More filters closed until used, so results show sooner (v1.52)
+- [x] 7a. Builder gets the site footer (v1.52)
+- [ ] 7b. One "My account" area: profile, saved checklists, saved crew and searches together
+- [ ] 8. Review the signed-in screens (profile editor, account, operator) for the same issues
+- [ ] 9. IMPORTANT: there is no way to contact crew yet (bios forbid phone/email, messaging not built). Messaging should come before the résumé PDF.
+
 ## D. Crew directory — Phase 1 (private beta)
 - [x] 11. Supabase tables + RLS for profiles (public only when published)
 - [x] 12. Crew types: airplane pilot, helicopter pilot, CFI/CFII/CFI-H, corporate flight attendant, ferry/delivery pilot, mechanic (A&P/IA)
