@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.34 | 2026-10-03 | Fix: admins' own bio/About saves no pending copy (database already lets admins change public text); admin review filters pending rows identical to public text (crew + operators). |
 | 1.33 | 2026-10-03 | Homepage reads the shared acb-auth session: My profile vs Sign in (top bar + phone tab), Admin link when rpc is_admin answers true. Crew: Admin button on #/me and #/op for admins (is_admin re-applied after every route). |
 | 1.32 | 2026-10-03 | Private FAA-verification details (supabase/010_crew_private.sql: crew_private, owner + admin read, owner write with aal2 when enrolled); profile editor section; admin review line + 'No legal name for FAA check' flag; FAA button copies legal last name; backup includes crew_private. |
 | 1.31 | 2026-10-03 | Operator profiles (#/op editor: type, name or Private owner, region/airport, aircraft via search/browse with how many, open to contract, looking for, operations, work type, About with review, live preview, recommended crew ranked by region/availability/currency/135/verified); public operator page (#/o/<id>); Operators directory (#/operators) with aircraft/region/open filters and master-detail; aircraft page Operators tab; Browse counts operators. Admin: operator review + text approve/decline, KPIs, backup. supabase/009_operators.sql: details, kinds, moderation.op_approved/op_hidden, is_listed_op, operator_about_pending + guard, admin_moderate_operator, admin_decline_operator_text. |

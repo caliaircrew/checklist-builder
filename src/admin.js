@@ -56,14 +56,16 @@ async function load(){
   // Operator profiles (database update 009). Older databases simply show none.
   const soft = fn => fn.then(r => r.error ? [] : (r.data || []), () => []);
   const [ops, opac, oppend, priv] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*")), soft(sb.from("crew_private").select("*"))]);
-  const mod = new Map(mods.map(m => [m.user_id, m])), acBy = new Map(), pend = new Map(pending.map(p => [p.user_id, p]));
+  // Waiting text that is identical to the public text isn't really waiting.
+  const pubBio = new Map(profiles.map(p => [p.user_id, p.bio || ""]));
+  const mod = new Map(mods.map(m => [m.user_id, m])), acBy = new Map(), pend = new Map(pending.filter(p => (p.bio || "") !== pubBio.get(p.user_id)).map(p => [p.user_id, p]));
   aircraft.forEach(a => { if (!acBy.has(a.user_id)) acBy.set(a.user_id, []); acBy.get(a.user_id).push(a); });
   const email = new Map(users.map(u => [u.user_id, u.email]));
   const statusOf = p => { const m = mod.get(p.user_id); if (m && m.hidden) return "hidden"; if (!p.published) return "draft"; return m && m.approved ? "listed" : "waiting"; };
   const opAcBy = new Map(); opac.forEach(a => { if (!opAcBy.has(a.user_id)) opAcBy.set(a.user_id, []); opAcBy.get(a.user_id).push(a); });
   const opStatus = o => { const m = mod.get(o.user_id); if (m && m.op_hidden) return "hidden"; if (!o.published) return "draft"; return m && m.op_approved ? "listed" : "waiting"; };
   D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf,
-       ops, opAcBy, opPend:new Map(oppend.map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p]))};
+       ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p]))};
 }
 
 /* ---------------- quality flags ---------------- */

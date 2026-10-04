@@ -504,7 +504,8 @@ async function viewMe(){
       if (r1.error && /details/i.test(r1.error.message || "")) { const {details, ...plain} = row; r1 = await sb.from("crew_profiles").upsert(plain, {onConflict:"user_id"}); if (!r1.error) $("se").textContent = "Saved. Some choices will be kept once the Cali Aircrew setup step is finished."; }
       if (r1.error) throw r1.error;
       // Free text: with review switched on (database update 007), new text waits in crew_bio_pending.
-      if (P.bio !== publicBio) {
+      // Admins' own text goes public directly (the database allows it), so nothing waits for review.
+      if (P.bio !== publicBio && !IS_ADMIN) {
         const rp = await sb.from("crew_bio_pending").upsert({user_id:uid, bio:P.bio}, {onConflict:"user_id"});
         pendingBio = rp.error ? null : P.bio;
       } else if (pendingBio != null) { await sb.from("crew_bio_pending").delete().eq("user_id", uid); pendingBio = null; }
@@ -714,7 +715,7 @@ async function viewOpMe(){
       const row = {user_id:uid, published:P.published, name:P.name, kind:P.kind || "owner", home_base:P.home_base, open_to_contract:P.open_to_contract, about:P.about, details:D};
       const r1 = await sb.from("operator_profiles").upsert(row, {onConflict:"user_id"});
       if (r1.error) throw new Error(/details|kind_check/.test(r1.error.message || "") ? "Operator profiles need one Cali Aircrew setup step (database update 009)." : r1.error.message);
-      if (P.about !== publicAbout) { const rp = await sb.from("operator_about_pending").upsert({user_id:uid, about:P.about}, {onConflict:"user_id"}); pendingAbout = rp.error ? null : P.about; }
+      if (P.about !== publicAbout && !IS_ADMIN) { const rp = await sb.from("operator_about_pending").upsert({user_id:uid, about:P.about}, {onConflict:"user_id"}); pendingAbout = rp.error ? null : P.about; }
       else if (pendingAbout != null) { await sb.from("operator_about_pending").delete().eq("user_id", uid); pendingAbout = null; }
       $("opend").hidden = pendingAbout == null;
       const r2 = await sb.from("operator_aircraft").delete().eq("user_id", uid); if (r2.error) throw r2.error;

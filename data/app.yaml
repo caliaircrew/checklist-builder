@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.33'
+app_version: '1.34'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,9 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.34'
+    notes:
+      - "Admins' own profile text goes public right away instead of also waiting for review; the review list ignores waiting text that already matches the public text"
   - version: '1.33'
     notes:
       - "Homepage: the top button says My profile when you're signed in (Sign in when you're not), and admins see an Admin link"
