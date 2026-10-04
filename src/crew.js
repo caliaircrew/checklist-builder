@@ -201,6 +201,10 @@ document.addEventListener("click", async e => {
     const d = p.details || {}, nm = ("Cali Aircrew Resume - " + (d.initials ? publicName(p) : [lbl("role", d.role), lbl("cert", d.cert)].filter(Boolean).join(" ") || "Crew")).replace(/[\\/:*?"<>|.]+/g, " ").replace(/\s+/g, " ").trim() + ".pdf";
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nm; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
     toast("Résumé PDF ready");
+    // Own résumé with few jobs: point the pilot at Work history (the résumé is built from the profile).
+    const nj = (d.jobs || []).filter(j => j.kind || j.company).length, act = b.closest(".actions");
+    if (user && user.id === id && nj < 3 && act && !act.parentNode.querySelector(".resnudge")) act.insertAdjacentHTML("afterend",
+      `<p class="hint resnudge" style="margin:0">${nj ? "Only " + nj + (nj === 1 ? " job" : " jobs") + " on your résumé." : "No work history on your résumé yet."} Add previous jobs in <a href="#/me/jobs">Crew profile → Work history</a> to fill it out.</p>`);
   } catch (err) { console.error(err); toast("Couldn't build the résumé PDF."); }
   finally { host.remove(); b.disabled = false; b.textContent = was; }
 });
@@ -1227,6 +1231,7 @@ async function route0(){
   const h = location.hash.replace(/^#\/?/, "");
   window.onbeforeunload = null;
   if (h === "me") return viewMe();
+  if (h === "me/jobs") { await viewMe(); const w = $("h1w"); if (w) w.closest("section").scrollIntoView({block:"start"}); return; }   // résumé nudge link
   if (h.startsWith("p/")) return viewProfile(h.slice(2));
   if (h === "aircraft") return viewBrowse();
   if (h.startsWith("a/")) { const [n, w] = h.slice(2).split("/"); return viewAircraft(+n, w); }
