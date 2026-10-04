@@ -44,37 +44,18 @@ const OPT = {
   jobkind:[["p135","Part 135 charter"],["p91k","Fractional (Part 91K)"],["corp","Corporate flight department"],["mgmt","Management company"],["owner","Private owner"],["p121","Airline (Part 121)"],["school","Flight school"],["ems","EMS / air medical"],["military","Military"],["gov","Government / agency"],["contract","Self-employed contract"],["other","Other"]],
   jobrole:[["captain","Captain / PIC"],["fo","First officer / SIC"],["chief","Chief pilot"],["doa","Director of operations / aviation"],["cfi","Flight instructor"],["fa","Flight attendant"],["mech","Mechanic"],["dom","Director of maintenance"],["other","Other"]]
 };
-/* Hours by engine type, calculated from the hours entered on each aircraft. Turbine = jet + turboprop + turbine helicopter. */
-function hoursByType(aircraft){
-  const t = {jet:0, turboprop:0, piston:0, multi:0, heliT:0, heliP:0};
-  for (const a of aircraft || []) { const i = BYSEQ.get(a.acft_seq), h = +a.hours || 0; if (!i || !h) continue;
-    if (i.heli) { if (i.engine === "piston") t.heliP += h; else t.heliT += h; }
-    else if (i.engine === "jet") t.jet += h; else if (i.engine === "turboprop") t.turboprop += h; else t.piston += h;
-    if (i.twin && !i.heli) t.multi += h; }
-  t.turbine = t.jet + t.turboprop + t.heliT; t.heli = t.heliT + t.heliP; return t;
-}
 /* Company names show publicly without review, so anything that looks like contact details is never shown. */
 const CONTACTISH = /@|https?:|www\.|\.(com|net|org|io)\b|\d{3}[\s.)-]*\d{3}[\s.-]*\d{4}/i;
 const psText = (d, seq) => { const pi = (d.ac_pic || {})[seq], si = (d.ac_sic || {})[seq]; return [pi ? "PIC " + fmt(pi) : "", si ? "SIC " + fmt(si) : ""].filter(Boolean).join(" · "); };
-const acRate = (d, seq) => (d.ac_rate && seq != null && d.ac_rate[seq]) || d.rate || "";
-/* Extra Find crew filters that appear for a chosen crew type. Each test reads the tap-to-choose answers in details. */
-const ROLEF = {
-  flight_attendant:[["fa_cpr","CPR / AED current", d => !!d.cpr_until && d.cpr_until >= thisYM()], ["fa_rec","FA recurrent current", d => !!d.fa_recurrent && d.fa_recurrent >= thisYM()],
-    ["fa_intl","International trips", d => (d.fa_skills || []).includes("intl")], ["fa_cul","Culinary / chef training", d => (d.fa_skills || []).includes("culinary")], ["fa_food","Food safety certificate", d => !!d.food_safety]],
-  mechanic:[["mx_ap","A&P", d => (d.mx_certs || []).includes("ap") || (d.ratings || []).includes("ap")], ["mx_ia","IA", d => (d.mx_certs || []).includes("ia") || (d.ratings || []).includes("ia")],
-    ["mx_av","Avionics", d => (d.mx_spec || []).includes("avionics") || (d.mx_certs || []).includes("fcc")], ["mx_aog","AOG road trips", d => !!d.mx_aog], ["mx_135","Part 135 maintenance", d => (d.mx_exp || []).includes("p135")]],
-  helicopter_pilot:[["h_nvg","NVG", d => (d.heli_ops || []).includes("nvg")], ["h_ll","Long line / external load", d => (d.heli_ops || []).includes("longline")], ["h_ems","EMS / air medical", d => (d.heli_ops || []).includes("ems")],
-    ["h_fire","Firefighting", d => (d.heli_ops || []).includes("fire")], ["h_tour","Tours", d => (d.heli_ops || []).includes("tours")], ["h_r44","R44 SFAR 73", d => (d.sfar73 || []).includes("r44")], ["h_r22","R22 SFAR 73", d => (d.sfar73 || []).includes("r22")]]
-};
-const RATE_LOW = {u500:0, "500":500, "750":750, "1000":1000, "1250":1250, "1500":1500, "2000":2000, "2500":2500, "3000":3000};
+/* ---- shared matching rules (src/match.js, inserted by build.py) ---- */
+/*{{MATCH_JS}}*/
+const hoursByType = aircraft => hoursByTypeWith(sq => BYSEQ.get(sq), aircraft);
 /* Airport code -> "City, ST" (OurAirports, public domain), loaded once when a page needs it. */
 let AIRPORTS = null, airportsP = null;
 const loadAirports = () => airportsP || (airportsP = fetch("airports.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(m => (AIRPORTS = m)));
 const airportRec = code => { const c = String(code || "").toUpperCase().trim(); return AIRPORTS && c ? (AIRPORTS[c] || AIRPORTS["K" + c] || (c.length === 4 && c[0] === "K" ? AIRPORTS[c.slice(1)] : "") || "") : ""; };
 const airportCity = code => airportRec(code).split("|")[0] || "";
 const airportLL = code => { const p = airportRec(code).split("|"); return p.length === 3 ? [+p[1], +p[2]] : null; };
-const distNm = (a, b) => { const R = 3440.065, r = x => x * Math.PI / 180, dLa = r(b[0] - a[0]), dLo = r(b[1] - a[1]);
-  const h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
 /* "Current through" month: dropdown of months from 1 year ago to 3 years ahead (value YYYY-MM). */
 const monthOpts = val => { const n = new Date(), out = ['<option value="">Not current / not sure</option>'];
   for (let i = -12; i <= 36; i++) { const d = new Date(n.getFullYear(), n.getMonth() + i, 1), v = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"); out.push(`<option value="${v}"${v === val ? " selected" : ""}>${MONTHS[d.getMonth()]} ${d.getFullYear()}</option>`); }
@@ -101,6 +82,25 @@ const app = $("app");
 document.getElementById("yr").textContent = new Date().getFullYear();
 
 let sb = null, user = null;
+let FAV = null, favFor = null;   // Set of favorite crew ids for the signed-in member (null when signed out or not set up)
+async function loadFav(){ if (!sb || !user) { FAV = null; favFor = null; return; } if (favFor === user.id && FAV) return;
+  const {data, error} = await sb.from("favorites").select("crew_id"); FAV = error ? null : new Set((data || []).map(r => r.crew_id)); favFor = user.id; }
+function toast(t){ let el = document.getElementById("toast"); if (!el) { el = document.createElement("div"); el.id = "toast"; el.setAttribute("role", "status"); document.body.appendChild(el); }
+  el.textContent = t; el.className = "show"; clearTimeout(el._t); el._t = setTimeout(() => { el.className = ""; }, 2600); }
+async function shareProfile(id, name){ const url = location.origin + location.pathname + "#/p/" + id;
+  try { if (navigator.share) { await navigator.share({title:(name || "Crew profile") + " · Cali Aircrew", url}); return; } } catch (e) { if (e && e.name === "AbortError") return; }
+  try { await navigator.clipboard.writeText(url); toast("Link copied"); } catch (_) { prompt("Copy this link:", url); } }
+document.addEventListener("click", async e => {
+  const sh = e.target.closest("[data-share]"); if (sh) { e.preventDefault(); shareProfile(sh.dataset.share, sh.dataset.name); return; }
+  const fv = e.target.closest("[data-fav]"); if (!fv) return; e.preventDefault();
+  if (!user) { signIn(route); return; } await loadFav(); if (!FAV) { toast("Saving crew switches on after a Cali Aircrew setup step."); return; }
+  const id = fv.dataset.fav, on = FAV.has(id);
+  const {error} = on ? await sb.from("favorites").delete().eq("crew_id", id) : await sb.from("favorites").insert({crew_id:id});
+  if (error) { toast("Couldn't save: " + error.message); return; }
+  on ? FAV.delete(id) : FAV.add(id); document.querySelectorAll(`[data-fav="${id}"]`).forEach(b => { b.textContent = FAV.has(id) ? "★ Saved" : "☆ Save"; b.setAttribute("aria-pressed", String(FAV.has(id))); });
+  toast(FAV.has(id) ? "Saved to your list" : "Removed from your list");
+  document.querySelectorAll(`.res[data-id="${id}"] .rname`).forEach(n => { n.querySelector("span[title=Saved]")?.remove(); if (FAV.has(id)) n.insertAdjacentHTML("beforeend", ' <span title="Saved" aria-label="Saved">★</span>'); });
+});
 if (CLOUD.enabled && window.supabase) {
   try { sb = window.supabase.createClient(CLOUD.url, CLOUD.key, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true, storageKey:"acb-auth"}}); } catch (e) { sb = null; }
 }
@@ -229,7 +229,7 @@ function cardHTML(p, aircraft, mod, opts){
   const availText = [lbl("status", d.status), d.travel ? "Will travel: " + lbl("travel", d.travel) : "", d.passport ? "Valid passport" : ""].filter(Boolean).join(" · ");
   return `<article class="pcard" aria-label="Crew profile">
     <div class="top"><div class="avatar" aria-hidden="true">${esc(initials(p.display_name))}</div>
-      <div><h2>${esc(p.display_name) || '<span class="empty">Your name</span>'}</h2>
+      <div><h2>${esc(publicName(p)) || '<span class="empty">Your name</span>'}</h2>
       ${metaParts.length ? `<div class="meta">${esc(metaParts.join(" · "))}</div>` : opts && opts.preview ? '<div class="meta"><span class="empty">Certificate · role</span></div>' : ""}
       <div class="meta">${base ? "Based at " + esc(base) : '<span class="empty">Home base</span>'}${d.travel ? " · will travel: " + esc(lbl("travel", d.travel)) : ""}</div>
       ${(d.areas || []).length ? `<div class="meta">Flies in: ${esc(d.areas.map(v => lbl("region", v)).filter(Boolean).join(", "))}</div>` : ""}
@@ -262,7 +262,7 @@ function cardHTML(p, aircraft, mod, opts){
     ${block("Special training", chips("training", d.training))}
     ${block("Languages", chips("languages", d.languages))}
     ${p.bio ? `<section><h3>More about me</h3><p>${esc(p.bio)}</p></section>` : ""}
-    <div class="actions"><button class="btn primary" type="button" disabled title="Messaging opens soon" style="opacity:.6">Message (coming soon)</button></div>
+    <div class="actions"><button class="btn primary" type="button" disabled title="Messaging opens soon" style="opacity:.6">Message (coming soon)</button>${opts && opts.preview ? "" : `<button class="btn secondary" type="button" data-fav="${esc(p.user_id)}" aria-pressed="${!!(FAV && FAV.has(p.user_id))}">${FAV && FAV.has(p.user_id) ? "★ Saved" : "☆ Save"}</button><button class="btn secondary" type="button" data-share="${esc(p.user_id)}" data-name="${esc(publicName(p))}">Share</button>`}</div>
     <div class="note">${opts && opts.preview ? "Preview: this is how owners and operators will see your profile." : "Profiles are advertisements. Verify licenses, medical and training before hiring."}</div>
   </article>`;
 }
@@ -284,28 +284,16 @@ async function loadDir(force){
 }
 const QUICK = [["contract","Contract pilots"],["now","Available now"],["soon","Now or with notice"],["p135","Part 135 current"],["cfi","CFIs"],["heli","Helicopter pilots"],["fa","Flight attendants"],["mx","Mechanics"]];
 let F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:""};
-function matches(p, ac){
-  const d = p.details || {};
-  if (F.type && !(p.crew_types || []).includes(F.type)) return false;
-  if (F.seq != null && !ac.some(a => a.acft_seq === F.seq)) return false;
-  if (F.region && d.region !== F.region) return false;
-  if (F.cert && d.cert !== F.cert) return false;
-  if (F.avail === "now" && d.status !== "now") return false;
-  if (F.avail === "soon" && d.status !== "now" && d.status !== "notice") return false;
-  if (F.contract && !(d.looking || []).includes("contract")) return false;
-  if (F.p135 && !ac.some(a => a.part135 && (F.seq == null || a.acft_seq === F.seq))) return false;
-  const rr = acRate(d, F.seq);
-  if (F.rate && rr && rr !== "ask" && RATE_LOW[rr] >= +F.rate) return false;   // "Ask me" and not-stated stay in
-  if (F.minTT && (+p.total_time || 0) < +F.minTT) return false;
-  if (F.minPIC && (+d.hrs_pic || 0) < +F.minPIC) return false;
-  if (F.minTurb && hoursByType(ac).turbine < +F.minTurb) return false;
-  if (F.minType && F.seq != null && (+((ac.find(a => a.acft_seq === F.seq) || {}).hours) || 0) < +F.minType) return false;
-  if (F.trn && !(d.training || []).includes(F.trn)) return false;
-  if (F.near) { const c = airportLL(F.near), h = airportLL(d.airport); if (c && (!h || distNm(c, h) > +F.nm)) return false; }
-  for (const k of (F.x || [])) { const f = (ROLEF[F.type] || []).find(r => r[0] === k); if (f && !f[2](d)) return false; }
-  if (F.eng && F.type === "mechanic" && !(d.mx_engines || []).includes(F.eng)) return false;
-  return true;
+function describeF(F){
+  const a = F.seq != null && BYSEQ.get(+F.seq) ? BYSEQ.get(+F.seq).name : "";
+  const parts = [a, F.type ? TYPE_LABEL[F.type] : "", F.region ? lbl("region", F.region) : "", F.cert ? lbl("cert", F.cert) : "",
+    F.avail === "now" ? "Available now" : F.avail === "soon" ? "Now or with notice" : "", F.p135 ? "Part 135" : "", F.contract ? "Contract" : "",
+    F.rate ? lbl("rate_max", F.rate) + "/day" : "", F.minTT ? lbl("minhrs", F.minTT) + " total" : "", F.minPIC ? lbl("minhrs", F.minPIC) + " PIC" : "",
+    F.minTurb ? lbl("minhrs", F.minTurb) + " turbine" : "", F.minType ? lbl("minhrs", F.minType) + " on type" : "", F.trn ? lbl("training", F.trn) : "",
+    F.near ? `within ${F.nm || 100} nm of ${F.near}` : ""].filter(Boolean);
+  return (parts.join(" · ") || "All crew").slice(0, 80);
 }
+function matches(p, ac){ return matchProfile(F, p, ac, {info:sq => BYSEQ.get(sq), ll:airportLL}); }
 function rank(p, ac, mod){
   const d = p.details || {}, t = F.seq != null ? (ac.find(a => a.acft_seq === F.seq) || {}) : {}, onType = t.hours || 0;
   return (d.status === "now" ? 2e9 : d.status === "notice" ? 1e9 : 0) + (curState(t) === "current" ? 4e8 : 0) + (mod && mod.verified_faa ? 1e8 : 0) + onType * 1000 + (p.total_time || 0);
@@ -325,7 +313,7 @@ function resultHTML(p, ac, mod, active){
   else if (d.status === "notice") b.push(`<span class="badge">Available with notice</span>`);
   return `<a class="res${active ? " on" : ""}" href="#/p/${esc(p.user_id)}${F.seq != null ? "?a=" + F.seq : ""}" data-id="${esc(p.user_id)}">
     <span class="avatar sm" aria-hidden="true">${esc(initials(p.display_name))}</span>
-    <span class="rbody"><b class="rname">${esc(p.display_name)}</b><span class="rmeta">${esc([meta, base].filter(Boolean).join(" · "))}</span>
+    <span class="rbody"><b class="rname">${esc(publicName(p))}${FAV && FAV.has(p.user_id) ? ' <span title="Saved" aria-label="Saved">★</span>' : ""}</b><span class="rmeta">${esc([meta, base].filter(Boolean).join(" · "))}</span>
     ${top.length ? `<span class="rac">${top.join("<br>")}</span>` : ""}${b.length ? `<span class="chips2">${b.join("")}</span>` : ""}</span></a>`;
 }
 const LOGGED = new Set(); let logTimer = null;
@@ -346,7 +334,7 @@ async function viewFind(){
   const qs = new URLSearchParams((location.hash.split("?")[1]) || "");
   if (qs.has("acft")) { F = {...F, seq:+qs.get("acft")}; }
   loadAirports().then(() => { if (typeof window.__redrawFind === "function") window.__redrawFind(); });
-  app.innerHTML = `<div class="pagehead"><div><h1>Find crew</h1><p>Professional, type-current crew. Profiles are reviewed before they appear.</p></div>${tabs("search")}</div>
+  app.innerHTML = `<div class="pagehead"><div><h1>Find crew</h1><p>Professional, type-current crew. Profiles are reviewed before they appear.</p><p style="margin:8px 0 0;display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" id="svs" type="button">☆ Save this search</button><a class="btn secondary" href="#/saved">★ Saved</a></p></div>${tabs("search")}</div>
   <div class="quick" role="group" aria-label="Quick filters">${QUICK.map(([k, l]) => `<button type="button" class="pill" data-q="${k}">${esc(l)}</button>`).join("")}</div>
   <section class="panel filters" aria-label="Filters">
     <div class="fgrid">
@@ -379,11 +367,24 @@ async function viewFind(){
     box.innerHTML = rf ? `<span class="lbl">${esc(TYPE_LABEL[F.type])} filters</span><div class="chips">${rf.map(([k, l]) => `<label><input type="checkbox" data-x="${k}"${(F.x || []).includes(k) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div>${F.type === "mechanic" ? `<div class="f" style="max-width:340px;margin-top:8px"><label for="feng">Engine</label><select id="feng"><option value="">Any engine</option>${OPT.mx_engines.map(([v, l]) => `<option value="${v}"${v === F.eng ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>` : ""}` : ""; };
   if (wide() || F.type || F.region || F.cert || F.avail || F.rate || F.minTT || F.minPIC || F.minTurb || F.minType || F.near || F.trn) $("more").open = true;
   let D; try { D = await loadDir(); } catch (e) { $("res").innerHTML = `<p class="err">Couldn't load the directory. Check your connection and try again.</p>`; return; }
-  let active = null;
+  let active = null, lastHits = [];
+  await loadFav();
+  $("svs").onclick = async () => {
+    if (!user) { signIn(route); return; }
+    const m = modal(`<h2>Save this search</h2><div class="f"><label for="ssn">Name</label><input id="ssn" maxlength="80" value="${esc(describeF(F))}"></div>
+      <label class="switch"><input type="checkbox" id="ssa" checked> Email me when new crew match (checked daily)</label><p class="hint" style="margin:0">Find it again under ★ Saved.</p>
+      <div class="err" id="ssm" role="status"></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="sss" type="button">Save</button><button class="btn secondary" id="ssx" type="button">Cancel</button></div>`);
+    m.querySelector("#ssx").onclick = () => m.remove();
+    m.querySelector("#sss").onclick = async () => { const name = m.querySelector("#ssn").value.trim() || describeF(F);
+      const filters = Object.fromEntries(Object.entries(F).filter(([k, v]) => v !== "" && v != null && v !== false && !(Array.isArray(v) && !v.length)));
+      const {error} = await sb.from("saved_searches").insert({name:name.slice(0, 80), filters, alerts:m.querySelector("#ssa").checked, seen:lastHits.map(p => p.user_id)});
+      if (error) { m.querySelector("#ssm").textContent = /saved_searches/.test(error.message) ? "Saved searches switch on after a Cali Aircrew setup step." : error.message; return; }
+      m.remove(); toast("Search saved"); };
+  };
   const show = id => { active = id; const p = D.listed.find(x => x.user_id === id); $("det").innerHTML = p ? cardHTML(p, D.acBy.get(id) || [], D.mod.get(id), {ctx:F.seq}) : ""; app.querySelectorAll(".res").forEach(r => r.classList.toggle("on", r.dataset.id === id)); };
   const draw = () => {
     ui();
-    const hits = D.listed.filter(p => matches(p, D.acBy.get(p.user_id) || [])).sort((a, b) => rank(b, D.acBy.get(b.user_id) || [], D.mod.get(b.user_id)) - rank(a, D.acBy.get(a.user_id) || [], D.mod.get(a.user_id)));
+    const hits = lastHits = D.listed.filter(p => matches(p, D.acBy.get(p.user_id) || [])).sort((a, b) => rank(b, D.acBy.get(b.user_id) || [], D.mod.get(b.user_id)) - rank(a, D.acBy.get(a.user_id) || [], D.mod.get(a.user_id)));
     const label = F.seq != null && BYSEQ.get(F.seq) ? " on the " + BYSEQ.get(F.seq).name : "";
     $("res").innerHTML = `<p class="count">${hits.length} crew${esc(label)}</p>` + (hits.length ? hits.map(p => resultHTML(p, D.acBy.get(p.user_id) || [], D.mod.get(p.user_id), p.user_id === active)).join("")
       : `<div class="panel"><p style="margin:0">No listed crew match yet. Try fewer filters${D.listed.length ? "" : ". The directory is new: profiles appear here once they're reviewed"}.</p><p style="margin:0"><a href="#/me">List yourself</a> · <a href="../#notify">Get notified</a></p></div>`);
@@ -485,8 +486,8 @@ async function viewProfile(id0){
     sb.from("crew_aircraft").select("*").eq("user_id", id),
     sb.from("moderation").select("*").eq("user_id", id).maybeSingle()]);
   if (!p) { app.innerHTML = `<div class="center"><h1>Profile not found</h1><p>It may be unpublished or waiting for review.</p><a class="btn secondary" href="#/">Back to the crew directory</a></div>`; return; }
-  document.title = (p.display_name || "Crew profile") + " · Cali Aircrew";
-  await loadAirports();
+  document.title = (publicName(p) || "Crew profile") + " · Cali Aircrew";
+  await Promise.all([loadAirports(), loadFav()]);
   app.innerHTML = `<div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px"><a href="javascript:history.length>1?history.back():location.hash='#/'">← Back</a>${cardHTML(p, ac || [], mod, {ctx:ctxSeq != null && ctxSeq !== "" ? +ctxSeq : null})}</div>`;
 }
 
@@ -533,7 +534,7 @@ async function viewMe(){
   const multi = (name, k, label, vals) => `<div class="f"><span class="lbl" id="l-${name}">${label}</span><div class="chips" role="group" aria-labelledby="l-${name}">${OPT[k].map(([v, l]) => `<label><input type="checkbox" name="${name}" value="${v}"${(vals || []).includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>`;
   app.innerHTML = `
   <div class="pagehead"><div><h1>My crew profile</h1><p>Signed in as ${esc(user.email || "")}. Mostly taps: choose what fits, then Save.</p></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/account">Account</a><a class="btn secondary" href="#/op">Operator profile</a><button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary adminbtn" href="../admin/" hidden>Admin</a><a class="btn secondary" href="#/account">Account</a><a class="btn secondary" href="#/op">Operator profile</a>${p0 && p0.published && mod && mod.approved && !mod.hidden ? `<button class="btn secondary" type="button" data-share="${esc(uid)}" data-name="${esc(publicName(P))}">Share my profile</button>` : ""}<button class="btn secondary toggleprev" id="tp" type="button">Preview</button><button class="btn secondary" id="so" type="button">Sign out</button></div></div>
   <div class="split" id="split">
    <div class="formcol">
     <section class="panel strength" aria-labelledby="h1s"><h2 id="h1s">Profile strength</h2><div class="meter" aria-hidden="true"><span id="smeter"></span></div><p id="stext" style="margin:0"></p><ul id="stips" class="hint" style="margin:0;padding-left:20px"></ul></section>
@@ -541,6 +542,7 @@ async function viewMe(){
       <div class="grid2"><div class="f"><label for="dn">Name shown on your profile</label><input id="dn" value="${esc(P.display_name)}" maxlength="80" placeholder="e.g. Jordan R." autocomplete="name"></div>${sel("role", "role", "Role", D.role)}</div>
       <div class="grid2">${sel("cert", "cert", "Certificate", D.cert)}${sel("med", "medical", "FAA medical", D.medical)}</div>
       ${multi("rt", "ratings", "Ratings (tap all that apply)", D.ratings)}
+      <label class="switch"><input type="checkbox" id="ini"${D.initials ? " checked" : ""}> Show only my initials publicly (e.g. "D. P."); operators still see your full profile details</label>
       <div class="f"><span class="lbl" id="ctl">Crew type</span><div class="chips" role="group" aria-labelledby="ctl">${CREW_TYPES.map(([v, l]) => `<label><input type="checkbox" name="ct" value="${v}"${P.crew_types.includes(v) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div></div>
     </section>
     <section class="panel" aria-labelledby="h1h"><h2 id="h1h">Home base</h2>
@@ -621,6 +623,7 @@ async function viewMe(){
     Object.assign(D, {role:$("role").value, cert:$("cert").value, medical:$("med").value, ratings:checked("rt"), region:$("reg").value, airport:$("apt").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8),
       status:$("stat").value, travel:$("trv").value, looking:checked("lk"), passport:$("pp").checked, experience:checked("xp"), languages:checked("lg")});
     P.crew_types = checked("ct");
+    D.initials = $("ini").checked;
     const num = id => { const v = ($(id) ? $(id).value : "").replace(/[^\d]/g, ""); return v ? Math.min(100000, +v) : null; };
     Object.assign(D, {hrs_pic:num("hpic"), hrs_turbine:null, hrs_heli:null, areas:checked("ar"), since:$("since").value, rate:$("rate").value, rate_exp:$("rexp").checked, rate_neg:$("rneg").checked,
       fa_school:$("fas").value, fa_year:$("fay").value, fa_recurrent:$("far").value, cpr_until:$("cpr").value, food_safety:$("food").checked, fa_skills:checked("fsk"),
@@ -996,6 +999,30 @@ async function viewOpMe(){
   window.onbeforeunload = () => dirty ? "You have unsaved changes." : undefined;
 }
 
+/* ---------------- saved searches and saved crew ---------------- */
+async function viewSaved(){
+  if (!sb) return;
+  if (!user) { app.innerHTML = `<div class="center"><h1>Saved</h1><p>Sign in to see your saved searches and saved crew.</p><button class="btn primary" id="go" type="button">Sign in</button></div>`; $("go").onclick = () => signIn(route); return; }
+  app.innerHTML = `<p>Loading…</p>`;
+  const [ss, D] = await Promise.all([sb.from("saved_searches").select("id,name,filters,alerts,created_at").order("created_at", {ascending:false}), loadDir()]); await loadFav();
+  if (ss.error) { app.innerHTML = `<div class="center"><h1>Saved</h1><p>Saved searches and saved crew switch on after a Cali Aircrew setup step.</p><a class="btn secondary" href="#/">Back to Find crew</a></div>`; return; }
+  const favs = D.listed.filter(p => FAV && FAV.has(p.user_id));
+  app.innerHTML = `<div class="pagehead"><div><h1>Saved</h1><p>Your saved searches and the crew you saved. Only you can see this page.</p></div>${tabs("")}</div>
+  <section class="panel"><h2>Saved searches</h2>${(ss.data || []).length ? (ss.data || []).map(x => `<div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid #D6E0EA">
+      <span style="flex:1;min-width:200px"><b>${esc(x.name)}</b><br><small>${esc(describeF(x.filters || {}))}</small></span>
+      <label class="tr"><input type="checkbox" data-alert="${x.id}"${x.alerts ? " checked" : ""}> Email new matches</label>
+      <button class="btn secondary" type="button" data-open="${x.id}">Open</button><button class="btn secondary" type="button" data-del="${x.id}" aria-label="Delete ${esc(x.name)}">Delete</button></div>`).join("")
+    : '<p class="empty" style="margin:0">No saved searches yet. In Find crew, set your filters and tap ☆ Save this search.</p>'}</section>
+  <section class="panel"><h2>Saved crew</h2><div class="results">${favs.length ? favs.map(p => resultHTML(p, D.acBy.get(p.user_id) || [], D.mod.get(p.user_id))).join("") : '<p class="empty" style="margin:0">No saved crew yet. Tap ☆ Save on a profile.</p>'}</div></section>`;
+  app.addEventListener("click", async function h(e){
+    if (!location.hash.startsWith("#/saved")) { app.removeEventListener("click", h); return; }
+    const o = e.target.closest("[data-open]"), d = e.target.closest("[data-del]");
+    if (o) { const x = ss.data.find(r => String(r.id) === o.dataset.open); F = Object.assign({seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:"", minTT:"", minPIC:"", minTurb:"", minType:"", near:"", nm:"100", trn:""}, x.filters || {}); location.hash = "#/"; }
+    if (d && confirm("Delete this saved search?")) { await sb.from("saved_searches").delete().eq("id", +d.dataset.del); viewSaved(); }
+  });
+  app.querySelectorAll("[data-alert]").forEach(cb => cb.onchange = async () => { const {error} = await sb.from("saved_searches").update({alerts:cb.checked}).eq("id", +cb.dataset.alert); toast(error ? "Not saved: " + error.message : cb.checked ? "Alerts on" : "Alerts off"); });
+}
+
 /* ---------------- account ---------------- */
 async function viewAccount(){
   if (!sb) return;
@@ -1088,6 +1115,7 @@ async function route0(){
   if (h.startsWith("a/")) { const [n, w] = h.slice(2).split("/"); return viewAircraft(+n, w); }
   if (h === "op") return viewOpMe();
   if (h === "account") return viewAccount();
+  if (h === "saved") return viewSaved();
   if (h === "deleted") { app.innerHTML = `<div class="center"><h1>Account deleted</h1><p>Your account and everything in it have been removed. Thanks for flying with Cali Aircrew.</p><a class="btn secondary" href="../">Home</a></div>`; return; }
   if (h === "operators") return viewOperators();
   if (h.startsWith("o/")) return viewOperator(h.slice(2));

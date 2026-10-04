@@ -427,6 +427,9 @@ def main(argv=None):
         acft_rows.sort(key=lambda r: r[0])
         c = app.get("cloud") or {}
         cloud = json.dumps({"enabled": bool(c.get("enabled")), "url": c.get("url", "") if c.get("enabled") else "", "key": c.get("publishable_key", "") if c.get("enabled") else ""})
+        match_js = open(os.path.join(ROOT, "src", "match.js"), encoding="utf-8").read()
+        need("/*{{MATCH_JS}}*/" in crew_js, "src/crew.js must contain /*{{MATCH_JS}}*/ for the shared matching rules")
+        crew_js = crew_js.replace("/*{{MATCH_JS}}*/", match_js)
         crew_js = crew_js.replace("{{CLOUD_JSON}}", cloud).replace("{{ACFT_JSON}}", json.dumps(acft_rows, ensure_ascii=False, separators=(",", ":")))
         need("{{" not in crew_js, "src/crew.js has an unfilled {{placeholder}}")
         tmpjs = os.path.join(tempfile.gettempdir(), "crew_check.js")
@@ -476,8 +479,16 @@ def main(argv=None):
         print(f"BUILD FAILED: {e}", file=sys.stderr)
         return 1
     need('id="aQ"' in html and "Checklist builder" in html, "checklist builder page is missing its aircraft search; refusing to publish")
+    # Edge Function source generated from template + shared matching rules (Steve pastes this file into Supabase)
+    fn_src = open(os.path.join(ROOT, "src", "functions", "reminders.tpl.ts"), encoding="utf-8").read().replace("{{MATCH_JS}}", open(os.path.join(ROOT, "src", "match.js"), encoding="utf-8").read())
+    fn_path = os.path.join(ROOT, "supabase", "functions", "reminders", "index.ts")
+    if open(fn_path, encoding="utf-8").read() != fn_src:
+        open(fn_path, "w", encoding="utf-8").write(fn_src); print("  regenerated supabase/functions/reminders/index.ts (redeploy it in Supabase)")
     os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)
     shutil.copyfile(os.path.join(ROOT, "data", "airports-us.json"), os.path.join(a.out, "crew", "airports.json"))
+    # seq -> [name, engine, twin, heli] for saved-search alerts (reminders Edge Function)
+    open(os.path.join(a.out, "crew", "aircraft-info.json"), "w", encoding="utf-8").write(
+        json.dumps({str(r[0]): [(r[1] + " " + r[2]).strip(), r[3], 1 if "t" in r[4] else 0, 1 if "h" in r[4] else 0] for r in acft_rows}, ensure_ascii=False, separators=(",", ":")))
     # seq -> "Make Model" for the reminder emails (read by the reminders Edge Function)
     open(os.path.join(a.out, "crew", "aircraft-names.json"), "w", encoding="utf-8").write(
         json.dumps({str(r[0]): (r[1] + " " + r[2]).strip() for r in acft_rows}, ensure_ascii=False, separators=(",", ":")))

@@ -8,6 +8,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 3f. Run supabase/010_crew_private.sql
 - [x] 3g. Run supabase/011_account.sql
 - [x] 3i. Run supabase/013_reminders.sql (2026-10-03)
+- [ ] 3l. Run supabase/015_saved.sql and redeploy the reminders Edge Function (v1.47 adds saved-search alerts)
 - [x] 3j. Reminders setup (docs/REMINDERS_SETUP.md; scheduled 2026-10-03: cali-currency-reminders, 0 16 * * *, active): deploy reminders function, REMINDER_KEY secret, vault secret, run 014
 - [ ] 3k. Run the "missing objects" audit query after every database update (expect no rows)
 - [x] 3h. Recovery setup (docs/RECOVERY_SETUP.md): Resend account + GoDaddy DNS, run 012, deploy the recovery Edge Function, set 3 secrets (Account page: recovery contacts, help requests, delete my account) (private FAA-verification details) (operator profiles)
@@ -89,8 +90,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 43. "Near an airport" search: airport code + distance (50 / 100 / 200 / 300 nm) from the pilot's home airport
 - [x] 44. Special training checkboxes: RVSM, oceanic / NAT HLA, Pacific, international procedures, CPDLC / FANS, UPRT, high altitude, HUD / EVS (+ Find crew filter)
 - [x] 45. Profile strength meter in the editor with the top things to add
-- [ ] 46. Favorites and saved searches for operators, with email alerts for new matching pilots
-- [ ] 47. Shareable profile link ("Share my profile"); "show initials only" privacy option
+- [x] 46. Favorites and saved searches for operators, with email alerts for new matching pilots
+- [x] 47. Shareable profile link ("Share my profile"); "show initials only" privacy option
 - [ ] 48. FAA type rating designators (e.g. CE-560XL, CL-30) with single-pilot (S); search by designator
 - [ ] 49. Later (revenue): featured profiles listed first
 - Not copying: public job board (directory-not-broker guardrail) and a forum (moderation load)
