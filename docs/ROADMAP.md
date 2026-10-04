@@ -30,6 +30,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 
 - [x] 7c. Download PDF that matches See & print exactly; Word kept for editing (v1.50)
 - [x] 7d. Menu name: Aircraft Checklists (v1.50)
+- [x] 7e. CFI endorsements: Download PDF + Word file that matches it (v1.51)
 
 ## C. Website
 - [x] 8. Partners page (small): insurance, sim training, flight schools; labeled sponsored; "Become a partner" contact

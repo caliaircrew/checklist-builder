@@ -210,6 +210,9 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
 .disc{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.35}
 .badge{display:inline-block;font-size:12px;font-weight:600;background:#f5c542;color:#2a2000;border-radius:6px;padding:1px 6px;margin-left:6px}
 #measure{position:absolute;left:-9999px;top:0;visibility:hidden}
+.cs.ek{font-size:13px}.cs.ek .bar{text-align:left;font-size:12.5px;padding:4px 8px}
+.ek .ekt{padding:7px 9px;line-height:1.45}.ek .ekd{padding:0 9px 6px;font-size:11px;font-style:italic;font-weight:700}
+.ek .eks{padding:6px 9px;border-top:1px solid #bfbfbf;font-size:12px;white-space:pre-wrap}
 .empty{color:#888;font-style:italic;text-align:center;padding:40px}
 /* ---- Fly mode: full screen, one section at a time ---- */
 .flybtn{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important;font-weight:700}
@@ -367,7 +370,7 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
     <div class="epanel">
       <div class="card">
         <p class="step">Selected endorsements (<span id="eCount">0</span>)</p>
-        <div class="outbar"><button class="btn primary" id="eWord">⬇ Download Word file</button><label class="f" style="margin:0"><input type="checkbox" id="eTitles"> Include titles</label><button class="btn small" id="eClear">Clear</button></div>
+        <div class="outbar"><button class="btn primary" id="ePdf">⬇ Download PDF</button><button class="btn" id="eWord">⬇ Word file (to edit)</button><label class="f" style="margin:0"><input type="checkbox" id="eTitles"> Include titles</label><button class="btn small" id="eClear">Clear</button></div>
         <div id="eStatus" class="help"></div>
         <p class="disc">Grey boxes are blanks to type in. Highlighted words come from the pilot details. "✓ AC 61-65K text" is the FAA's recommended wording; "✎ Draft" wording must be compared with the AC page shown before signing. The instructor remains responsible for every endorsement.</p>
       </div>
@@ -828,10 +831,10 @@ function pdfPage(page){
   while((nd=tw.nextNode())){ const s=nd.nodeValue; if(!s.trim()) continue; const pe=nd.parentElement, st=getComputedStyle(pe); if(st.visibility==="hidden") continue;
     const fs=parseFloat(st.fontSize), toks=[], re=/\S+/g; let m;
     while((m=re.exec(s))){ let cur="",kind=null,start=m.index;
-      const push=(str,kd,at)=>{ if(!str) return; const rg=document.createRange(); rg.setStart(nd,at); rg.setEnd(nd,at+str.length); const rs=[...rg.getClientRects()].filter(x=>x.width>0); if(!rs.length) return; const rr=rs[0]; toks.push({s:str,k:kd,x:rr.left,top:rr.top,bottom:rr.bottom}) };
+      const push=(str,kd,at)=>{ if(!str) return; const rg=document.createRange(); rg.setStart(nd,at); rg.setEnd(nd,at+str.length); const rs=[...rg.getClientRects()].filter(x=>x.width>0); if(!rs.length) return; const rr=rs[0]; toks.push({s:str,k:kd,x:rr.left,r:rs[rs.length-1].right,top:rr.top,bottom:rr.bottom}) };
       let i=m.index; for(const ch of m[0]){ const kd=pdfFontOf(ch.codePointAt(0)); if(kd!==kind){ push(cur,kind,start); cur=""; kind=kd; start=i } cur+=ch; i+=ch.length } push(cur,kind,start) }
     let line=null; const flush=()=>{ if(line) text(line.s,line.x,line.bottom-fs*0.212,st,line.k); line=null };
-    toks.forEach(tk=>{ if(line&&tk.k==="T"&&line.k==="T"&&Math.abs(tk.top-line.top)<fs*0.5) line.s+=" "+tk.s; else { flush(); line=tk } });
+    toks.forEach(tk=>{ if(line&&tk.k==="T"&&line.k==="T"&&Math.abs(tk.top-line.top)<fs*0.5&&tk.x-line.r<fs*0.45){ line.s+=" "+tk.s; line.r=tk.r } else { flush(); line=tk } });
     flush(); }
   return ops.join("\n");
 }
@@ -916,18 +919,53 @@ function bindEndForm(){
     if(b.dataset.esave){const ta=$("eSel").querySelector(`textarea[data-eid="${b.dataset.esave}"]`); if(ta&&ta.value.trim()){E.pasted[b.dataset.esave]=ta.value.trim(); esave(); renderEndList(); renderEndSel();}}});
   $("eClear").onclick=()=>{if(E.sel.length&&confirm("Clear the selected endorsements and their blanks? (Instructor details stay.)")){E.sel=[];E.fills={};esave();renderEndList();renderEndSel();}};
   $("eNewPilot").onclick=()=>{if(confirm("Start a new pilot? This clears the pilot details, selections and blanks.")){E.pilot={name:"",grade:"",cert:"",mm:"",date:todayUS()};E.sel=[];E.fills={};esave();["epName","epGrade","epCert","epMM"].forEach(i=>$(i).value="");$("epDate").value=E.pilot.date;renderEndList();renderEndSel();}};
+  $("ePdf").onclick=async()=>{const st=$("eStatus"); if(!E.sel.length){st.textContent="Pick at least one endorsement.";return}
+    st.textContent="Building PDF…"; const host=document.createElement("div"); host.style.cssText="position:absolute;left:-10000px;top:0;width:816px";
+    try{ host.innerHTML=endPages().join(""); document.body.appendChild(host);
+      const blob=pdfBuild([...host.querySelectorAll(".page")].map(pdfPage),"Logbook endorsements "+(E.pilot.name||""));
+      await offer(endFile("pdf"),blob); st.textContent=$("status").textContent||"Done.";
+    }catch(err){console.error(err);st.textContent="Something went wrong building the PDF."}finally{host.remove()} };
   $("eWord").onclick=async()=>{const st=$("eStatus"); if(!E.sel.length){st.textContent="Pick at least one endorsement.";return}
-    st.textContent="Building Word file…"; try{const blob=await window.docx.Packer.toBlob(buildEndDoc()); const nm=((E.pilot.name||"Pilot").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim())+" Endorsements "+(E.pilot.date||"").replace(/\//g,"-")+".docx"; await offer(nm,blob); st.textContent=$("status").textContent||"Done.";}catch(err){st.textContent="Something went wrong building the file."}};
+    st.textContent="Building Word file…"; try{const blob=await window.docx.Packer.toBlob(buildEndDoc()); await offer(endFile("docx"),blob); st.textContent=$("status").textContent||"Done.";}catch(err){st.textContent="Something went wrong building the file."}};
+}
+/* ---------- endorsements: one printed layout for PDF and Word ---------- */
+const endFile=ext=>((E.pilot.name||"Pilot").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim())+" Endorsements "+(E.pilot.date||"").replace(/\//g,"-")+"."+ext;
+const endItems=()=>E.sel.map(id=>END_BY[id]).filter(Boolean).map(e=>({e,title:`${e.id} ${e.title}: ${e.reg}`,body:textOf(e)?fillText(e,true):`[Paste AC 61-65K wording from page ${e.page}]`,draft:e.status==="draft"?`DRAFT WORDING — compare with AC 61-65K page ${e.page} before signing.`:""}));
+const endHead=()=>({left:"LOGBOOK ENDORSEMENTS",mid:E.pilot.name||"[PILOT NAME]",right:E.pilot.date||"[DATE]",sub:"Recommended wording: FAA AC 61-65K, Appendix A",foot:"Suggested wording only. The instructor is responsible for every endorsement."});
+function endPages(){
+  const H=endHead(), items=endItems(), titles=E.titles!==false;
+  const block=x=>`<div class="cs ek">${titles?`<div class="bar">${esc(x.title)}</div>`:""}<div class="ekt">${esc(x.body)}</div>${x.draft?`<div class="ekd">${esc(x.draft)}</div>`:""}<div class="eks">${esc(sigLine())}</div></div>`;
+  const meas=$("measure"); meas.style.width="720px";
+  const blocks=items.map(x=>{meas.innerHTML=block(x); return {html:meas.innerHTML,h:meas.firstChild.offsetHeight+13}}); meas.innerHTML="";
+  const colH=1056-77-60-6, pages=[]; let cur=null, used=0;
+  blocks.forEach(b=>{ if(!cur||(used>0&&used+b.h>colH)){cur=[];pages.push(cur);used=0} cur.push(b.html); used+=b.h; });
+  return pages.map((p,i)=>`<div class="page"><div class="ph"><span>${esc(H.left)}</span><span>${esc(H.mid)}</span><span>${esc(H.right)}</span></div><div class="rev">${esc(H.sub)}</div><div>${p.join("")}</div><div class="pf"><span>${esc(H.foot)}</span><span>Page ${i+1} of ${pages.length}</span></div></div>`);
 }
 function buildEndDoc(){
-  const d=window.docx; const {Document,Paragraph,TextRun,AlignmentType,BorderStyle}=d;
-  const kids=[new Paragraph({spacing:{after:120},children:[new TextRun({text:"Logbook endorsements — "+(E.pilot.name||"[pilot name]"),bold:true,size:28})]}),
-    new Paragraph({spacing:{after:240},children:[new TextRun({text:"Recommended wording per FAA AC 61-65K, Appendix A. Draft items must be checked against the AC before signing.",italics:true,size:18,color:"555555"})]})];
-  E.sel.forEach(id=>{const e=END_BY[id]; if(!e) return; const body=textOf(e);
-    if(E.titles!==false) kids.push(new Paragraph({keepNext:true,spacing:{before:120,after:60},children:[new TextRun({text:`${e.id} ${e.title}: ${e.reg}`,bold:true,size:20})]}));
-    kids.push(new Paragraph({keepNext:true,spacing:{after:80,line:300},children:[new TextRun({text:body?fillText(e,true):`[Paste AC 61-65K wording from page ${e.page}]`,size:22})]}));
-    kids.push(new Paragraph({spacing:{after:280},border:{bottom:{style:BorderStyle.SINGLE,size:4,color:"BBBBBB",space:6}},children:[new TextRun({text:sigLine(),size:22})]}));});
-  return new Document({styles:{default:{document:{run:{font:"Arial",size:22}}}},sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1080,bottom:1080,left:1080,right:1080}}},children:kids}]});
+  const d=window.docx; const {Document,Paragraph,TextRun,AlignmentType,TabStopType,BorderStyle,ShadingType,Header,Footer,PageNumber,Table,TableRow,TableCell,WidthType}=d;
+  const H=endHead(), W=10800, titles=E.titles!==false;
+  const none={style:BorderStyle.NONE,size:0,color:"FFFFFF"}, thin={style:BorderStyle.SINGLE,size:4,color:"BFBFBF"}, out={style:BorderStyle.SINGLE,size:8,color:"000000"};
+  const margins={top:90,bottom:90,left:135,right:135};
+  const row=(paras,o={})=>new TableRow({cantSplit:true,children:[new TableCell({children:paras,width:{size:W,type:WidthType.DXA},margins,shading:o.fill?{type:ShadingType.CLEAR,fill:o.fill,color:"auto"}:undefined,borders:{left:out,right:out,top:o.top||none,bottom:o.bottom||none}})]});
+  const P=(text,run,o={})=>new Paragraph({keepNext:o.keepNext!==false,keepLines:true,spacing:{before:0,after:0,line:o.line||240},children:[new TextRun(Object.assign({text},run))]});
+  const body=[];
+  endItems().forEach(x=>{ const rows=[];
+    if(titles) rows.push(row([P(x.title,{bold:true,color:"FFFFFF",size:19})],{fill:"000000",top:out}));
+    rows.push(row([P(x.body,{size:20},{line:300})],{top:titles?none:out}));
+    if(x.draft) rows.push(row([P(x.draft,{bold:true,italics:true,size:16})]));
+    rows.push(row([P(sigLine(),{size:18},{keepNext:false})],{top:thin,bottom:out}));
+    body.push(new Table({layout:d.TableLayoutType.FIXED,width:{size:W,type:WidthType.DXA},columnWidths:[W],rows}));
+    body.push(new Paragraph({spacing:{before:0,after:0,line:200,lineRule:d.LineRuleType.EXACT},children:[new TextRun({text:"",size:8})]}));
+  });
+  return new Document({styles:{default:{document:{run:{font:"Arial",size:20}}}},
+    sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1150,bottom:900,left:720,right:720,header:400,footer:400}}},
+      headers:{default:new Header({children:[
+        new Paragraph({tabStops:[{type:TabStopType.CENTER,position:5400},{type:TabStopType.RIGHT,position:10800}],border:{bottom:{style:BorderStyle.SINGLE,size:12,color:"000000",space:3}},
+          children:[new TextRun({text:H.left,bold:true,size:22}),new TextRun({text:"\t"+H.mid,bold:true,size:22}),new TextRun({text:"\t"+H.right,bold:true,size:22})]}),
+        new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:H.sub,size:16})]})]})},
+      footers:{default:new Footer({children:[new Paragraph({tabStops:[{type:TabStopType.RIGHT,position:10800}],
+        children:[new TextRun({text:H.foot,size:15}),new TextRun({size:15,children:["\tPage ",PageNumber.CURRENT," of ",PageNumber.TOTAL_PAGES]})]})]})},
+      children:body}]});
 }
 $("modeBtn").onclick=()=>{const on=document.body.dataset.mode!=="end"; document.body.dataset.mode=on?"end":""; $("modeBtn").textContent=on?"✈️ Checklists":"🎓 CFI endorsements"; if(on){renderEndList();renderEndSel();} window.scrollTo(0,0)};
 bindEndForm();
