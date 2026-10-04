@@ -49,6 +49,7 @@ const CONTACTISH = /@|https?:|www\.|\.(com|net|org|io)\b|\d{3}[\s.)-]*\d{3}[\s.-
 const psText = (d, seq) => { const pi = (d.ac_pic || {})[seq], si = (d.ac_sic || {})[seq]; return [pi ? "PIC " + fmt(pi) : "", si ? "SIC " + fmt(si) : ""].filter(Boolean).join(" · "); };
 /* ---- shared matching rules (src/match.js, inserted by build.py) ---- */
 /*{{MATCH_JS}}*/
+/*{{PDF_JS}}*/
 const hoursByType = aircraft => hoursByTypeWith(sq => BYSEQ.get(sq), aircraft);
 /* FAA type rating designators per aircraft seq: [[designator, single-pilot designator or ""], ...] (data/type-ratings.yaml) */
 const TR = {{TR_JSON}};
@@ -148,6 +149,61 @@ function signIn(after, presetEmail){
 }
 let IS_ADMIN = false;
 function showAdmin(){ const al = $("adminLink"); if (al) al.hidden = !IS_ADMIN; document.querySelectorAll(".adminbtn").forEach(b => b.hidden = !IS_ADMIN); }
+/* ---------------- one-page résumé PDF (no name: initials only if the member chose initials-only; link to the profile) ---------------- */
+function resumeHTML(p, aircraft, mod, cut){
+  const d = p.details || {}, x = s => esc(s == null ? "" : String(s));
+  const role = [lbl("role", d.role), lbl("cert", d.cert) && d.cert !== "none" ? lbl("cert", d.cert) : ""].filter(Boolean).join(" · ") || "Crew résumé";
+  const types = (p.crew_types || []).map(t => TYPE_LABEL[t]).filter(Boolean).join(" · ");
+  const city = airportCity(d.airport), base = d.airport ? d.airport + (city ? " (" + city + ")" : "") : lbl("region", d.region);
+  const ac = (aircraft || []).map(a => ({...a, info:BYSEQ.get(a.acft_seq)})).filter(a => a.info).sort((u, v) => (v.hours || 0) - (u.hours || 0));
+  const past = new Set(d.past || []), HT = hoursByType(aircraft);
+  const hrs = [["Total", p.total_time], ["PIC", d.hrs_pic], ["Turbine", HT.turbine], ["Jet", HT.jet], ["Turboprop", HT.turboprop], ["Piston", HT.piston], ["Multi-engine", HT.multi], ["Helicopter", HT.heli]].filter(([, v]) => v);
+  const jobs = (d.jobs || []).filter(j => j.kind || j.company).slice().sort((u, v) => (v.to === "now") - (u.to === "now") || (+v.to || 0) - (+u.to || 0) || (+v.from || 0) - (+u.from || 0));
+  const list = (k, arr) => (arr || []).map(v => lbl(k, v)).filter(Boolean).join(", ");
+  const trs = [...new Set(ac.map(a => trOf(d, a)).filter(Boolean))].join(", ");
+  const kv = (k, v) => v ? `<p class="rkv"><b>${x(k)}:</b> ${x(v)}</p>` : "";
+  const avail = [lbl("status", d.status), d.travel ? "will travel: " + lbl("travel", d.travel) : "", d.passport ? "valid passport" : ""].filter(Boolean).join(" · ");
+  const acShown = ac.slice(0, cut > 1 ? 8 : 14), jobShown = jobs.slice(0, cut > 1 ? 4 : 8);
+  const link = location.origin + "/crew/#/p/" + p.user_id;
+  return `<div class="rpage"><div class="rband"><div>${d.initials ? `<div class="rn">${x(publicName(p))}</div>` : ""}<div class="rt">${x(role)}</div>${types ? `<div style="font-size:12px;margin-top:3px">${x(types)}</div>` : ""}</div>
+    <div class="rs"><b style="font-size:15px">Cali Aircrew</b><br>Crew résumé</div></div>
+  <div class="rbody">
+    ${kv("Based at", base)}${kv("Flies in", (d.areas || []).map(v => lbl("region", v)).filter(Boolean).join(", "))}${kv("Flying since", d.since)}${kv("Contract day rate", rateText(d))}${kv("Availability", avail)}
+    ${mod && mod.verified_faa ? `<p class="rkv"><b>✓ FAA certificate verified by Cali Aircrew</b></p>` : ""}
+    ${hrs.length ? `<h4>FLIGHT TIME</h4><div class="rhrs">${hrs.map(([k, v]) => `<div><b>${fmt(v)}</b><span>${x(k)}</span></div>`).join("")}</div>` : ""}
+    ${acShown.length ? `<h4>AIRCRAFT</h4><table><thead><tr><th>Aircraft</th><th>Type rating</th><th>Hours</th><th>Currency</th><th>Part 135</th><th></th></tr></thead><tbody>${acShown.map(a => { const cs = curState(a);
+      return `<tr><td>${x(a.info.name)}</td><td>${x(trOf(d, a) || (a.type_rated ? "Type rated" : ""))}</td><td>${x([a.hours ? fmt(a.hours) : "", psText(d, a.acft_seq)].filter(Boolean).join(" · "))}</td><td>${x(cs === "current" ? "Current" + (a.current_until ? " through " + ymText(a.current_until) : "") + (schoolText(a) ? " · " + schoolText(a) : "") : cs === "expired" ? "Expired" : "")}</td><td>${x(a.part135 ? "Yes" : "")}</td><td>${x(past.has(a.acft_seq) ? "Previously" : "Now")}</td></tr>`; }).join("")}</tbody></table>${ac.length > acShown.length ? `<p class="rkv">…and ${ac.length - acShown.length} more on the profile</p>` : ""}` : ""}
+    ${jobShown.length ? `<h4>WORK HISTORY</h4><table><tbody>${jobShown.map(j => { const ai = j.seq ? BYSEQ.get(+j.seq) : null;
+      const rest = [lbl("jobkind", j.kind), j.company && !CONTACTISH.test(j.company) ? j.company : "", ai ? ai.name : ""].filter(Boolean).join(" · ");
+      return `<tr><td><b>${x(lbl("jobrole", j.role) || "Role")}</b>${rest ? " · " + x(rest) : ""}</td><td style="text-align:right;white-space:nowrap">${x((j.from || "") + (j.from || j.to ? "–" : "") + (j.to === "now" ? "present" : (j.to || "")))}</td></tr>`; }).join("")}</tbody></table>` : ""}
+    <h4>CERTIFICATES, RATINGS AND TRAINING</h4>
+    ${kv("Certificate", lbl("cert", d.cert) && d.cert !== "none" ? lbl("cert", d.cert) : p.certificate)}${kv("Type ratings", trs)}${kv("Ratings", list("ratings", d.ratings))}${kv("Medical", lbl("medical", d.medical))}
+    ${kv("Special training", list("training", d.training))}${kv("Experience", list("experience", d.experience))}${kv("Languages", list("languages", d.languages))}
+    ${d.fa_school || d.fa_recurrent || d.cpr_until ? kv("Flight attendant", [d.fa_school ? lbl("fa_school", d.fa_school) + (d.fa_year ? " (" + d.fa_year + ")" : "") : "", d.fa_recurrent ? "recurrent " + throughText(d.fa_recurrent) : "", d.cpr_until ? "CPR " + throughText(d.cpr_until) : ""].filter(Boolean).join(" · ")) : ""}
+    ${(d.mx_certs || []).length ? kv("Maintenance", list("mx_certs", d.mx_certs)) : ""}
+    ${p.bio && !cut ? `<h4>ABOUT</h4><p style="margin:0">${x(p.bio)}</p>` : ""}
+  </div>
+  <div class="rfoot"><div><b>Full profile:</b> ${x(link)}</div><div>Profiles are advertisements. Verify licenses, medical and training before hiring. · Printed ${x(new Date().toLocaleDateString("en-US"))}</div></div></div>`;
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-resume]"); if (!b) return; e.preventDefault();
+  const id = b.dataset.resume, was = b.textContent; b.disabled = true; b.textContent = "Building PDF…";
+  const host = document.createElement("div"); host.style.cssText = "position:absolute;left:-10000px;top:0;width:816px";
+  try {
+    const [{data:p}, {data:ac}, {data:mod}] = await Promise.all([sb.from("crew_profiles").select("*").eq("user_id", id).maybeSingle(),
+      sb.from("crew_aircraft").select("*").eq("user_id", id), sb.from("moderation").select("*").eq("user_id", id).maybeSingle()]);
+    if (!p) throw new Error("Profile not found");
+    await loadAirports(); document.body.appendChild(host);
+    // One page: drop the About text, then shorten the lists, if it doesn't fit.
+    let cut = 0; for (;;) { host.innerHTML = resumeHTML(p, ac || [], mod, cut); const pg = host.firstChild, body = pg.querySelector(".rbody"), foot = pg.querySelector(".rfoot");
+      if (body.getBoundingClientRect().bottom <= foot.getBoundingClientRect().top - 6 || cut >= 2) break; cut++; }
+    const blob = pdfBuild([pdfPage(host.firstChild)], "Cali Aircrew crew resume");
+    const d = p.details || {}, nm = ("Cali Aircrew Resume - " + (d.initials ? publicName(p) : [lbl("role", d.role), lbl("cert", d.cert)].filter(Boolean).join(" ") || "Crew")).replace(/[\\/:*?"<>|.]+/g, " ").replace(/\s+/g, " ").trim() + ".pdf";
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nm; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    toast("Résumé PDF ready");
+  } catch (err) { console.error(err); toast("Couldn't build the résumé PDF."); }
+  finally { host.remove(); b.disabled = false; b.textContent = was; }
+});
 async function contactCall(body){
   // Calls the "contact" Edge Function. Returns {ok, message}.
   try {
@@ -311,7 +367,7 @@ function cardHTML(p, aircraft, mod, opts){
     ${block("Special training", chips("training", d.training))}
     ${block("Languages", chips("languages", d.languages))}
     ${p.bio ? `<section><h3>More about me</h3><p>${esc(p.bio)}</p></section>` : ""}
-    <div class="actions">${opts && opts.preview ? `<button class="btn primary" type="button" disabled style="opacity:.6">Contact</button>` : `<button class="btn primary" type="button" data-contact="${esc(p.user_id)}" data-name="${esc(publicName(p))}" data-ac="${esc(ac.map(a => a.acft_seq).join(","))}" data-ctx="${ctxSeq != null ? ctxSeq : ""}">Contact</button>`}${opts && opts.preview ? "" : `<button class="btn secondary" type="button" data-fav="${esc(p.user_id)}" aria-pressed="${!!(FAV && FAV.has(p.user_id))}">${FAV && FAV.has(p.user_id) ? "★ Saved" : "☆ Save"}</button><button class="btn secondary" type="button" data-share="${esc(p.user_id)}" data-name="${esc(publicName(p))}">Share</button>`}</div>
+    <div class="actions">${opts && opts.preview ? `<button class="btn primary" type="button" disabled style="opacity:.6">Contact</button>` : `<button class="btn primary" type="button" data-contact="${esc(p.user_id)}" data-name="${esc(publicName(p))}" data-ac="${esc(ac.map(a => a.acft_seq).join(","))}" data-ctx="${ctxSeq != null ? ctxSeq : ""}">Contact</button>`}${opts && opts.preview ? "" : `<button class="btn secondary" type="button" data-fav="${esc(p.user_id)}" aria-pressed="${!!(FAV && FAV.has(p.user_id))}">${FAV && FAV.has(p.user_id) ? "★ Saved" : "☆ Save"}</button><button class="btn secondary" type="button" data-share="${esc(p.user_id)}" data-name="${esc(publicName(p))}">Share</button><button class="btn secondary" type="button" data-resume="${esc(p.user_id)}">Résumé PDF</button>`}</div>
     <div class="note">${opts && opts.preview ? "Preview: this is how owners and operators will see your profile." : "Profiles are advertisements. Verify licenses, medical and training before hiring."}</div>
   </article>`;
 }

@@ -394,6 +394,8 @@ def main(argv=None):
                     .replace("<<<DOCX_LIB>>>", load_docx(app))
                     .replace("{{CLOUD_CONFIG}}\n", cloud_config(app))
                     .replace("<<<SUPABASE_LIB>>>", load_vendor("supabase-js", f"supabase-js-{app['supabase_js']['version']}.umd.js", app["supabase_js"]["sha256"])))
+        need(html.count("/*{{PDF_JS}}*/") == 1, "src/app_template.html must contain /*{{PDF_JS}}*/ once (shared PDF writer)")
+        html = html.replace("/*{{PDF_JS}}*/", open(os.path.join(ROOT, "src", "pdf.js"), encoding="utf-8").read())
         notes = []
         check_output(html, notes)
     except BuildError as e:
@@ -450,6 +452,8 @@ def main(argv=None):
         crew_js = crew_js.replace("{{TR_JSON}}", tr_json)
         need("/*{{MATCH_JS}}*/" in crew_js, "src/crew.js must contain /*{{MATCH_JS}}*/ for the shared matching rules")
         crew_js = crew_js.replace("/*{{MATCH_JS}}*/", match_js)
+        need("/*{{PDF_JS}}*/" in crew_js, "src/crew.js must contain /*{{PDF_JS}}*/ for the shared PDF writer")
+        crew_js = crew_js.replace("/*{{PDF_JS}}*/", open(os.path.join(ROOT, "src", "pdf.js"), encoding="utf-8").read())
         crew_js = crew_js.replace("{{CLOUD_JSON}}", cloud).replace("{{ACFT_JSON}}", json.dumps(acft_rows, ensure_ascii=False, separators=(",", ":")))
         need("{{" not in crew_js, "src/crew.js has an unfilled {{placeholder}}")
         tmpjs = os.path.join(tempfile.gettempdir(), "crew_check.js")

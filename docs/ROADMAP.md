@@ -118,7 +118,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 50. Email alerts to admins: profiles waiting for review, text to approve, help requests, partner inquiries (hourly, new items only, per-admin switch) — v1.49
 
 ## E. Crew directory — Phase 2
-- [ ] 17. One-tap résumé PDF from the profile
+- [x] 17. (v1.58) One-tap résumé PDF from the profile — no name (initials only if the member chose initials-only), link to the profile; no email, legal name or home city
 - [ ] 18. Messaging between operators and crew (pilots choose when to share phone/email); later "Notify me" when a new operator of an aircraft type joins
 - [ ] 19. Availability calendar (dates, home base, travel radius)
 - [ ] 20. Verification badges (FAA airmen database match; sim training checked by James)
@@ -171,7 +171,7 @@ Why the profile is mostly checkboxes and dropdowns: normalized values (role, cer
 - [ ] Sign in and Account (two-step sign-in, currency and expiration tracker)
 - [ ] Messages
 - [ ] Availability calendar
-- [ ] One-tap résumé (PDF)
+- [x] One-tap résumé (PDF) (v1.58)
 - [ ] Partners page
 - [ ] Admin review
 - [ ] Terms and Privacy
