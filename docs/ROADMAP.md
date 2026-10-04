@@ -63,15 +63,15 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [ ] Recovery phone number (optional) used only by an admin to confirm identity; no SMS codes ($75/mo add-on, weaker)
 
 ## D2. Profile upgrade (James's requests, 2026-10-03) — build next, in this order
-- [ ] 34. Richer crew profile page (what an operator sees after tapping a pilot):
-  - [ ] Location: home airport with its city and state (e.g. "KCCR · Concord, CA"), region, travel range
-  - [ ] Aircraft split into "Flying now" and "Previously flown", each with hours, type rating, currency and Part 135 seat; total time, PIC, turbine and helicopter time at the top
-  - [ ] Contract day rate: amount per day (USD) with "+ expenses" / "negotiable" options; pilot chooses who sees it (everyone, or signed-in operators only); operators can filter "day rate up to $X"; feeds the anonymous day-rate survey (24a)
-- [ ] 35. Role-specific profile questions (James reviews the draft lists first):
-  - [ ] 35a. Flight attendant: corporate FA training and recurrent (provider + current-through month), CPR/AED/first aid, food safety, international and catering skills, cabins worked, passport
-  - [ ] 35b. Mechanic: A&P / IA / repairman / avionics, factory training by aircraft and engine, specialties, inspection programs, AOG road trips, Part 135 / 145 experience
-  - [ ] 35c. Helicopter pilot: turbine vs piston time, NVG, long line / external load, EMS, tours, firefighting, mountain and offshore, SFAR 73 (R22/R44) endorsements
-  - [ ] Each crew type sees only its own questions; Find crew filters adapt to the crew type chosen
+- [x] 34. Richer crew profile page (v1.41) (what an operator sees after tapping a pilot):
+  - [x] Location: home airport with its city and state (e.g. "KCCR · Concord, CA"), region, travel range
+  - [x] Aircraft split into "Flying now" and "Previously flown", each with hours, type rating, currency and Part 135 seat; total time, PIC, turbine and helicopter time at the top
+  - [x] Contract day rate (v1.41: shown to everyone when listed, or "Ask me"; members-only visibility later): amount per day (USD) with "+ expenses" / "negotiable" options; pilot chooses who sees it (everyone, or signed-in operators only); operators can filter "day rate up to $X"; feeds the anonymous day-rate survey (24a)
+- [x] 35. Role-specific profile questions (v1.41; James approved the draft lists 2026-10-03) (James reviews the draft lists first):
+  - [x] 35a. Flight attendant: corporate FA training and recurrent (provider + current-through month), CPR/AED/first aid, food safety, international and catering skills, cabins worked, passport
+  - [x] 35b. Mechanic: A&P / IA / repairman / avionics, factory training by aircraft and engine, specialties, inspection programs, AOG road trips, Part 135 / 145 experience
+  - [x] 35c. Helicopter pilot: turbine vs piston time, NVG, long line / external load, EMS, tours, firefighting, mountain and offshore, SFAR 73 (R22/R44) endorsements
+  - [x] Each crew type sees only its own questions · [ ] Find crew filters adapt to the crew type chosen (e.g. CPR current, IA, NVG, long line)
 
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile

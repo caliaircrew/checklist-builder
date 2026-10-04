@@ -448,6 +448,8 @@ def main(argv=None):
         print(f"BUILD FAILED: {e}", file=sys.stderr)
         return 1
     need('id="aQ"' in html and "Checklist builder" in html, "checklist builder page is missing its aircraft search; refusing to publish")
+    os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)
+    shutil.copyfile(os.path.join(ROOT, "data", "airports-us.json"), os.path.join(a.out, "crew", "airports.json"))
     for page_name, page_html in pages_out.items():   # distinct names: 'html' is the checklist builder, written below
         os.makedirs(os.path.join(a.out, page_name), exist_ok=True)
         open(os.path.join(a.out, page_name, "index.html"), "w", encoding="utf-8").write(page_html)
