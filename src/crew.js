@@ -39,6 +39,15 @@ const OPT = {
   heli_ops:[["nvg","Night vision goggles (NVG)"],["longline","Long line / external load"],["ems","EMS / air medical"],["tours","Tours"],["utility","Utility / powerline"],["fire","Firefighting (agency carded)"],["mountain","Mountain / high altitude"],["offshore","Offshore / over water"],["law","Law enforcement"],["eng","News / ENG"],["ag","Agricultural"]],
   sfar73:[["r22","R22 PIC endorsement (SFAR 73)"],["r44","R44 PIC endorsement (SFAR 73)"]]
 };
+/* Extra Find crew filters that appear for a chosen crew type. Each test reads the tap-to-choose answers in details. */
+const ROLEF = {
+  flight_attendant:[["fa_cpr","CPR / AED current", d => !!d.cpr_until && d.cpr_until >= thisYM()], ["fa_rec","FA recurrent current", d => !!d.fa_recurrent && d.fa_recurrent >= thisYM()],
+    ["fa_intl","International trips", d => (d.fa_skills || []).includes("intl")], ["fa_cul","Culinary / chef training", d => (d.fa_skills || []).includes("culinary")], ["fa_food","Food safety certificate", d => !!d.food_safety]],
+  mechanic:[["mx_ap","A&P", d => (d.mx_certs || []).includes("ap") || (d.ratings || []).includes("ap")], ["mx_ia","IA", d => (d.mx_certs || []).includes("ia") || (d.ratings || []).includes("ia")],
+    ["mx_av","Avionics", d => (d.mx_spec || []).includes("avionics") || (d.mx_certs || []).includes("fcc")], ["mx_aog","AOG road trips", d => !!d.mx_aog], ["mx_135","Part 135 maintenance", d => (d.mx_exp || []).includes("p135")]],
+  helicopter_pilot:[["h_nvg","NVG", d => (d.heli_ops || []).includes("nvg")], ["h_ll","Long line / external load", d => (d.heli_ops || []).includes("longline")], ["h_ems","EMS / air medical", d => (d.heli_ops || []).includes("ems")],
+    ["h_fire","Firefighting", d => (d.heli_ops || []).includes("fire")], ["h_tour","Tours", d => (d.heli_ops || []).includes("tours")], ["h_r44","R44 SFAR 73", d => (d.sfar73 || []).includes("r44")], ["h_r22","R22 SFAR 73", d => (d.sfar73 || []).includes("r22")]]
+};
 const RATE_LOW = {u500:0, "500":500, "750":750, "1000":1000, "1250":1250, "1500":1500, "2000":2000, "2500":2500, "3000":3000};
 /* Airport code -> "City, ST" (OurAirports, public domain), loaded once when a page needs it. */
 let AIRPORTS = null, airportsP = null;
@@ -235,8 +244,8 @@ async function loadDir(force){
   DIR = {at:Date.now(), listed, acBy, mod, count};
   return DIR;
 }
-const QUICK = [["contract","Contract pilots"],["now","Available now"],["soon","Now or with notice"],["p135","Part 135 current"],["cfi","CFIs"],["heli","Helicopter pilots"]];
-let F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:""};
+const QUICK = [["contract","Contract pilots"],["now","Available now"],["soon","Now or with notice"],["p135","Part 135 current"],["cfi","CFIs"],["heli","Helicopter pilots"],["fa","Flight attendants"],["mx","Mechanics"]];
+let F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:""};
 function matches(p, ac){
   const d = p.details || {};
   if (F.type && !(p.crew_types || []).includes(F.type)) return false;
@@ -248,6 +257,8 @@ function matches(p, ac){
   if (F.contract && !(d.looking || []).includes("contract")) return false;
   if (F.p135 && !ac.some(a => a.part135 && (F.seq == null || a.acft_seq === F.seq))) return false;
   if (F.rate && d.rate && d.rate !== "ask" && RATE_LOW[d.rate] >= +F.rate) return false;   // "Ask me" and not-stated stay in
+  for (const k of (F.x || [])) { const f = (ROLEF[F.type] || []).find(r => r[0] === k); if (f && !f[2](d)) return false; }
+  if (F.eng && F.type === "mechanic" && !(d.mx_engines || []).includes(F.eng)) return false;
   return true;
 }
 function rank(p, ac, mod){
@@ -302,11 +313,14 @@ async function viewFind(){
       <div class="f"><label for="fv">Availability</label><select id="fv"><option value="">Any</option><option value="now">Available now</option><option value="soon">Now or with notice</option></select></div>
       ${selectHTML("fdr", "rate_max", "Contract day rate", F.rate, "Any rate")}
     </div></details>
+    <div id="rolef" class="rolef" hidden></div>
     <div class="savebar"><label class="switch"><input type="checkbox" id="fp"> Part 135 current</label><button class="btn secondary" id="fx" type="button" style="margin-left:auto">Clear</button></div>
   </section>
   <div class="mdsplit"><div class="results" id="res" aria-live="polite"><p>Loading crew…</p></div><aside class="detail" id="det" aria-label="Selected profile"></aside></div>`;
   const ui = () => { $("fa").value = F.seq != null && BYSEQ.get(F.seq) ? BYSEQ.get(F.seq).name : ""; $("ft").value = F.type; $("fr").value = F.region; $("fc").value = F.cert; $("fv").value = F.avail; $("fp").checked = F.p135; $("fdr").value = F.rate;
-    app.querySelectorAll("[data-q]").forEach(b => { const k = b.dataset.q, on = k === "now" ? F.avail === "now" : k === "soon" ? F.avail === "soon" : k === "p135" ? F.p135 : k === "contract" ? F.contract : k === "cfi" ? F.type === "cfi" : F.type === "helicopter_pilot"; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); }); };
+    app.querySelectorAll("[data-q]").forEach(b => { const k = b.dataset.q, on = k === "now" ? F.avail === "now" : k === "soon" ? F.avail === "soon" : k === "p135" ? F.p135 : k === "contract" ? F.contract : k === "cfi" ? F.type === "cfi" : k === "fa" ? F.type === "flight_attendant" : k === "mx" ? F.type === "mechanic" : F.type === "helicopter_pilot"; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
+    const rf = ROLEF[F.type], box = $("rolef"); box.hidden = !rf;
+    box.innerHTML = rf ? `<span class="lbl">${esc(TYPE_LABEL[F.type])} filters</span><div class="chips">${rf.map(([k, l]) => `<label><input type="checkbox" data-x="${k}"${(F.x || []).includes(k) ? " checked" : ""}> ${esc(l)}</label>`).join("")}</div>${F.type === "mechanic" ? `<div class="f" style="max-width:340px;margin-top:8px"><label for="feng">Engine</label><select id="feng"><option value="">Any engine</option>${OPT.mx_engines.map(([v, l]) => `<option value="${v}"${v === F.eng ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></div>` : ""}` : ""; };
   if (wide() || F.type || F.region || F.cert || F.avail || F.rate) $("more").open = true;
   let D; try { D = await loadDir(); } catch (e) { $("res").innerHTML = `<p class="err">Couldn't load the directory. Check your connection and try again.</p>`; return; }
   let active = null;
@@ -324,9 +338,14 @@ async function viewFind(){
   $("res").addEventListener("click", e => { const r = e.target.closest(".res"); if (!r || !wide()) return; e.preventDefault(); show(r.dataset.id); });
   app.querySelector(".quick").addEventListener("click", e => { const b = e.target.closest("[data-q]"); if (!b) return; const k = b.dataset.q;
     if (k === "now" || k === "soon") F.avail = F.avail === k ? "" : k; else if (k === "p135") F.p135 = !F.p135; else if (k === "contract") F.contract = !F.contract;
-    else if (k === "cfi") F.type = F.type === "cfi" ? "" : "cfi"; else if (k === "heli") F.type = F.type === "helicopter_pilot" ? "" : "helicopter_pilot"; draw(); });
-  app.querySelector(".filters").addEventListener("change", e => { const t = e.target; if (t.id === "ft") F.type = t.value; if (t.id === "fr") F.region = t.value; if (t.id === "fc") F.cert = t.value; if (t.id === "fv") F.avail = t.value; if (t.id === "fp") F.p135 = t.checked; if (t.id === "fdr") F.rate = t.value; draw(); });
-  $("fx").onclick = () => { F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:""}; draw(); };
+    else if (k === "cfi") F.type = F.type === "cfi" ? "" : "cfi"; else if (k === "heli") F.type = F.type === "helicopter_pilot" ? "" : "helicopter_pilot";
+    else if (k === "fa") F.type = F.type === "flight_attendant" ? "" : "flight_attendant"; else if (k === "mx") F.type = F.type === "mechanic" ? "" : "mechanic";
+    F.x = (F.x || []).filter(x => (ROLEF[F.type] || []).some(r => r[0] === x)); if (F.type !== "mechanic") F.eng = ""; draw(); });
+  app.querySelector(".filters").addEventListener("change", e => { const t = e.target;
+    if (t.dataset.x) { F.x = (F.x || []).filter(x => x !== t.dataset.x); if (t.checked) F.x.push(t.dataset.x); draw(); return; }
+    if (t.id === "feng") { F.eng = t.value; draw(); return; }
+    if (t.id === "ft") { F.type = t.value; F.x = []; F.eng = ""; } if (t.id === "fr") F.region = t.value; if (t.id === "fc") F.cert = t.value; if (t.id === "fv") F.avail = t.value; if (t.id === "fp") F.p135 = t.checked; if (t.id === "fdr") F.rate = t.value; draw(); });
+  $("fx").onclick = () => { F = {seq:null, type:"", region:"", cert:"", avail:"", p135:false, contract:false, rate:"", x:[], eng:""}; draw(); };
   const fa = $("fa"), fr = $("fares");
   fa.addEventListener("input", () => { const words = fa.value.toUpperCase().replace(/[-–]/g, " ").split(/\s+/).filter(Boolean);
     if (!words.length) { fr.hidden = true; if (F.seq != null) { F.seq = null; draw(); } return; }

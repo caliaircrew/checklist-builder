@@ -71,7 +71,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [x] 35a. Flight attendant: corporate FA training and recurrent (provider + current-through month), CPR/AED/first aid, food safety, international and catering skills, cabins worked, passport
   - [x] 35b. Mechanic: A&P / IA / repairman / avionics, factory training by aircraft and engine, specialties, inspection programs, AOG road trips, Part 135 / 145 experience
   - [x] 35c. Helicopter pilot: turbine vs piston time, NVG, long line / external load, EMS, tours, firefighting, mountain and offshore, SFAR 73 (R22/R44) endorsements
-  - [x] Each crew type sees only its own questions · [ ] Find crew filters adapt to the crew type chosen (e.g. CPR current, IA, NVG, long line)
+  - [x] Each crew type sees only its own questions · [x] Find crew filters adapt to the crew type chosen (v1.42)
 
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile
