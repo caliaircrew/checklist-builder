@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.37 | 2026-10-03 | Builder restyle (roadmap 7b): clear-sky palette (light + navy dark mode), Barlow Condensed / Source Sans 3, site bar with nav + My profile/Admin (from the builder's Supabase session), phone tab bar, navy editor section bars (--bar), larger display headings/step labels/primary buttons; old Home pill removed; site Sign in opens the builder's sign-in; builder account button hidden when signed out. Printed card and Word export unchanged. |
 | 1.36 | 2026-10-03 | Account page (#/account): change sign-in email (updateUser + confirmation link), authenticator on/off (QR enroll, verify, unenroll), recovery contacts, download my data (JSON), delete my account (typed email, rpc delete_my_account, #/deleted confirmation). Sign-in 'Can't get in?' help requests. Admin: help queue in Requests, recovery contacts in Users, self-delete in audit labels. supabase/011_account.sql (account_recovery + guard so members can't self-confirm, help_requests, delete_my_account; admins can't self-delete). |
 | 1.35 | 2026-10-03 | Fix: FAA registry is a real link (target _blank) so Safari doesn't block it as a pop-up; copies legal last name in the same tap; instructions list last/first name and state. |
 | 1.34 | 2026-10-03 | Fix: admins' own bio/About saves no pending copy (database already lets admins change public text); admin review filters pending rows identical to public text (crew + operators). |

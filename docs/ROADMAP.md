@@ -19,7 +19,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 5. Helicopters: [x] 47 types + helicopter category (v1.24); [ ] ~10 helicopter pick lists and helicopter defaults in the checklist builder
 - [ ] 6. SFAR 73 (Robinson R22/R44) awareness-training endorsements, verified against the FAA text
 - [ ] 7. Offline install (PWA): home-screen icon, works without signal
-- [ ] 7b. Checklist builder theme matches the rest of the site: clear-sky palette, white top bar with Cali Aircrew logo and the same menu (Checklists, Crew, Partners, Sign in), Barlow Condensed + Source Sans 3, sky-blue main buttons, 8 px spacing, phone bottom tab bar (printed card keeps its black-and-white print style)
+- [x] 7b. Checklist builder theme matches the rest of the site: clear-sky palette, white top bar with Cali Aircrew logo and the same menu (Checklists, Crew, Partners, Sign in), Barlow Condensed + Source Sans 3, sky-blue main buttons, 8 px spacing, phone bottom tab bar (printed card keeps its black-and-white print style)
 - [ ] 7a. Fly mode (iPad landscape): one section at a time, large type, tap to check each line, swipe to next section, Reset; optional night mode (dim red on black); "verify against AFM/POH" note
 
 ## C. Website

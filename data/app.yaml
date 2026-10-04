@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.36'
+app_version: '1.37'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,10 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.37'
+    notes:
+      - "Checklist builder has the Cali Aircrew look: clear-sky colors, the site's top bar and menu (Checklists, Crew, Partners, My profile), the same fonts and buttons, navy section bars while editing, and the phone tab bar. The printed card is unchanged"
+      - "One Sign in button: the site bar's Sign in opens sign-in right in the builder, so you stay on your checklist; once signed in, the builder shows your sync status"
   - version: '1.36'
     notes:
       - "New Account page (My profile → Account): change your sign-in email, turn Microsoft Authenticator on or off, save recovery contacts (backup email and phone), download your data, or delete your account"
