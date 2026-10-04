@@ -45,7 +45,9 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [ ] Face ID / Touch ID passkeys (when Supabase passkeys leave beta)
   - [ ] Continue with Apple (needs Apple Developer account, $99/yr)
   - [ ] Microsoft Authenticator as optional two-step (already built)
-  - [ ] Recovery contacts (backup email + phone) used only by an admin to confirm identity; no SMS codes ($75/mo add-on, weaker)
+  - [ ] Recovery email (Google style, self-service): user adds and confirms a backup email on Account. Sign-in screen: "Locked out? Send a recovery link to my backup email" → one-time link (short expiry, rate-limited) lets them set a new main sign-in email. If Microsoft Authenticator is on, the recovery still asks for its code. The old address gets a "your sign-in email changed" notice. Needs a Supabase Edge Function (server-side, holds the service key; never in the browser)
+  - [ ] If all else fails: "Still locked out? Ask Cali Aircrew" form → appears in the admin page's help queue and emails James; he confirms identity outside email (15d2) before moving the account
+  - [ ] Recovery phone number (optional) used only by an admin to confirm identity; no SMS codes ($75/mo add-on, weaker)
 
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile
