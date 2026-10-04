@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.39 | 2026-10-03 | Content pages via site/pages + shared shell: /partners/ (live partners from the database grouped by category, labeled Sponsored; inquiry form → help_requests kind 'other'), /terms/ and /privacy/ (v0.1 drafts for attorney review: directory-not-broker/carrier, eligibility 18+, profiles as advertisements, verification badge meaning, checklist disclaimer, acceptable use, CCPA rights, providers, retention). Footer links on home, crew and new pages; Partners nav links → /partners/. build.py 2.8.0. |
 | 1.38 | 2026-10-03 | Self-service recovery: supabase/functions/recovery (Edge Function: send_confirm, check_confirm, recover_start, recover_finish; hashed codes, expiry, attempt and hourly limits, no enumeration, old-address notice, audit) + supabase/012_recovery_codes.sql (service-only codes + recovery_lookup). Crew: Confirm backup email on Account; 'Locked out of your email?' recovery flow from the sign-in box, sign-in prefilled after; clear fallback until set up. docs/RECOVERY_SETUP.md. |
 | 1.37 | 2026-10-03 | Builder restyle (roadmap 7b): clear-sky palette (light + navy dark mode), Barlow Condensed / Source Sans 3, site bar with nav + My profile/Admin (from the builder's Supabase session), phone tab bar, navy editor section bars (--bar), larger display headings/step labels/primary buttons; old Home pill removed; site Sign in opens the builder's sign-in; builder account button hidden when signed out. Printed card and Word export unchanged. |
 | 1.36 | 2026-10-03 | Account page (#/account): change sign-in email (updateUser + confirmation link), authenticator on/off (QR enroll, verify, unenroll), recovery contacts, download my data (JSON), delete my account (typed email, rpc delete_my_account, #/deleted confirmation). Sign-in 'Can't get in?' help requests. Admin: help queue in Requests, recovery contacts in Users, self-delete in audit labels. supabase/011_account.sql (account_recovery + guard so members can't self-confirm, help_requests, delete_my_account; admins can't self-delete). |
@@ -46,6 +47,7 @@
 ## Build script
 | Version | Date | Change |
 |---|---|---|
+| 2.8.0 | 2026-10-03 | Renders site/pages/*.html into the shared shell with the homepage CSS. Builds 1.39. |
 | 2.7.0 | 2026-10-03 | Builds admin/index.html (shared crew CSS, syntax check, refuses secret keys). Builds app 1.30. |
 | 2.6.0 | 2026-10-03 | Aircraft category + turboshaft engine; 'h' flag; search words passed to crew page. Builds app 1.24. |
 | 2.5.0 | 2026-10-03 | Builds crew/index.html (site/crew.html + src/crew.js, supabase-js, aircraft list, node syntax check). Builds app 1.21. |

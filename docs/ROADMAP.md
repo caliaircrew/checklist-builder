@@ -24,8 +24,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 7a. Fly mode (iPad landscape): one section at a time, large type, tap to check each line, swipe to next section, Reset; optional night mode (dim red on black); "verify against AFM/POH" note
 
 ## C. Website
-- [ ] 8. Partners page (small): insurance, sim training, flight schools; labeled sponsored; "Become a partner" contact
-- [ ] 9. Terms of Use + Privacy Policy: Claude drafts, aviation attorney reviews
+- [x] 8. Partners page (small): insurance, sim training, flight schools; labeled sponsored; "Become a partner" contact
+- [ ] 9. Terms of Use + Privacy Policy: [x] drafts v0.1 published as drafts (v1.39) · [ ] fill [brackets] (entity, address, county, retention) · [ ] California attorney review · [ ] set effective date
 - [ ] 9a. FAQ page and Help / Contact page; social links in the footer
 - [ ] 9b. Testimonials section on the homepage (once James's network is using it; real quotes with permission only)
 - [ ] 10. Contact address (caliaircrew@gmail.com or @caliaircrew.com mailbox); move sign-in email sender to it

@@ -297,7 +297,7 @@ function bindSignups(){
 }
 
 function viewRequests(){
-  return `<h2 class="sect" style="margin-top:0">Sign-in help ("Can't get in?")</h2>
+  return `<h2 class="sect" style="margin-top:0">Sign-in help and partner inquiries</h2>
   <p class="hint">Confirm who they are <b>outside email</b> (phone call, someone you know, FAA registry, their saved recovery contacts in Users) before changing anything. Then use Users → Lost phone reset, or ask Steve/Claude to move their account to a new email.</p>
   <div class="tblwrap"><table class="tbl"><thead><tr><th>Received</th><th>Reply to</th><th>What happened</th><th>Status</th><th></th></tr></thead><tbody>
   ${D.help.map(r => `<tr><td>${day(r.created_at)}</td><td>${esc(r.email)}</td><td>${esc(r.message)}</td><td><span class="tag ${r.status === "open" ? "warn" : "ok"}">${esc(r.status)}</span></td><td>${r.status === "open" ? `<button class="btn secondary sm" data-h="${r.id}">Mark done</button>` : ""}</td></tr>`).join("") || '<tr><td colspan="5" class="empty">No requests.</td></tr>'}

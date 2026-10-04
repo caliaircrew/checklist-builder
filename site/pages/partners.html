@@ -1,0 +1,50 @@
+<!--TITLE: Partners-->
+<!--DESC: Aviation insurance, simulator training, flight schools, FBOs and maintenance partners of Cali Aircrew.-->
+<h1>Partners</h1>
+<p>Businesses that support the pilots, owners and operators who use Cali Aircrew. Partner listings are sponsored; Cali Aircrew doesn't endorse or guarantee any partner's services.</p>
+<div class="pgrid" id="pl"><p class="empty">Loading partners…</p></div>
+
+<h2 id="join">Become a partner</h2>
+<p>Reach West Coast professional pilots, owners and charter operators where they already work: on the crew directory, aircraft pages and checklist builder. Listings are clearly labeled and matched to the aircraft and region your business serves.</p>
+<ul>
+  <li><b>Aviation insurance:</b> owner and operator coverage, named-pilot and open-pilot policies.</li>
+  <li><b>Simulator and type training:</b> initial, recurrent and LOFT, shown on the aircraft pages you train for.</li>
+  <li><b>Flight schools and CFIs:</b> primary through ATP, helicopter, and SFAR 73.</li>
+  <li><b>FBOs and maintenance:</b> fuel, hangar, MRO and avionics shops.</li>
+</ul>
+<div class="formcard">
+  <div class="f"><label for="pc">Company</label><input id="pc" maxlength="120" autocomplete="organization"></div>
+  <div class="f"><label for="pk">Type of business</label><select id="pk"><option value="Insurance">Aviation insurance</option><option value="Training">Simulator / type training</option><option value="School">Flight school or CFI</option><option value="FBO">FBO</option><option value="Maintenance">Maintenance / avionics</option><option value="Other">Other</option></select></div>
+  <div class="f"><label for="pe">Your email</label><input id="pe" type="email" autocomplete="email" autocapitalize="none" maxlength="254"></div>
+  <div class="f"><label for="pw">Website (optional)</label><input id="pw" type="url" maxlength="200" placeholder="https://"></div>
+  <div class="f"><label for="pm">What you'd like to promote, and where (aircraft, region)</label><textarea id="pm" maxlength="700"></textarea></div>
+  <button class="btn primary" id="ps" type="button">Send inquiry</button>
+  <p class="meta" id="pmsg" role="status" style="margin:12px 0 0"></p>
+</div>
+<!--SCRIPT-->
+const CLOUD = {{CLOUD_JSON}};
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const CAT = {insurance:"Aviation insurance", training:"Simulator / training", school:"Flight schools", fbo:"FBOs", maintenance:"Maintenance", other:"Other partners"};
+const H = {"apikey":CLOUD.key};
+(async () => {
+  const el = document.getElementById("pl");
+  try {
+    if (!CLOUD.enabled) throw 0;
+    const r = await fetch(CLOUD.url + "/rest/v1/partners?select=name,url,category,blurb&order=sort.asc,name.asc", {headers:H}); const rows = r.ok ? await r.json() : [];
+    if (!rows.length) { el.innerHTML = `<p class="empty">Our first partners are coming soon. <a href="#join">Become a founding partner.</a></p>`; return; }
+    const by = {}; rows.forEach(p => (by[p.category] = by[p.category] || []).push(p));
+    el.innerHTML = Object.keys(CAT).filter(k => by[k]).map(k => `<section class="pcat"><h3>${esc(CAT[k])}</h3><div class="list">${by[k].map(p => `<p style="margin:0 0 8px">${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${esc(p.name)}</a>` : `<b>${esc(p.name)}</b>`}${p.blurb ? `<br><span class="meta">${esc(p.blurb)}</span>` : ""}</p>`).join("")}</div><span class="meta">Sponsored</span></section>`).join("");
+  } catch (_) { el.innerHTML = `<p class="empty">Partner listings couldn't load right now.</p>`; }
+})();
+document.getElementById("ps").onclick = async () => {
+  const v = id => document.getElementById(id).value.trim(), msg = (t, ok) => { const m = document.getElementById("pmsg"); m.textContent = t; m.style.color = ok ? "var(--sage)" : "#A12A20"; };
+  const email = v("pe").toLowerCase(), company = v("pc");
+  if (!company) return msg("Enter your company name.");
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg("Enter a valid email so we can reply.");
+  const message = (`[Partner inquiry] ${company} · ${v("pk")}` + (v("pw") ? ` · ${v("pw")}` : "") + (v("pm") ? `\n${v("pm")}` : "")).slice(0, 1000);
+  try {
+    const r = await fetch(CLOUD.url + "/rest/v1/help_requests", {method:"POST", headers:{...H, "Content-Type":"application/json", "Prefer":"return=minimal"}, body:JSON.stringify({email, message, kind:"other"})});
+    if (!r.ok) throw 0;
+    msg("Thanks! We'll be in touch at " + email + ".", true); ["pc", "pe", "pw", "pm"].forEach(id => document.getElementById(id).value = "");
+  } catch (_) { msg("That didn't go through. Please email caliaircrew@gmail.com instead."); }
+};

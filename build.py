@@ -17,6 +17,9 @@ Requires Python 3.9+ and PyYAML (pip install -r requirements.txt).
 If Node.js is installed, the page's JavaScript is also syntax-checked.
 
 Script change history
+  2.8.0  2026-10-03  Steve  Content pages: site/pages/*.html rendered into the
+                            shared shell (_shell.html + homepage CSS) as
+                            /<name>/ (partners, terms, privacy). Builds 1.39.
   2.7.0  2026-10-03  Steve  Admin page: site/admin.html + src/admin.js ->
                             admin/index.html (crew CSS shared, node syntax
                             check, refuses secret keys). Builds app 1.30.
@@ -61,7 +64,7 @@ try:
 except ImportError:
     sys.exit("PyYAML is required:  pip install -r requirements.txt")
 
-SCRIPT_VERSION = "2.7.0"
+SCRIPT_VERSION = "2.8.0"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MAX_BYTES = 16 * 1024 * 1024
 VALID_TAGS = {"piston", "turboprop", "jet", "turbine", "twin", "retract", "press"}
@@ -415,6 +418,30 @@ def main(argv=None):
     except BuildError as e:
         print(f"BUILD FAILED: {e}", file=sys.stderr)
         return 1
+    # Simple content pages (site/pages/*.html -> <name>/index.html) in the shared shell with the homepage's styles.
+    try:
+        shell = open(os.path.join(ROOT, "site", "pages", "_shell.html"), encoding="utf-8").read()
+        site_css = re.search(r"<style>(.*?)</style>", open(os.path.join(ROOT, "site", "home.html"), encoding="utf-8").read(), re.S).group(1)
+        pages_out = {}
+        for path in sorted(glob.glob(os.path.join(ROOT, "site", "pages", "*.html"))):
+            name = os.path.basename(path)[:-5]
+            if name.startswith("_"): continue
+            src = open(path, encoding="utf-8").read()
+            title = re.search(r"<!--TITLE:\s*(.*?)-->", src).group(1).strip(); desc = re.search(r"<!--DESC:\s*(.*?)-->", src).group(1).strip()
+            body, _, script = src.partition("<!--SCRIPT-->")
+            body = re.sub(r"<!--(TITLE|DESC):.*?-->\n?", "", body)
+            script = script.replace("{{CLOUD_JSON}}", cloud)
+            need("{{" not in script, f"site/pages/{name}.html has an unfilled placeholder")
+            pages_out[name] = (shell.replace("<<<SITE_CSS>>>", site_css).replace("{{TITLE}}", title).replace("{{DESC}}", desc)
+                               .replace("{{PARTNERS_CURRENT}}", ' aria-current="page" style="border-bottom:3px solid var(--blue)"' if name == "partners" else "")
+                               .replace("{{BODY}}", body).replace("{{SCRIPT}}", script.replace("</script", "<\\/script")))
+            need("{{" not in pages_out[name], f"site/pages/{name}.html left a {{{{placeholder}}}} in the shell")
+    except BuildError as e:
+        print(f"BUILD FAILED: {e}", file=sys.stderr)
+        return 1
+    for name, html in pages_out.items():
+        os.makedirs(os.path.join(a.out, name), exist_ok=True)
+        open(os.path.join(a.out, name, "index.html"), "w", encoding="utf-8").write(html)
     os.makedirs(os.path.join(a.out, "admin"), exist_ok=True)
     open(os.path.join(a.out, "admin", "index.html"), "w", encoding="utf-8").write(admin_page)
     os.makedirs(os.path.join(a.out, "crew"), exist_ok=True)
