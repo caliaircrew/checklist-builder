@@ -82,6 +82,16 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 26. Endorsements: fill 59 blank texts, verify 27 drafts against AC 61-65K
 - [ ] 27. Set `show_drafts: false` before public launch
 
+## H. AI on the site (requirements gathering; structured data first)
+Why the profile is mostly checkboxes and dropdowns: normalized values (role, certificate, ratings, region, availability, experience, per-aircraft hours / currency / school / Part 135) let AI analyze and match reliably; free text is kept small and reviewed.
+- [ ] 28. Admin "Ask the data": plain-English questions answered from the directory ("How many Part 135 PIC-current Citation pilots in Southern California are available this month?"), via a server-side function using read-only views and aggregate data only (no private fields to the model)
+- [ ] 29. Market insights for James: supply vs. demand by aircraft and region (zero-result searches, recruiting targets), trends over time, weekly summary email
+- [ ] 30. Smarter recommended crew for operators: ranking explained in plain words ("current on your XLS, 135 PIC, based in SoCal, available now")
+- [ ] 31. Profile helper for pilots: suggestions to complete or strengthen a profile; flags inconsistencies (hours on type > total time, expired currency)
+- [ ] 32. Moderation assist: pre-screen free text (contact details, inappropriate content) before James reviews; never auto-approve
+- [ ] 33. Checklist builder assist: suggest checklist items for an aircraft from its POH-style data, always marked as suggestions to verify against the AFM/POH
+- Guardrails: privacy first (no legal names, recovery contacts or emails sent to the model), admins confirm AI suggestions, every AI feature labeled as such, costs capped
+
 ## Design
 - Look and feel: "clear sky" palette (sky ink #234A6E, sky blue #2470B3 for the main action, cloud #E4EEF8, page #F4F8FC, white cards, sage for verified/current), Barlow Condensed + Source Sans 3, white top bar on computers, bottom tab bar on phones. Design canvas: https://claude.ai/artifact/Aq6Toqrz36YdWrZXiHgfjz
 - Layout rules: spacing on an 8 px scale (8/16/24/32/48/64); repeated items (steps, cards, tiles) in equal-width grids so icons, circles and headings line up regardless of text length; one main (sky-blue) action per screen.
