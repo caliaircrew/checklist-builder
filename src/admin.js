@@ -55,7 +55,7 @@ async function load(){
     q("audit", sb.from("admin_audit").select("*").order("id", {ascending:false}).limit(300))]);
   // Operator profiles (database update 009). Older databases simply show none.
   const soft = fn => fn.then(r => r.error ? [] : (r.data || []), () => []);
-  const [ops, opac, oppend] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*"))]);
+  const [ops, opac, oppend, priv] = await Promise.all([soft(sb.from("operator_profiles").select("*")), soft(sb.from("operator_aircraft").select("*")), soft(sb.from("operator_about_pending").select("*")), soft(sb.from("crew_private").select("*"))]);
   const mod = new Map(mods.map(m => [m.user_id, m])), acBy = new Map(), pend = new Map(pending.map(p => [p.user_id, p]));
   aircraft.forEach(a => { if (!acBy.has(a.user_id)) acBy.set(a.user_id, []); acBy.get(a.user_id).push(a); });
   const email = new Map(users.map(u => [u.user_id, u.email]));
@@ -63,7 +63,7 @@ async function load(){
   const opAcBy = new Map(); opac.forEach(a => { if (!opAcBy.has(a.user_id)) opAcBy.set(a.user_id, []); opAcBy.get(a.user_id).push(a); });
   const opStatus = o => { const m = mod.get(o.user_id); if (m && m.op_hidden) return "hidden"; if (!o.published) return "draft"; return m && m.op_approved ? "listed" : "waiting"; };
   D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf,
-       ops, opAcBy, opPend:new Map(oppend.map(p => [p.user_id, p])), opStatus};
+       ops, opAcBy, opPend:new Map(oppend.map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p]))};
 }
 
 /* ---------------- quality flags ---------------- */
@@ -76,6 +76,7 @@ function flags(p){
   if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(text)) f.push(["bad", "Email address in free text"]);
   if (/(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(text)) f.push(["bad", "Phone number in free text"]);
   if (/https?:\/\/|www\./i.test(text)) f.push(["", "Link in free text"]);
+  const pv = D.priv.get(p.user_id); if (!pv || !pv.legal_last) f.push(["", "No legal name for FAA check"]);
   if (!d.role) f.push(["", "No role"]); if (!d.region) f.push(["", "No region"]); if (!d.cert) f.push(["", "No certificate"]);
   const same = D.profiles.filter(x => x.user_id !== p.user_id && x.display_name && x.display_name.trim().toLowerCase() === (p.display_name || "").trim().toLowerCase());
   if (same.length) f.push(["", "Same name as another profile"]);
@@ -180,6 +181,7 @@ function itemHTML(p, mode){
       <span class="tag ${D.statusOf(p) === "listed" ? "ok" : "warn"}">${esc(D.statusOf(p))}</span></div>
     <div class="meta">${esc(D.email.get(p.user_id) || "")} · ${esc([L.cert[d.cert], L.role[d.role], d.airport, L.region[d.region]].filter(Boolean).join(" · "))} · ${p.total_time ? fmt(p.total_time) + " hrs total" : "no total time"} · updated ${day(p.updated_at)}</div>
     ${fl.length ? `<div class="flags">${fl.map(([k, t]) => `<span class="flag ${k}">${esc(t)}</span>`).join("")}</div>` : `<div class="flags"><span class="tag ok">No issues found</span></div>`}
+    ${(() => { const pv = D.priv.get(p.user_id); return pv && pv.legal_last ? `<div class="old" style="color:var(--text)"><b>For the FAA check:</b> ${esc(pv.legal_last)}, ${esc(pv.legal_first)}${pv.faa_city || pv.faa_state ? " · " + esc([pv.faa_city, pv.faa_state === "XX" ? "outside the US" : pv.faa_state].filter(Boolean).join(", ")) : ""}</div>` : ""; })()}
     <div style="font-size:16px;line-height:1.6">${ac.map(acLine).join("<br>") || '<span class="empty">No aircraft</span>'}</div>
     ${pend ? `<div><b>New text waiting for review</b><div class="pend">${esc(pend.bio)}</div>${p.bio ? `<b style="display:block;margin-top:8px">Currently public</b><div class="old">${esc(p.bio)}</div>` : ""}</div>` : (p.bio ? `<div class="old">${esc(p.bio)}</div>` : "")}
     <div class="f" style="max-width:520px"><label for="n-${esc(p.user_id)}">Private note (admins only)</label><input id="n-${esc(p.user_id)}" class="note" value="${esc(m.note || "")}" maxlength="1000"></div>
@@ -233,7 +235,9 @@ function bindReview(){
   $("body").addEventListener("click", async e => {
     const b = e.target.closest("[data-a]"); if (!b) return; const it = b.closest(".item"), id = it.dataset.id, m = D.mod.get(id) || {}, note = it.querySelector(".note").value;
     const a = b.dataset.a;
-    if (a === "faa") { const p = D.profiles.find(x => x.user_id === id); try { await navigator.clipboard.writeText(p.display_name || ""); } catch (_) {} window.open(FAA_URL, "_blank", "noopener"); say("Opened the FAA Airmen Inquiry. The pilot's name was copied; paste it into the search.", true); return; }
+    if (a === "faa") { const p = D.profiles.find(x => x.user_id === id), pv = D.priv.get(id); const last = pv && pv.legal_last ? pv.legal_last : (p.display_name || "");
+      try { await navigator.clipboard.writeText(last); } catch (_) {} window.open(FAA_URL, "_blank", "noopener");
+      say(pv && pv.legal_last ? `Opened the FAA Airmen Inquiry and copied the last name "${pv.legal_last}". Paste it, type the first name "${pv.legal_first}", then match the city and certificate.` : "Opened the FAA Airmen Inquiry. This pilot hasn't added a legal name yet; the profile name was copied.", true); return; }
     if (a === "approve") return act(() => sb.rpc("admin_moderate", {p_user:id, p_approved:true, p_hidden:false, p_verified:!!m.verified_faa, p_note:note, p_approve_text:true}), "Approved.");
     if (a === "approvever") return act(() => sb.rpc("admin_moderate", {p_user:id, p_approved:true, p_hidden:false, p_verified:true, p_note:note, p_approve_text:true}), "Approved and marked FAA verified.");
     if (a === "hide") return act(() => sb.rpc("admin_moderate", {p_user:id, p_approved:!!m.approved, p_hidden:!m.hidden, p_verified:!!m.verified_faa, p_note:note, p_approve_text:false}), m.hidden ? "Unhidden." : "Hidden from the directory.");
@@ -357,7 +361,7 @@ function viewBackup(){
 }
 function bindBackup(){
   $("bk1").onclick = () => { const out = {exported_at:new Date().toISOString(), exported_by:user.email, users:D.users, crew_profiles:D.profiles, crew_aircraft:[...D.acBy.values()].flat(), moderation:[...D.mod.values()], crew_bio_pending:[...D.pend.values()],
-      operator_profiles:D.ops, operator_aircraft:[...D.opAcBy.values()].flat(), operator_about_pending:[...D.opPend.values()], notify_signups:D.notify, aircraft_requests:D.acreq, privacy_requests:D.privacy, partners:D.partners, banner:D.banner, admin_audit:D.audit};
+      crew_private:[...D.priv.values()], operator_profiles:D.ops, operator_aircraft:[...D.opAcBy.values()].flat(), operator_about_pending:[...D.opPend.values()], notify_signups:D.notify, aircraft_requests:D.acreq, privacy_requests:D.privacy, partners:D.partners, banner:D.banner, admin_audit:D.audit};
     download("cali-aircrew-backup-" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(out, null, 1), "application/json"); say("Backup downloaded.", true); };
 }
 

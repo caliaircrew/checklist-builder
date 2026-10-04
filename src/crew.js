@@ -333,6 +333,8 @@ async function viewMe(){
     sb.from("crew_aircraft").select("*").eq("user_id", uid),
     sb.from("moderation").select("*").eq("user_id", uid).maybeSingle(),
     sb.from("crew_bio_pending").select("bio").eq("user_id", uid).maybeSingle()]);
+  const privRes = await sb.from("crew_private").select("*").eq("user_id", uid).maybeSingle();
+  const PV = Object.assign({legal_first:"", legal_last:"", faa_city:"", faa_state:""}, privRes && !privRes.error && privRes.data ? privRes.data : {});
   const publicBio = (p0 && p0.bio) || "";
   let pendingBio = pendRes && !pendRes.error && pendRes.data ? pendRes.data.bio : null;   // null = nothing waiting (or review not switched on yet)
   const P = Object.assign({display_name:"", crew_types:[], certificate:"", headline:"", home_base:"", travel:"", experience:"", bio:"", total_time:null, availability:"", published:false, details:{}}, p0 || {});
@@ -383,6 +385,11 @@ async function viewMe(){
       ${multi("xp", "experience", "Tap all that apply", D.experience)}
       ${multi("lg", "languages", "Languages (optional)", D.languages)}
     </section>
+    <section class="panel" aria-labelledby="h1v"><h2 id="h1v">FAA verification (private)</h2>
+      <p class="hint">Used only by Cali Aircrew to check your certificate in the FAA airmen registry for the <b>FAA verified</b> badge. Never shown on your profile. Enter it exactly as on your FAA certificate.</p>
+      <div class="grid2"><div class="f"><label for="lf">Legal first name</label><input id="lf" maxlength="60" autocomplete="given-name" value="${esc(PV.legal_first)}"></div><div class="f"><label for="ll">Legal last name</label><input id="ll" maxlength="60" autocomplete="family-name" value="${esc(PV.legal_last)}"></div></div>
+      <div class="grid2"><div class="f"><label for="fc">City on your FAA address</label><input id="fc" maxlength="60" value="${esc(PV.faa_city)}"></div><div class="f"><label for="fs">State</label><select id="fs"><option value="">Choose…</option><option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option><option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DE">DE</option><option value="DC">DC</option><option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option><option value="IA">IA</option><option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option><option value="ME">ME</option><option value="MD">MD</option><option value="MA">MA</option><option value="MI">MI</option><option value="MN">MN</option><option value="MS">MS</option><option value="MO">MO</option><option value="MT">MT</option><option value="NE">NE</option><option value="NV">NV</option><option value="NH">NH</option><option value="NJ">NJ</option><option value="NM">NM</option><option value="NY">NY</option><option value="NC">NC</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option><option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option><option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option><option value="WI">WI</option><option value="WY">WY</option><option value="PR">PR</option><option value="GU">GU</option><option value="VI">VI</option><option value="XX">Outside the US</option></select></div></div>
+    </section>
     <section class="panel" aria-labelledby="h1f"><h2 id="h1f">Anything else (optional)</h2>
       <div class="f"><label for="bio">A few words owners should know</label><textarea id="bio" maxlength="2000" placeholder="Optional.">${esc(P.bio)}</textarea><small>No phone numbers or email here. Owners will contact you through Cali Aircrew messaging. Changes to this text are reviewed before they show publicly.</small><span class="status warn" id="pendnote"${pendingBio != null ? "" : " hidden"}>Your new text is waiting for review. Owners see your previous text until then.</span></div>
     </section>
@@ -394,8 +401,10 @@ async function viewMe(){
    </div>
    <aside class="prevcol" aria-label="Live preview" id="prev"></aside>
   </div>`;
+  $("fs").value = PV.faa_state || "";
   const checked = n => [...app.querySelectorAll(`input[name=${n}]:checked`)].map(i => i.value);
   const read = () => {
+    Object.assign(PV, {legal_first:$("lf").value.trim(), legal_last:$("ll").value.trim(), faa_city:$("fc").value.trim(), faa_state:$("fs").value});
     P.display_name = $("dn").value.trim();
     Object.assign(D, {role:$("role").value, cert:$("cert").value, medical:$("med").value, ratings:checked("rt"), region:$("reg").value, airport:$("apt").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8),
       status:$("stat").value, travel:$("trv").value, looking:checked("lk"), passport:$("pp").checked, experience:checked("xp"), languages:checked("lg")});
@@ -498,6 +507,9 @@ async function viewMe(){
         pendingBio = rp.error ? null : P.bio;
       } else if (pendingBio != null) { await sb.from("crew_bio_pending").delete().eq("user_id", uid); pendingBio = null; }
       if ($("pendnote")) $("pendnote").hidden = pendingBio == null;
+      // Private FAA-verification details (database update 010); saved quietly, skipped if not set up yet.
+      if (PV.legal_first || PV.legal_last || PV.faa_city || PV.faa_state || (privRes && privRes.data))
+        await sb.from("crew_private").upsert({user_id:uid, legal_first:PV.legal_first, legal_last:PV.legal_last, faa_city:PV.faa_city, faa_state:PV.faa_state}, {onConflict:"user_id"}).then(() => {}, () => {});
       const r2 = await sb.from("crew_aircraft").delete().eq("user_id", uid); if (r2.error) throw r2.error;
       if (AC.length) {
         // Newer columns (part135 from 004, is_current from 005) are dropped one by one if the database hasn't been upgraded yet.

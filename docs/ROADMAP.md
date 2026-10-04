@@ -4,7 +4,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 
 ## A. Housekeeping
 - [x] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor
-- [x] 3e. Run supabase/009_operators.sql (operator profiles)
+- [x] 3e. Run supabase/009_operators.sql
+- [ ] 3f. Run supabase/010_crew_private.sql (private FAA-verification details) (operator profiles)
 - [x] 3d. supabase/008_metrics_fix.sql and supabase/001_checklists.sql applied 2026-10-03 (checklist sync tables were missing in production until now)
 - [x] 3c. Run supabase/007_admin.sql (admin page, review of free text, search metrics, banner, partners, requests)
 - [x] 3b. Run supabase/006_currency_details.sql (includes 005: Current checkbox, current-through month, training school)
@@ -64,6 +65,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 18. Messaging between operators and crew (pilots choose when to share phone/email); later "Notify me" when a new operator of an aircraft type joins
 - [ ] 19. Availability calendar (dates, home base, travel radius)
 - [ ] 20. Verification badges (FAA airmen database match; sim training checked by James)
+  - [x] 20a. Private legal name + FAA address city/state on crew profiles, shown in admin review; FAA button copies the legal last name (v1.32)
+  - [ ] 20b. Monthly import of the FAA Airmen Certification Releasable Database (GitHub Action), storing only what matching needs; automatic "Likely FAA match: certificate level, ratings, type ratings, city/state" or "No FAA match found" in admin review. Admin always confirms; withheld addresses and common names handled as suggestions, never auto-approval
 - [ ] 21. Currency & expiration tracker with email reminders; "current" badge; owner aircraft inspections due
 
 ## F. Business & launch
