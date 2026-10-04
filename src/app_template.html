@@ -534,6 +534,9 @@ $("aRes").addEventListener("click",e=>{const b=e.target.closest("[data-a]"); if(
   {const it=LIBR.items[LIBR.current]; if(it&&(/^(My checklist|New checklist)( \d+)?$/.test(it.name)||!it.name)){it.name=acftName(a)+(S.tail?" – "+S.tail:""); lsave(); drawLib()}}
   $("aQ").value=""; $("aRes").hidden=true; changed(); drawSel();
   if(!a.heli) loadDefault(a,true);});
+/* Deep link from crew pages: #acft=<seq> picks that aircraft once on load. */
+setTimeout(()=>{const m=location.hash.match(/^#acft=(\d+)$/); if(!m||!ACFT[+m[1]]) return; history.replaceState(null,"",location.pathname+location.search);
+  const b=document.createElement("button"); b.dataset.a=m[1]; b.hidden=true; $("aRes").appendChild(b); b.click(); b.remove();},50);
 document.addEventListener("click",e=>{if(!e.target.closest("#aFind")) $("aRes").hidden=true});
 $("resetDef").onclick=()=>{if(S.acftId!=null) resetDefault(ACFT[S.acftId])};
 /* ---------- picker ---------- */

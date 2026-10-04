@@ -27,9 +27,9 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 11. Supabase tables + RLS for profiles (public only when published)
 - [x] 12. Crew types: airplane pilot, helicopter pilot, CFI/CFII/CFI-H, corporate flight attendant, ferry/delivery pilot, mechanic (A&P/IA)
 - [x] 13. Profile editor (build → publish/unpublish) and public profile page
-- [ ] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
-- [ ] 14c. Quick links under the Find crew search: Contract pilots · Available now · Part 135 current · CFIs near me · Helicopter pilots
-- [ ] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
+- [x] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
+- [x] 14c. Quick links under the Find crew search: Contract pilots · Available now · Part 135 current · CFIs near me · Helicopter pilots
+- [x] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
 - [ ] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)
 - [ ] 14d. Recommended crew for operators: an operator profile's aircraft + base automatically shows matching crew (type, region, available now, Part 135)
 - [ ] 15. Admin page (caliaircrew.com/admin, admins only; database functions gated by is_admin(), no secret keys in the browser):

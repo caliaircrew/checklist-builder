@@ -52,7 +52,8 @@ a.box:hover{border-color:var(--blue)}
 .wide{margin-top:24px}
 .wide .head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
-.tile{padding:14px 16px;background:var(--cloud);border-radius:10px;font:700 20px/1.2 var(--display);color:var(--ink)}
+.tile{display:block;padding:14px 16px;background:var(--cloud);border-radius:10px;font:700 20px/1.2 var(--display);color:var(--ink);text-decoration:none}
+a.tile:hover{background:#D4E4F4}
 /* steps */
 .how{padding:48px 32px 64px;display:flex;flex-direction:column;gap:24px}
 .how h2,.notify h2,.partners h2{margin:0;font:700 36px/1.05 var(--display);color:var(--ink)}
@@ -114,7 +115,7 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
     <a class="brand" href="./"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2470B3"/><path d="M10 40 L54 28 L50 24 L30 29 L22 17 L17 18 L22 31 L13 33 L9 29 L6 30 Z" fill="#fff"/></svg>Cali Aircrew</a>
     <nav aria-label="Main">
       <a href="checklists/">Checklists</a>
-      <a href="#notify">Find crew<span class="soon">Soon</span></a>
+      <a href="crew/">Find crew</a>
       <a href="#partners">Partners</a>
       <a class="btn primary" href="crew/#/me">Sign in</a>
     </nav>
@@ -138,7 +139,7 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
     <p class="lede">Aircraft owners and charter operators find professional, type-current pilots, CFIs, flight attendants and mechanics. Pilots get listed free and build clean checklists for any airplane or helicopter.</p>
     <div class="actions">
       <a class="btn primary" href="checklists/">Build a checklist</a>
-      <a class="btn secondary" href="#notify"><span class="long">Get notified when Find crew opens</span><span class="short">Get notified</span></a>
+      <a class="btn secondary" href="crew/">Find crew</a>
     </div>
   </div>
 </section>
@@ -152,12 +153,11 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
         <p>Pick from 600+ aircraft, print a two-column card, and keep it on every device. Includes CFI endorsements.</p>
         <span class="go">Build a checklist</span>
       </a>
-      <a class="box" href="#notify">
-        <span class="soon">Coming soon</span>
+      <a class="box" href="crew/">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#234A6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>
         <h2>Find crew</h2>
         <p>Search pilots, CFIs, flight attendants and mechanics by aircraft, area and availability.</p>
-        <span class="go">Get notified</span>
+        <span class="go">Search the directory</span>
       </a>
       <a class="box" href="crew/#/me">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#234A6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
@@ -167,17 +167,16 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
       </a>
     </div>
     <div class="box wide">
-      <span class="soon">Coming soon</span>
       <div class="head">
         <div style="display:flex;flex-direction:column;gap:8px;max-width:640px">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#234A6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2 -7h-4l-2 2h-3l2 -4l-2 -4h3l2 2h4l-2 -7h3z"/></svg>
           <h2>Browse crew by aircraft</h2>
           <p>Start from the aircraft you fly or operate and see who is current on it.</p>
         </div>
-        <a class="go" href="#notify" style="text-decoration:none">Get notified</a>
+        <a class="go" href="crew/#/aircraft" style="text-decoration:none">Browse all aircraft</a>
       </div>
-      <div class="tiles" aria-label="Examples">
-        <span class="tile">Citation XLS / XLS+</span><span class="tile">King Air 350</span><span class="tile">Pilatus PC-12 NGX</span><span class="tile">Citation CJ3 / CJ3+</span><span class="tile">Phenom 300E</span><span class="tile">Robinson R44</span>
+      <div class="tiles" aria-label="Popular aircraft">
+        <a class="tile" href="crew/#/a/51">Citation XLS</a><a class="tile" href="crew/#/a/278">King Air 350</a><a class="tile" href="crew/#/a/228">Pilatus PC-12 NGX</a><a class="tile" href="crew/#/a/58">Citation CJ3 / CJ3+</a><a class="tile" href="crew/#/a/373">Phenom 300E</a><a class="tile" href="crew/#/a/624">Robinson R44</a>
       </div>
     </div>
   </div>
@@ -197,8 +196,8 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
   <section class="notify" id="notify" aria-labelledby="nf-h">
     <div class="wrap">
       <div>
-        <h2 id="nf-h">Be first in the crew directory</h2>
-        <p>Find crew and crew profiles open soon. Leave your email and we'll tell you the day it opens. No spam, and we never share your address.</p>
+        <h2 id="nf-h">Stay in the loop</h2>
+        <p>The crew directory is open in private beta on the West Coast. Leave your email for news, new features and when we open in your region. No spam, and we never share your address.</p>
       </div>
       <form class="nf" id="nf" novalidate>
         <div class="field"><label for="nf-email">Email</label><input id="nf-email" type="email" autocomplete="email" required placeholder="you@example.com"></div>
@@ -232,7 +231,7 @@ footer p{margin:0;flex:1 1 100%;max-width:72ch}
 <nav class="tabbar" aria-label="Main">
   <a href="./" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</a>
   <a href="checklists/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Checklists</a>
-  <a href="#notify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Find crew</a>
+  <a href="crew/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg>Find crew</a>
   <a href="crew/#/me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Sign in</a>
 </nav>
 <footer>

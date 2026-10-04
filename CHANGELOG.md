@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.26 | 2026-10-03 | Find crew (#/): filters + quick links, ranking (available now, FAA verified, hours on type, total time), master-detail on wide/landscape; Browse by aircraft (#/aircraft) listed-only by default with counts; aircraft pages (#/a/<seq>); builder deep link #acft=<seq>; homepage directory live, tiles → aircraft pages; phone layout (scrolling quick links, More filters). |
 | 1.25 | 2026-10-03 | Tap-to-choose profile (details jsonb: role, cert, ratings, medical, region, airport, status, looking, travel, passport, experience, languages) with plain-text copies kept in the old columns; profile card shows them as chips; supabase/004_profile_choices.sql (includes 003). |
 | 1.24 | 2026-10-03 | 47 helicopters (category helicopter, engine turboshaft/piston); builder shows helicopter note instead of airplane defaults; dash/space-insensitive aircraft search (builder + profile, profile now uses search words); per-aircraft Part 135 SIC/PIC + badge (supabase/003_part135.sql); browse panel hidden fix. 670 aircraft. |
 | 1.23 | 2026-10-03 | Builder: Home button + title link to the site root. Homepage Sign in (top bar and phone tab) → crew/#/me. |

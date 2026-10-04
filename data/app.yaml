@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.25'
+app_version: '1.26'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,11 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.26'
+    notes:
+      - "Find crew is open: search by aircraft, crew type, region and certificate, with quick links (Contract pilots, Available now, Part 135 current, CFIs, Helicopter pilots). On a computer or iPad in landscape, tap a result to see the profile beside the list"
+      - "Browse by aircraft: aircraft with listed crew and how many, by category and manufacturer; each aircraft has its own page with its crew and a Build a checklist button that opens the builder with that aircraft picked"
+      - "Homepage: Find crew and Browse crew by aircraft are live; the popular aircraft tiles open their aircraft pages"
   - version: '1.25'
     notes:
       - "Crew profile is now mostly taps: role, certificate, ratings, FAA medical, crew type, home region and airport, availability status, what you're looking for, travel, passport, experience and languages. One optional text box at the end"
