@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.63 | 2026-10-04 | Home hero (Steve): 'Make a checklist' renamed 'Create checklist'; all three hero buttons use the blue primary style (.btn.navy kept in CSS, unused). |
 | 1.62 | 2026-10-04 | Home hero (Steve): third button 'Make a checklist' (dark navy, .btn.navy = --ink) between Find crew and Get listed free, linking to checklists/. |
 | 1.61 | 2026-10-04 | Home headline (Steve): 'Connecting aircrew / with opportunity.' Lede: 'Pilots, CFIs and flight attendants list free. Owners and operators find the right crew for their aircraft.' Page title and meta description to match. |
 | 1.60 | 2026-10-04 | Profile editor aircraft rows (Steve's iPad screenshot: names overlapping checkboxes, Total/PIC fields crushed). The 6-column grid held up to 11 controls, so items wrapped into the wrong cells. Each aircraft is now a stacked block: name + ✕; wrapping checkboxes (type rated, type-rating choice, single-pilot, current, flying it now); labeled Total / PIC / SIC hours (3 columns); labeled Part 135 and Day rate (2 columns, 1 on narrow phones); currency box unchanged. Checked at 820, 1180 and 390 px with no overflow; PIC/SIC/day rate save verified. |
