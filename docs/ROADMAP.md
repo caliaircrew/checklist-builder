@@ -72,7 +72,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 21. Currency & expiration tracker with email reminders; "current" badge; owner aircraft inspections due
 
 ## F. Business & launch
-- [ ] 22. LLC / insurance decision; attorney sign-off on terms. Note: Cali Aircrew is currently a DBA (fictitious business name); ask the attorney about forming an LLC for liability protection (an LLC can keep the name Cali Aircrew)
+- [ ] 22. LLC / insurance decision; attorney sign-off on terms. Cali Aircrew is currently a DBA of James Bailey; James decided (2026-10-03) to form an LLC. Then: update Terms/Privacy to name the LLC, refile the fictitious business name under the LLC if keeping "Cali Aircrew" as a DBA, business bank account, insurance (general + professional/tech E&O), and Stripe/partners under the LLC
 - [ ] 23. Pricing + Stripe; paid partner listings
 - [ ] 24. Public launch
 
