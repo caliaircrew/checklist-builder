@@ -19,6 +19,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 ## C. Website
 - [ ] 8. Partners page (small): insurance, sim training, flight schools; labeled sponsored; "Become a partner" contact
 - [ ] 9. Terms of Use + Privacy Policy: Claude drafts, aviation attorney reviews
+- [ ] 9a. FAQ page and Help / Contact page; social links in the footer
+- [ ] 9b. Testimonials section on the homepage (once James's network is using it; real quotes with permission only)
 - [ ] 10. Contact address (caliaircrew@gmail.com or @caliaircrew.com mailbox); move sign-in email sender to it
 
 ## D. Crew directory — Phase 1 (private beta)
@@ -26,8 +28,10 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 12. Crew types: airplane pilot, helicopter pilot, CFI/CFII/CFI-H, corporate flight attendant, ferry/delivery pilot, mechanic (A&P/IA)
 - [x] 13. Profile editor (build → publish/unpublish) and public profile page
 - [ ] 14. Find crew search (crew type, aircraft type, area); Find a CFI view
+- [ ] 14c. Quick links under the Find crew search: Contract pilots · Available now · Part 135 current · CFIs near me · Helicopter pilots
 - [ ] 14a. Browse by aircraft: categories → model tiles with crew counts (only types with published crew); aircraft pages with crew current on the type, "Build a checklist", "I fly this aircraft", training partners; same tiles in the profile editor
 - [ ] 14b. Operator profiles moved into Phase 1: owner/charter operator, home base, aircraft operated, "Open to contract crew" switch; aircraft pages get a second tab "Operators flying this aircraft" so pilots can browse by the aircraft they fly (directory, not job posts)
+- [ ] 14d. Recommended crew for operators: an operator profile's aircraft + base automatically shows matching crew (type, region, available now, Part 135)
 - [ ] 15. Admin page (caliaircrew.com/admin, admins only; database functions gated by is_admin(), no secret keys in the browser):
   - [ ] 15a. Dashboard: users, profiles by status (draft / waiting / listed / hidden), operators, Get-notified sign-ups, new this week
   - [ ] 15b. Review queue: approve, hide, mark FAA verified (with FAA registry link), notes; re-review when a listed profile's free text changes
@@ -62,6 +66,8 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [ ] 24. Public launch
 
 ## G. Content (ongoing)
+- [ ] 24a. Contract day-rate survey: anonymous "day rate on your type, by region" form; publish aggregated West Coast results (minimum sample size before showing a number)
+- [ ] 24b. Crew Lounge-style blog (later): checklist tips, currency reminders, West Coast ops notes
 - [ ] 25. Type-qualified pilot review of the 6 draft model checklists; rebuild Citation XLS without the Jet Linx card
 - [ ] 26. Endorsements: fill 59 blank texts, verify 27 drafts against AC 61-65K
 - [ ] 27. Set `show_drafts: false` before public launch
@@ -96,6 +102,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - Find a CFI = a preset view of Find crew (no separate design)
 
 ## Guardrails (from earlier decisions)
+- Competitive note (BizJetJobs, reviewed 2026-10-03): established national job board + recruiting. Our position: free West Coast directory with per-aircraft detail (hours, type rating, Part 135 SIC/PIC, available now), helicopters, and free pilot tools; no job board. Borrow ideas, never copy their content or design.
 - No aircraft-for-sale or charter listings (different business; charter-broker risk). Operator profiles ("aircraft that need crew") are Phase 2.
 - Directory, not a broker: never arrange or sell flights; no trip/job posting board for now.
 - Profiles are advertisements; members verify each other. Show badges, never store or display ID/medical documents publicly.
