@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.57 | 2026-10-04 | Roadmap 7f: checklist Word export (standard size) no longer uses Word section columns; each page is one borderless 3-cell table (column, 0.3in gap, column) holding the section tables, following PLAN (the See & print page/column plan recorded by renderPreview), with a page break between pages. Large print unchanged (single column). Validated with the docx skill's validator; rendered in LibreOffice: same pages as the preview. |
 | 1.56 | 2026-10-04 | Partners page intro: 'Reach professional pilots, owners and charter operators nationwide' (no 'West Coast'). |
 | 1.55 | 2026-10-04 | Home 'Stay in the loop' (Steve): 'open in private beta' without 'on the West Coast'; 'we'll let you know when we open in your area'. |
 | 1.54 | 2026-10-04 | Home headline (Steve): 'The crew directory / for every aircraft.' Lede: 'Type-current pilots, CFIs and flight attendants, plus free tools crew use every day.' No 'West Coast' in the hero (nationwide). Page title and meta description to match. Hero buttons: Find crew (primary), Get listed free. 'Stay in the loop' beta line unchanged (James). |

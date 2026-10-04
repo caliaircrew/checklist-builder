@@ -730,15 +730,17 @@ function secHTML(s,fs){
   }).join("");
   return `<div class="cs${s.plain?" plain":""}" style="font-size:${fs}px"><div class="bar" style="font-size:${fs+1}px">${esc(s.title)||"&nbsp;"}</div>${s.when?`<div class="when">${esc(s.when)}</div>`:""}${body}</div>`;
 }
+let PLAN=null;
 function renderPreview(){
   const large=size==="large", fs=large?21.3:12, colW=large?720:345.6, colH=1056-77-60-6;
   const meas=$("measure"); meas.style.width=colW+"px";
   const blocks=S.sections.map(s=>{meas.innerHTML=secHTML(s,fs); const h=meas.firstChild.offsetHeight+13; return {html:meas.innerHTML,h}});
   meas.innerHTML="";
-  const ncol=large?1:2, pages=[]; let page=null, col=0, used=0;
-  const newPage=()=>{page=Array.from({length:ncol},()=>[]); pages.push(page); col=0; used=0};
+  const ncol=large?1:2, pages=[], plan=[]; let page=null, pl=null, col=0, used=0;
+  const newPage=()=>{page=Array.from({length:ncol},()=>[]); pl=Array.from({length:ncol},()=>[]); pages.push(page); plan.push(pl); col=0; used=0};
   newPage();
-  blocks.forEach(b=>{ if(used>0&&used+b.h>colH){ col++; used=0; if(col>=ncol) newPage(); } page[col].push(b.html); used+=b.h; });
+  blocks.forEach((b,bi)=>{ if(used>0&&used+b.h>colH){ col++; used=0; if(col>=ncol) newPage(); } page[col].push(b.html); pl[col].push(bi); used+=b.h; });
+  PLAN={large,pages:plan};
   const head=`<div class="ph"><span>${esc(S.operator)||"[OPERATOR NAME]"}</span><span>NORMAL PROCEDURES</span><span>${esc(S.aircraft)||"[AIRCRAFT TYPE]"}${S.tail?" · "+esc(S.tail):""}</span></div><div class="rev">Version ${esc(S.version)||"1.0"} · Revision: ${esc(S.revision)||"[MM/DD/YYYY]"}</div>`;
   const host=$("pages");
   host.innerHTML=S.sections.length?pages.map((p,i)=>`<div class="pagewrap"><div class="page">${head}<div class="cols">${p.map(c=>`<div class="col">${c.join("")}</div>`).join("")}</div><div class="pf"><b>BOXED ITEMS = FIRST FLIGHT OF DAY</b><span>Not FAA-approved – verify all items against the approved AFM/POH</span><span>Page ${i+1}</span></div></div></div>`).join(""):'<div class="empty">Add a section to see your checklist here.</div>';
@@ -755,8 +757,8 @@ function buildDoc(large){
   const none={style:BorderStyle.NONE,size:0,color:"FFFFFF"}, thin={style:BorderStyle.SINGLE,size:4,color:"BFBFBF"}, out={style:BorderStyle.SINGLE,size:8,color:"000000"}, heavy={style:BorderStyle.SINGLE,size:24,color:"000000"};
   const margins={top:50,bottom:50,left:80,right:80};
   const cell=(children,width,o={})=>new TableCell({children,width:{size:width,type:WidthType.DXA},margins,verticalAlign:VerticalAlign.CENTER,columnSpan:o.span,shading:o.fill?{type:ShadingType.CLEAR,fill:o.fill,color:"auto"}:undefined,borders:o.borders});
-  const body=[];
-  S.sections.forEach((s,i)=>{
+  const secBlocks=[];
+  S.sections.forEach((s,i)=>{ const body=[]; secBlocks.push(body);
     const rows=[new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"SectionBar",text:s.title||" "})],W,{span:2,fill:"000000",borders:{top:none,left:none,right:none,bottom:none}})]})];
     if(s.when) rows.push(new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"WhenLine",text:s.when})],W,{span:2,borders:{top:none,left:out,right:out,bottom:thin}})]}));
     s.rows.forEach((r,idx)=>{
@@ -772,6 +774,21 @@ function buildDoc(large){
     body.push(new Table({layout:d.TableLayoutType.FIXED,width:{size:W,type:WidthType.DXA},columnWidths:[HALF,HALF],rows}));
     body.push(new Paragraph({spacing:{before:0,after:0,line:200,lineRule:d.LineRuleType.EXACT},children:[new TextRun({text:"",size:8})]}));
   });
+  // Standard size: each printed page is one borderless table with two columns (not Word's column feature),
+  // following the See & print page plan, so simple viewers such as the iPad preview show it correctly.
+  const gap=()=>new Paragraph({spacing:{before:0,after:0,line:20,lineRule:d.LineRuleType.EXACT},children:[new TextRun({text:"",size:2})]});
+  let body=[];
+  if(large||!PLAN||PLAN.large) body=secBlocks.flat();
+  else {
+    const nob={top:none,bottom:none,left:none,right:none,insideHorizontal:none,insideVertical:none}, G=432;
+    const colCell=(ids,w)=>new TableCell({width:{size:w,type:WidthType.DXA},margins:{top:0,bottom:0,left:0,right:0},borders:{top:none,bottom:none,left:none,right:none},
+      children:ids.length?ids.flatMap(i=>secBlocks[i]):[gap()]});
+    PLAN.pages.forEach((pg,pi)=>{
+      if(pi>0) body.push(new Paragraph({pageBreakBefore:true,spacing:{before:0,after:0,line:20,lineRule:d.LineRuleType.EXACT},children:[new TextRun({text:"",size:2})]}));
+      body.push(new Table({layout:d.TableLayoutType.FIXED,width:{size:W*2+G,type:WidthType.DXA},columnWidths:[W,G,W],borders:nob,
+        rows:[new TableRow({children:[colCell(pg[0]||[],W),new TableCell({width:{size:G,type:WidthType.DXA},borders:{top:none,bottom:none,left:none,right:none},children:[gap()]}),colCell(pg[1]||[],W)]})]}));
+    });
+  }
   return new Document({
     styles:{default:{document:{run:{font:"Arial",size:FS}}},paragraphStyles:[
       {id:"SectionBar",name:"Section Bar",basedOn:"Normal",quickFormat:true,run:{bold:true,color:"FFFFFF",size:FS+1},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:0,after:0}}},
@@ -781,7 +798,7 @@ function buildDoc(large){
       {id:"PhaseDivider",name:"Phase Divider",basedOn:"Normal",quickFormat:true,run:{bold:true},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:80,after:0}}},
       {id:"WhenLine",name:"When Line",basedOn:"Normal",quickFormat:true,run:{italics:true,size:FS-2,color:"333333"},paragraph:{keepNext:true,alignment:AlignmentType.CENTER,spacing:{before:0,after:0}}}]},
     numbering:{config:[{reference:"ck",levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:large?560:340,hanging:large?560:340}}}}]}]},
-    sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1150,bottom:900,left:720,right:720,header:400,footer:400}},column:large?{count:1}:{count:2,space:432,equalWidth:true}},
+    sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1150,bottom:900,left:720,right:720,header:400,footer:400}}},
       headers:{default:new Header({children:[
         new Paragraph({tabStops:[{type:TabStopType.CENTER,position:5400},{type:TabStopType.RIGHT,position:10800}],border:{bottom:{style:BorderStyle.SINGLE,size:12,color:"000000",space:3}},
           children:[new TextRun({text:S.operator||"[OPERATOR NAME]",bold:true,size:22}),new TextRun({text:"\tNORMAL PROCEDURES",bold:true,size:22}),new TextRun({text:"\t"+((S.aircraft||"[AIRCRAFT TYPE]")+(S.tail?" · "+S.tail:"")),bold:true,size:22})]}),
@@ -799,7 +816,7 @@ async function offer(filename,data){
   const url=URL.createObjectURL(data instanceof Blob?data:new Blob([data])); const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); status("Downloaded: "+filename);
 }
 const fname=ext=>((S.aircraft||"Aircraft").replace(/[\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim()+" Checklist"+(ext==="docx"?" v"+(S.version||"1.0"):"")+(ext==="docx"&&size==="large"?" LARGE PRINT":"")+"."+ext);
-$("dlWord").onclick=async()=>{ if(!S.sections.length){status("Add a section first.");return} status("Building Word file…"); try{ const blob=await window.docx.Packer.toBlob(buildDoc(size==="large")); await offer(fname("docx"),blob);}catch(e){status("Something went wrong building the file.")} };
+$("dlWord").onclick=async()=>{ if(!S.sections.length){status("Add a section first.");return} status("Building Word file…"); try{ renderPreview(); const blob=await window.docx.Packer.toBlob(buildDoc(size==="large")); await offer(fname("docx"),blob);}catch(e){status("Something went wrong building the file.")} };
 /* ---------- PDF export: draws the See & print pages exactly as shown (vector text, built-in PDF fonts) ---------- */
 const PDF_WIN={0x20AC:128,0x201A:130,0x0192:131,0x201E:132,0x2026:133,0x2020:134,0x2021:135,0x02C6:136,0x2030:137,0x0160:138,0x2039:139,0x0152:140,0x017D:142,0x2018:145,0x2019:146,0x201C:147,0x201D:148,0x2022:149,0x2013:150,0x2014:151,0x02DC:152,0x2122:153,0x0161:154,0x203A:155,0x0153:156,0x017E:158,0x0178:159};
 const PDF_SYM={0x2192:0xAE,0x2190:0xAC,0x2191:0xAD,0x2193:0xAF,0x2194:0xAB,0x21D2:0xDE,0x2265:0xB3,0x2264:0xA3,0x2260:0xB9,0x2248:0xBB,0x221E:0xA5,0x0394:0x44,0x2206:0x44,0x2032:0xA2,0x2033:0xB2};
