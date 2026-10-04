@@ -76,6 +76,13 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
   - [x] 35c. Helicopter pilot: turbine vs piston time, NVG, long line / external load, EMS, tours, firefighting, mountain and offshore, SFAR 73 (R22/R44) endorsements
   - [x] Each crew type sees only its own questions · [x] Find crew filters adapt to the crew type chosen (v1.42)
 
+## D3. Profile upgrade, round 2 (James, 2026-10-03) — building now
+- [ ] 36. Profile page in context: arriving from an aircraft (search or aircraft page) shows a highlighted box with that pilot's currency, hours, Part 135 seat and day rate on that aircraft
+- [ ] 37. Areas the pilot operates in (regions, tap to choose) and "Flying since" year
+- [ ] 38. Work history: where they work now and have worked (operator type, role, company name, aircraft, years; "current job")
+- [ ] 39. Day rate per aircraft line (each aircraft its own rate band); Find crew's day-rate filter uses the searched aircraft's rate
+- [ ] 40. Hours by engine type calculated automatically from per-aircraft hours: jet, turboprop, turbine total (jet + turboprop + turbine helicopter), piston, multi-engine, helicopter (turbine / piston); total and PIC stay typed
+
 ## E. Crew directory — Phase 2
 - [ ] 17. One-tap résumé PDF from the profile
 - [ ] 18. Messaging between operators and crew (pilots choose when to share phone/email); later "Notify me" when a new operator of an aircraft type joins
