@@ -8,7 +8,7 @@ Tick items as they are done (edit this file, or ask Claude to). Order = planned 
 - [x] 3f. Run supabase/010_crew_private.sql
 - [x] 3g. Run supabase/011_account.sql
 - [x] 3i. Run supabase/013_reminders.sql (2026-10-03)
-- [ ] 3m. Redeploy the reminders Edge Function (v1.48 type ratings + v1.49 admin alerts), then run supabase/016_admin_alerts.sql
+- [x] 3m. Redeploy the reminders Edge Function (v1.48 + v1.49) and run supabase/016_admin_alerts.sql (done 2026-10-03; jobs cali-admin-alerts 5 * * * * and cali-currency-reminders 0 16 * * * active)
 - [x] 3l. Run supabase/015_saved.sql and redeploy the reminders Edge Function (done 2026-10-03)
 - [x] 3j. Reminders setup (docs/REMINDERS_SETUP.md; scheduled 2026-10-03: cali-currency-reminders, 0 16 * * *, active): deploy reminders function, REMINDER_KEY secret, vault secret, run 014
 - [ ] 3k. Run the "missing objects" audit query after every database update (expect no rows)
