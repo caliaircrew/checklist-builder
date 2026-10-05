@@ -1010,7 +1010,7 @@ const myStamp=()=>+(localStorage.getItem("acb-myitems-updated")||0);
 const blankData=()=>({operator:"",aircraft:"",revision:"",version:"1.0",tail:"",profile:{engine:"any",twin:true,retract:true,press:true},sections:[]});
 function setCloud(st,msg){cloudState=st; cloudMsg=msg||""; const el=$("libSaved"); if(el) el.textContent=!sbUser?"✓ Saved on this device":
   st==="synced"?"☁ Synced to your account":st==="syncing"?"⟳ Syncing…":st==="offline"?"✓ Saved on this device · syncs when back online":
-  st==="needs2fa"?"🔒 Enter your Microsoft Authenticator code to sync":st==="error"?"⚠ Not synced yet: "+cloudMsg:"✓ Saved on this device"; drawAcct();}
+  st==="needs2fa"?"🔒 Enter your authenticator app code to sync":st==="error"?"⚠ Not synced yet: "+cloudMsg:"✓ Saved on this device"; drawAcct();}
 function cloudDirty(id){if(!sb||!sbUser) return; if(id) dirty.add(id); clearTimeout(pushTimer); pushTimer=setTimeout(pushDirty,2500)}
 function cloudDirtyMy(){if(!sb||!sbUser) return; dirtyMy=true; clearTimeout(pushTimer); pushTimer=setTimeout(pushDirty,2500)}
 async function needMfa(){const r=await sb.auth.mfa.getAuthenticatorAssuranceLevel(); const a=r&&r.data; return !!(a&&a.nextLevel==="aal2"&&a.currentLevel!=="aal2")}
@@ -1067,7 +1067,7 @@ async function syncAll(){
 }
 function modalBox(html){const m=document.createElement("div"); m.className="modal"; m.innerHTML=`<div class="box">${html}</div>`; document.body.appendChild(m); m.addEventListener("click",e=>{if(e.target===m) m.remove()}); return m}
 async function mfaVerify(code){
-  if(!/^\d{6}$/.test(code)) return "Enter the 6-digit code from Microsoft Authenticator.";
+  if(!/^\d{6}$/.test(code)) return "Enter the 6-digit code from your authenticator app.";
   const {data:f,error:e1}=await sb.auth.mfa.listFactors(); if(e1) return e1.message;
   const t=((f&&f.totp)||[]).find(x=>x.status==="verified")||((f&&f.totp)||[])[0]; if(!t) return "No authenticator is set up for this account.";
   const {data:ch,error:e2}=await sb.auth.mfa.challenge({factorId:t.id}); if(e2) return e2.message;
@@ -1090,7 +1090,7 @@ function openSignIn(){
       const {error}=await sb.auth.verifyOtp({email,token,type:"email"}); b.disabled=false; if(error) return msg(error.message);
       if(await needMfa()) return s3(); m.remove()};
     b.onclick=go; c.onkeydown=ev=>{if(ev.key==="Enter") go()}};
-  const s3=()=>{msg(""); step.innerHTML=`<p>Two-step sign-in is on for this account. Open <b>Microsoft Authenticator</b> and type the 6-digit code for Checklist Builder.</p><label class="f">Authenticator code<input type="text" id="siTotp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label><button class="btn primary" id="siTotpGo">Verify</button>`;
+  const s3=()=>{msg(""); step.innerHTML=`<p>Two-step sign-in is on for this account. Open your authenticator app (Google or Microsoft Authenticator) and type the 6-digit code for <b>Cali Aircrew</b>.</p><label class="f">Authenticator code<input type="text" id="siTotp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label><button class="btn primary" id="siTotpGo">Verify</button>`;
     const c=step.querySelector("#siTotp"), b=step.querySelector("#siTotpGo"); c.focus();
     const go=async()=>{b.disabled=true; const r=await mfaVerify(c.value.trim()); b.disabled=false; if(r) return msg(r); m.remove(); syncAll()};
     b.onclick=go; c.onkeydown=ev=>{if(ev.key==="Enter") go()}};
@@ -1109,15 +1109,15 @@ async function openAccount(){
   m.querySelector("#acWipe").onclick=async()=>{if(!confirm("Remove all checklists and ★ My items from this device?\n\nThey stay in your account and come back when you sign in again.")) return;
     await pushDirty(); await sb.auth.signOut(); [LKEY,KEY,MYKEY,"acb-myitems-updated"].forEach(k=>{try{localStorage.removeItem(k)}catch(_){}}); location.reload()};
   const box=m.querySelector("#acMfa");
-  const drawM=on=>{box.innerHTML=on?`<p>✓ On. Microsoft Authenticator is required when you sign in on a new device.</p><button class="btn small" id="acOff" style="color:var(--danger)">Turn off two-step sign-in</button>`
-      :`<p class="help">Optional extra security: after the email code, you also type a code from <b>Microsoft Authenticator</b> on your phone. Tip: add it on two devices (phone and iPad) so losing one doesn't lock you out.</p><button class="btn small primary" id="acOn">Turn on with Microsoft Authenticator</button>`;
+  const drawM=on=>{box.innerHTML=on?`<p>✓ On. A code from your authenticator app is required when you sign in on a new device.</p><button class="btn small" id="acOff" style="color:var(--danger)">Turn off two-step sign-in</button>`
+      :`<p class="help">Optional extra security: after the email code, you also type a code from an authenticator app on your phone, such as <b>Google Authenticator</b> or <b>Microsoft Authenticator</b>. Tip: add it on two devices (phone and iPad) so losing one doesn't lock you out.</p><button class="btn small primary" id="acOn">Turn on two-step sign-in</button>`;
     if(on) box.querySelector("#acOff").onclick=async()=>{if(!confirm("Turn off two-step sign-in?")) return; const {data:f}=await sb.auth.mfa.listFactors(); for(const x of (f&&f.all)||[]) if(x.factor_type==="totp") await sb.auth.mfa.unenroll({factorId:x.id}); try{await sb.auth.refreshSession()}catch(_){} drawM(false)};
     else box.querySelector("#acOn").onclick=enroll};
   const enroll=async()=>{const {data:f}=await sb.auth.mfa.listFactors(); for(const x of (f&&f.all)||[]) if(x.factor_type==="totp"&&x.status!=="verified") await sb.auth.mfa.unenroll({factorId:x.id});
-    const {data,error}=await sb.auth.mfa.enroll({factorType:"totp",friendlyName:"Microsoft Authenticator "+new Date().toISOString().slice(0,16),issuer:"Checklist Builder"});
+    const {data,error}=await sb.auth.mfa.enroll({factorType:"totp",friendlyName:"Authenticator app "+new Date().toISOString().slice(0,16),issuer:"Cali Aircrew"});
     if(error){box.insertAdjacentHTML("beforeend",`<p class="help" style="color:var(--danger)">${esc(error.message)}</p>`); return}
-    box.innerHTML=`<ol class="help" style="padding-left:20px"><li>Open <b>Microsoft Authenticator</b>, tap <b>＋</b>, then <b>Other account</b>.</li><li>Scan this code. (On this same phone? Choose <b>Enter code manually</b> instead.)</li><li>Type the 6-digit code it shows, then tap Confirm.</li></ol>
-      <div style="text-align:center"><img src="${data.totp.qr_code}" alt="QR code for Microsoft Authenticator" style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px"></div>
+    box.innerHTML=`<ol class="help" style="padding-left:20px"><li>Open your authenticator app and add an account: in <b>Google Authenticator</b> tap <b>＋</b> then <b>Scan a QR code</b>; in <b>Microsoft Authenticator</b> tap <b>＋</b> then <b>Other account</b>.</li><li>Scan this code. (On this same phone? Choose <b>Enter code manually</b> instead.)</li><li>Type the 6-digit code it shows, then tap Confirm.</li></ol>
+      <div style="text-align:center"><img src="${data.totp.qr_code}" alt="QR code for your authenticator app" style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px"></div>
       <p class="help">Manual setup key: <code style="user-select:all;word-break:break-all">${esc(data.totp.secret)}</code></p>
       <label class="f">6-digit code<input type="text" id="acCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label><button class="btn primary" id="acConfirm">Confirm</button><div id="acErr" class="help" style="color:var(--danger)"></div>`;
     box.querySelector("#acConfirm").onclick=async()=>{const code=box.querySelector("#acCode").value.trim(); const err=t=>{box.querySelector("#acErr").textContent=t};

@@ -34,7 +34,7 @@ async function gate(){
   const {data:{session}} = await sb.auth.getSession(); user = session && session.user;
   if (!user) { app.innerHTML = `<div class="center"><h1>Admin</h1><p>Sign in first on the crew page, then come back here.</p><a class="btn primary" href="../crew/#/me">Sign in</a></div>`; return false; }
   if (await needMfa()) {
-    app.innerHTML = `<div class="center"><h1>Authenticator code</h1><p>Enter the 6-digit code from Microsoft Authenticator.</p><div class="f" style="width:220px"><label for="tc">Code</label><input id="tc" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div><button class="btn primary" id="tg" type="button">Verify</button><p class="err" id="tm"></p></div>`;
+    app.innerHTML = `<div class="center"><h1>Authenticator code</h1><p>Enter the 6-digit code from your authenticator app.</p><div class="f" style="width:220px"><label for="tc">Code</label><input id="tc" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div><button class="btn primary" id="tg" type="button">Verify</button><p class="err" id="tm"></p></div>`;
     $("tg").onclick = async () => { const code = $("tc").value.trim();
       const {data:f} = await sb.auth.mfa.listFactors(); const t = ((f && f.totp) || []).find(x => x.status === "verified");
       if (!t) return; const {data:ch, error:e1} = await sb.auth.mfa.challenge({factorId:t.id}); if (e1) { $("tm").textContent = e1.message; return; }
@@ -278,7 +278,7 @@ function bindUsers(){
   $("body").addEventListener("click", e => {
     const b = e.target.closest("[data-u]"); if (!b) return; const tr = b.closest("tr"), id = tr.dataset.id, em = tr.dataset.email, a = b.dataset.u, m = D.mod.get(id) || {};
     if (a === "hide") return act(() => sb.rpc("admin_moderate", {p_user:id, p_approved:!!m.approved, p_hidden:!m.hidden, p_verified:!!m.verified_faa, p_note:m.note || "", p_approve_text:false}), m.hidden ? "Unhidden." : "Hidden.");
-    if (a === "mfa") { if (!confirm(`Remove Microsoft Authenticator from ${em}?\n\nOnly do this after confirming who they are outside email (phone call, someone you know, FAA registry). They will sign in with an email code and can set it up again.`)) return;
+    if (a === "mfa") { if (!confirm(`Remove the authenticator app from ${em}?\n\nOnly do this after confirming who they are outside email (phone call, someone you know, FAA registry). They will sign in with an email code and can set it up again.`)) return;
       return act(() => sb.rpc("admin_remove_mfa", {p_user:id}), "Authenticator removed. They can sign in with an email code now."); }
     if (a === "admin") { const make = b.textContent.startsWith("Make"); if (!confirm(make ? `Give ${em} full admin access?` : `Remove admin access from ${em}?`)) return;
       return act(() => sb.rpc("admin_set_admin", {p_user:id, p_make:make}), make ? "Admin access given." : "Admin access removed."); }

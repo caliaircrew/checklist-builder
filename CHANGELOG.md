@@ -3,6 +3,7 @@
 ## App
 | Version | Date | Change |
 |---|---|---|
+| 1.64 | 2026-10-04 | Two-step wording (Steve): TOTP works in any authenticator app, so all 'Microsoft Authenticator' copy in crew.js, app_template.html, admin.js, Privacy and Terms now says 'your authenticator app' with Google and Microsoft named as examples; setup steps give both apps' menu paths. Builder enroll issuer 'Checklist Builder' → 'Cali Aircrew' (crew already used it); friendlyName 'Authenticator app'. Existing enrolments keep their old label in the user's app until re-added. Not changed: the exception text in supabase/011_account.sql ('Enter your Microsoft Authenticator code first'), left for the next SQL migration. |
 | 1.63 | 2026-10-04 | Home hero (Steve): 'Make a checklist' renamed 'Create checklist'; all three hero buttons use the blue primary style (.btn.navy kept in CSS, unused). |
 | 1.62 | 2026-10-04 | Home hero (Steve): third button 'Make a checklist' (dark navy, .btn.navy = --ink) between Find crew and Get listed free, linking to checklists/. |
 | 1.61 | 2026-10-04 | Home headline (Steve): 'Connecting aircrew / with opportunity.' Lede: 'Pilots, CFIs and flight attendants list free. Owners and operators find the right crew for their aircraft.' Page title and meta description to match. |

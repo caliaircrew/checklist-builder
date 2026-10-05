@@ -115,7 +115,7 @@ if (CLOUD.enabled && window.supabase) {
 /* ---------------- sign-in (same account as the checklist builder) ---------------- */
 async function needMfa(){ const r = await sb.auth.mfa.getAuthenticatorAssuranceLevel(); const a = r && r.data; return !!(a && a.nextLevel === "aal2" && a.currentLevel !== "aal2"); }
 async function mfaVerify(code){
-  if (!/^\d{6}$/.test(code)) return "Enter the 6-digit code from Microsoft Authenticator.";
+  if (!/^\d{6}$/.test(code)) return "Enter the 6-digit code from your authenticator app.";
   const {data:f, error:e1} = await sb.auth.mfa.listFactors(); if (e1) return e1.message;
   const t = ((f && f.totp) || []).find(x => x.status === "verified") || ((f && f.totp) || [])[0]; if (!t) return "No authenticator is set up for this account.";
   const {data:ch, error:e2} = await sb.auth.mfa.challenge({factorId:t.id}); if (e2) return e2.message;
@@ -141,7 +141,7 @@ function signIn(after, presetEmail){
       const {error} = await sb.auth.verifyOtp({email, token, type:"email"}); b.disabled = false; if (error) return msg(error.message);
       if (await needMfa()) return s3(); m.remove(); after && after(); };
     b.onclick = go; c.onkeydown = ev => { if (ev.key === "Enter") go(); }; };
-  const s3 = () => { box.innerHTML = `<p style="margin:0">Open <b>Microsoft Authenticator</b> and type the 6-digit code for Checklist Builder.</p><div class="f" style="margin-top:12px"><label for="sit">Authenticator code</label><input id="sit" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div><button class="btn primary" id="sig" type="button" style="width:100%;margin-top:12px">Verify</button>`;
+  const s3 = () => { box.innerHTML = `<p style="margin:0">Open your authenticator app (Google or Microsoft Authenticator) and type the 6-digit code for <b>Cali Aircrew</b>.</p><div class="f" style="margin-top:12px"><label for="sit">Authenticator code</label><input id="sit" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div><button class="btn primary" id="sig" type="button" style="width:100%;margin-top:12px">Verify</button>`;
     const c = box.querySelector("#sit"), b = box.querySelector("#sig"); c.focus();
     const go = async () => { b.disabled = true; const r = await mfaVerify(c.value.trim()); b.disabled = false; if (r) return msg(r); m.remove(); after && after(); };
     b.onclick = go; c.onkeydown = ev => { if (ev.key === "Enter") go(); }; };
@@ -608,7 +608,7 @@ async function viewMe(){
     $("go").onclick = () => signIn(route); return;
   }
   if (await needMfa()) {
-    app.innerHTML = `<div class="center"><h1>One more step</h1><p>Two-step sign-in is on for this account. Enter your Microsoft Authenticator code to edit your profile.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`;
+    app.innerHTML = `<div class="center"><h1>One more step</h1><p>Two-step sign-in is on for this account. Enter the code from your authenticator app to edit your profile.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`;
     $("go").onclick = () => signIn(route); return;
   }
   app.innerHTML = `<p>Loading your profile…</p>`;
@@ -1014,7 +1014,7 @@ async function viewOperator(id){
 async function viewOpMe(){
   if (!sb) { app.innerHTML = `<p class="err">Sign-in isn't available right now.</p>`; return; }
   if (!user) { app.innerHTML = `<div class="center"><h1>Operator profile</h1><p>Owners, charter operators and flight departments: sign in to list the aircraft you operate and the crew you need. Free.</p><button class="btn primary" id="go" type="button">Sign in</button></div>`; $("go").onclick = () => signIn(route); return; }
-  if (await needMfa()) { app.innerHTML = `<div class="center"><h1>One more step</h1><p>Enter your Microsoft Authenticator code to edit your profile.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`; $("go").onclick = () => signIn(route); return; }
+  if (await needMfa()) { app.innerHTML = `<div class="center"><h1>One more step</h1><p>Enter the code from your authenticator app to edit your profile.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`; $("go").onclick = () => signIn(route); return; }
   app.innerHTML = `<p>Loading your operator profile…</p>`;
   const uid = user.id;
   const [{data:o0}, {data:ac0}, {data:mod}, pr] = await Promise.all([sb.from("operator_profiles").select("*").eq("user_id", uid).maybeSingle(), sb.from("operator_aircraft").select("*").eq("user_id", uid),
@@ -1145,7 +1145,7 @@ async function viewSaved(){
 async function viewAccount(){
   if (!sb) return;
   if (!user) { app.innerHTML = `<div class="center"><h1>Account</h1><p>Sign in to manage your account.</p><button class="btn primary" id="go" type="button">Sign in</button></div>`; $("go").onclick = () => signIn(route); return; }
-  if (await needMfa()) { app.innerHTML = `<div class="center"><h1>One more step</h1><p>Enter your Microsoft Authenticator code to manage your account.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`; $("go").onclick = () => signIn(route); return; }
+  if (await needMfa()) { app.innerHTML = `<div class="center"><h1>One more step</h1><p>Enter the code from your authenticator app to manage your account.</p><button class="btn primary" id="go" type="button">Enter code</button></div>`; $("go").onclick = () => signIn(route); return; }
   const uid = user.id, {data:f} = await sb.auth.mfa.listFactors(), mfaOn = ((f && f.totp) || []).some(x => x.status === "verified");
   const rr = await sb.from("account_recovery").select("*").eq("user_id", uid).maybeSingle(), R = (rr && !rr.error && rr.data) || {backup_email:"", phone:"", backup_confirmed:false}, recOk = !(rr && rr.error);
   app.innerHTML = `<div class="pagehead"><div><h1>Account</h1><p>Signed in as ${esc(user.email || "")}</p></div>
@@ -1190,15 +1190,15 @@ async function viewAccount(){
     if (error) return msg(error.message);
     $("nem").className = "okmsg"; msg(`Check ${ne} (and, if asked, your current inbox) for a confirmation link. Your sign-in email changes after you tap it.`); };
   const box = $("mfa");
-  const drawM = on => { box.innerHTML = on ? `<p style="margin:0">✓ On. After the email code, Microsoft Authenticator asks for a 6-digit code.</p><div><button class="btn secondary" id="mfoff" type="button">Turn off two-step sign-in</button></div>`
-      : `<p class="hint" style="margin:0">Extra security: after the email code, you also type a code from <b>Microsoft Authenticator</b> on your phone. Tip: add it on two devices so losing one doesn't lock you out.</p><div><button class="btn primary" id="mfon" type="button">Turn on with Microsoft Authenticator</button></div>`;
+  const drawM = on => { box.innerHTML = on ? `<p style="margin:0">✓ On. After the email code, you also enter a 6-digit code from your authenticator app.</p><div><button class="btn secondary" id="mfoff" type="button">Turn off two-step sign-in</button></div>`
+      : `<p class="hint" style="margin:0">Extra security: after the email code, you also type a code from an authenticator app on your phone, such as <b>Google Authenticator</b> or <b>Microsoft Authenticator</b>. Tip: add it on two devices so losing one doesn't lock you out.</p><div><button class="btn primary" id="mfon" type="button">Turn on two-step sign-in</button></div>`;
     if (on) $("mfoff").onclick = async () => { if (!confirm("Turn off two-step sign-in?")) return; const {data:ff} = await sb.auth.mfa.listFactors(); for (const x of (ff && ff.all) || []) if (x.factor_type === "totp") await sb.auth.mfa.unenroll({factorId:x.id}); try { await sb.auth.refreshSession(); } catch (_) {} drawM(false); };
     else $("mfon").onclick = enroll; };
   const enroll = async () => { const {data:ff} = await sb.auth.mfa.listFactors(); for (const x of (ff && ff.all) || []) if (x.factor_type === "totp" && x.status !== "verified") await sb.auth.mfa.unenroll({factorId:x.id});
-    const {data, error} = await sb.auth.mfa.enroll({factorType:"totp", friendlyName:"Microsoft Authenticator " + new Date().toISOString().slice(0, 16), issuer:"Cali Aircrew"});
+    const {data, error} = await sb.auth.mfa.enroll({factorType:"totp", friendlyName:"Authenticator app " + new Date().toISOString().slice(0, 16), issuer:"Cali Aircrew"});
     if (error) { box.insertAdjacentHTML("beforeend", `<p class="err">${esc(error.message)}</p>`); return; }
-    box.innerHTML = `<ol style="padding-left:20px;margin:0"><li>Open <b>Microsoft Authenticator</b>, tap <b>＋</b>, then <b>Other account</b>.</li><li>Scan this code. (On this same phone? Choose <b>Enter code manually</b>.)</li><li>Type the 6-digit code it shows, then tap Confirm.</li></ol>
-      <div style="text-align:center"><img src="${data.totp.qr_code}" alt="QR code for Microsoft Authenticator" style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px"></div>
+    box.innerHTML = `<ol style="padding-left:20px;margin:0"><li>Open your authenticator app and add an account: in <b>Google Authenticator</b> tap <b>＋</b> then <b>Scan a QR code</b>; in <b>Microsoft Authenticator</b> tap <b>＋</b> then <b>Other account</b>.</li><li>Scan this code. (On this same phone? Choose <b>Enter code manually</b>.)</li><li>Type the 6-digit code it shows, then tap Confirm.</li></ol>
+      <div style="text-align:center"><img src="${data.totp.qr_code}" alt="QR code for your authenticator app" style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px"></div>
       <p class="hint" style="margin:0">Manual setup key: <code style="user-select:all;word-break:break-all">${esc(data.totp.secret)}</code></p>
       <div class="grid2"><div class="f"><label for="mfc">6-digit code</label><input id="mfc" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div></div><div><button class="btn primary" id="mfok" type="button">Confirm</button></div><p class="err" id="mfe"></p>`;
     $("mfok").onclick = async () => { const code = $("mfc").value.trim(); if (!/^\d{6}$/.test(code)) { $("mfe").textContent = "Enter the 6-digit code."; return; }
