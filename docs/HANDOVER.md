@@ -134,6 +134,8 @@ medical, region, airport, status, looking, travel, passport, experience, languag
 training[], tr_des{seq}, tr_sp{seq}, jobs[], initials, fa_* , mx_*, heli_ops, sfar73. Hours by engine type
 (turbine/jet/turboprop/piston/multi/helicopter) are CALCULATED from per-aircraft hours, not typed.
 
+**Queued for the next database update (018):** see "Next database update (018)" at the top of docs/ROADMAP.md (currently one item: authenticator wording in `delete_my_account`).
+
 ## 5. What's built (versions 1.19 → 1.49, highlights)
 
 - Clear-sky design (sky ink #234A6E, sky blue #2470B3, cloud #E4EEF8, page #F4F8FC; Barlow Condensed +

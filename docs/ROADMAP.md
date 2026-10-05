@@ -2,6 +2,10 @@
 
 Tick items as they are done (edit this file, or ask Claude to). Order = planned order of work.
 
+## Next database update (018) — queue for the next SQL Steve runs
+Small fixes waiting to ride along with the next real database change (not worth a separate SQL run):
+- [ ] `public.delete_my_account` (011_account.sql line 67): change the exception text 'Enter your Microsoft Authenticator code first' to 'Enter the code from your authenticator app first' (v1.64 wording; Steve approved 2026-10-04). Do it with `create or replace function` in 018 and update 011 to match.
+
 ## A. Housekeeping
 - [x] 3a. Run supabase/004_profile_choices.sql (includes 003) in the Supabase SQL Editor — actually applied 2026-10-03 21:11 (earlier it had not run: details/part135 were missing in production, so tap-to-choose profile answers could not be saved before this)
 - [x] 3e. Run supabase/009_operators.sql
