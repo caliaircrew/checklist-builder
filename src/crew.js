@@ -354,7 +354,9 @@ function cardHTML(p, aircraft, mod, opts){
   types.forEach(t => badges.push(`<span class="badge">${esc(t)}</span>`));
   const block = (title, html) => html ? `<section><h3>${title}</h3><div class="chips2">${html}</div></section>` : "";
   const availText = [lbl("status", d.status), d.travel ? "Will travel: " + lbl("travel", d.travel) : "", d.passport ? "Valid passport" : ""].filter(Boolean).join(" · ");
+  const acts = `${opts && opts.preview ? `<button class="btn primary" type="button" disabled style="opacity:.6">Contact</button>` : `<button class="btn primary" type="button" data-contact="${esc(p.user_id)}" data-name="${esc(publicName(p))}" data-ac="${esc(ac.map(a => a.acft_seq).join(","))}" data-ctx="${ctxSeq != null ? ctxSeq : ""}">Contact</button>`}${opts && opts.preview ? "" : `<button class="btn secondary" type="button" data-fav="${esc(p.user_id)}" aria-pressed="${!!(FAV && FAV.has(p.user_id))}">${FAV && FAV.has(p.user_id) ? "★ Saved" : "☆ Save"}</button><button class="btn secondary" type="button" data-share="${esc(p.user_id)}" data-name="${esc(publicName(p))}">Share</button><button class="btn secondary" type="button" data-resume="${esc(p.user_id)}">Résumé PDF</button>`}`;
   return `<article class="pcard" aria-label="Crew profile">
+    ${opts && opts.preview ? "" : `<div class="qacts" aria-label="Quick actions">${acts}</div>`}
     <div class="top">${opts && opts.photo ? `<img class="avatar" src="${esc(opts.photo)}" alt="Photo of ${esc(publicName(p) || "this crew member")}">` : `<div class="avatar" aria-hidden="true">${esc(initials(p.display_name))}</div>`}
       <div><h2>${esc(publicName(p)) || '<span class="empty">Your name</span>'}</h2>
       ${metaParts.length ? `<div class="meta">${esc(metaParts.join(" · "))}</div>` : opts && opts.preview ? '<div class="meta"><span class="empty">Certificate · role</span></div>' : ""}
@@ -389,7 +391,7 @@ function cardHTML(p, aircraft, mod, opts){
     ${block("Special training", chips("training", d.training))}
     ${block("Languages", chips("languages", d.languages))}
     ${p.bio ? `<section><h3>More about me</h3><p>${esc(p.bio)}</p></section>` : ""}
-    <div class="actions">${opts && opts.preview ? `<button class="btn primary" type="button" disabled style="opacity:.6">Contact</button>` : `<button class="btn primary" type="button" data-contact="${esc(p.user_id)}" data-name="${esc(publicName(p))}" data-ac="${esc(ac.map(a => a.acft_seq).join(","))}" data-ctx="${ctxSeq != null ? ctxSeq : ""}">Contact</button>`}${opts && opts.preview ? "" : `<button class="btn secondary" type="button" data-fav="${esc(p.user_id)}" aria-pressed="${!!(FAV && FAV.has(p.user_id))}">${FAV && FAV.has(p.user_id) ? "★ Saved" : "☆ Save"}</button><button class="btn secondary" type="button" data-share="${esc(p.user_id)}" data-name="${esc(publicName(p))}">Share</button><button class="btn secondary" type="button" data-resume="${esc(p.user_id)}">Résumé PDF</button>`}</div>
+    <div class="actions">${acts}</div>
     <div class="note">${opts && opts.preview ? "Preview: this is how owners and operators will see your profile." : "Profiles are advertisements. Verify licenses, medical and training before hiring."}</div>
   </article>`;
 }
