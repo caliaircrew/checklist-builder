@@ -1,4 +1,4 @@
--- 019 Profile photos (app 1.65) — run once in the Supabase SQL editor.
+-- 019 Profile photos (app 1.66) — run once in the Supabase SQL editor.
 --   crew_profiles.photo   the member's current photo file ('' = none), always "<their user id>/<number>.jpg"
 --   moderation.photo_ok   the file an admin approved; the photo shows on the public profile only while photo = photo_ok
 --   storage bucket crew-photos (private): members upload/delete only in their own folder; anyone may view an
