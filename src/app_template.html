@@ -142,6 +142,10 @@ body.dragmode{user-select:none;-webkit-user-select:none}
 .cs .r.ff.ffe{border-bottom:3px solid #000}
 .cs .note{background:#d9d9d9;font-weight:700;font-style:italic;text-align:center;padding:3px 4px;border-top:1px solid #bfbfbf}
 .cs .div{font-weight:700;text-align:center;padding:5px 4px 3px;border-bottom:2px solid #000;border-top:1px solid #bfbfbf}
+/* Row height (S.density): same font and column width, shorter rows */
+.cs.d1{margin-bottom:9px}.cs.d1 .r{min-height:1.5em}.cs.d1 .r .a,.cs.d1 .r .b{padding-top:1px;padding-bottom:1px}.cs.d1 .note,.cs.d1 .div,.cs.d1 .bar,.cs.d1 .when{padding-top:1px;padding-bottom:1px}
+.cs.d2{margin-bottom:6px}.cs.d2 .r{min-height:1.3em}.cs.d2 .r .a,.cs.d2 .r .b{padding-top:0;padding-bottom:0}.cs.d2 .note,.cs.d2 .div,.cs.d2 .bar,.cs.d2 .when{padding-top:0;padding-bottom:0}
+#pgcount{font-size:14px;color:var(--muted);align-self:center}
 
 #endPane{display:none;padding:16px;max-width:1500px;margin:0 auto}
 body[data-mode="end"] #endPane{display:block}
@@ -329,6 +333,8 @@ mark.em{background:#f5c542;color:#2a2000;border-radius:4px;padding:0 3px}
       <p class="step">Step 3 · Print it</p>
       <div class="outbar">
         <div class="seg" id="sizeSeg"><button data-s="std" class="on">Standard (2 per page)</button><button data-s="large">Large print</button></div>
+        <div class="seg" id="denSeg" role="group" aria-label="Row height"><button data-d="0" class="on">Normal rows</button><button data-d="1">Compact</button><button data-d="2">Tight</button></div>
+        <span id="pgcount" role="status"></span>
         <button class="btn primary" id="dlPdf">⬇ Download PDF</button>
         <button class="btn" id="dlWord">⬇ Word file (to edit)</button>
       </div>
@@ -716,11 +722,15 @@ function loadHeader(){["operator","aircraft","revision","version","tail"].forEac
 
 /* ---------- tabs / size ---------- */
 $("tabs").onclick=e=>{const b=e.target.closest("button"); if(!b) return; $("main").dataset.view=b.dataset.v; [...$("tabs").children].forEach(x=>x.classList.toggle("on",x===b)); if(b.dataset.v==="preview") renderPreview(); window.scrollTo(0,0)};
+$("denSeg").onclick=e=>{const b=e.target.closest("button"); if(!b) return; S.density=+b.dataset.d; changed(); renderPreview()};
 $("sizeSeg").onclick=e=>{const b=e.target.closest("button"); if(!b) return; size=b.dataset.s; [...$("sizeSeg").children].forEach(x=>x.classList.toggle("on",x===b)); renderPreview()};
 
 /* ---------- preview (paginated like the printed page) ---------- */
-function secHTML(s,fs){
-  let n=0; const rows=s.rows;
+// A section, or part of one (rows a..b) when a long section continues in the next column.
+const fragOf=(s,a,b,cont)=>Object.assign({},s,{title:cont?(s.title||"")+" (CONT.)":s.title,when:cont?"":s.when,rows:s.rows.slice(a,b)});
+const itemsBefore=(s,a)=>s.rows.slice(0,a).filter(r=>r.type!=="note"&&r.type!=="divider").length;
+function secHTML(s,fs,n0){
+  let n=n0||0; const rows=s.rows;
   const body=rows.map((r,i)=>{
     if(r.type==="note") return `<div class="note">${esc(r.text)||"&nbsp;"}</div>`;
     if(r.type==="divider") return `<div class="div">${esc(r.text)||"&nbsp;"}</div>`;
@@ -728,19 +738,34 @@ function secHTML(s,fs){
     const ff=r.ff?` ff${!(rows[i-1]&&rows[i-1].ff)?" ffs":""}${!(rows[i+1]&&rows[i+1].ff)?" ffe":""}`:"";
     return `<div class="r${ff}"><div class="a"><span class="num">${s.plain?"":n+"."}</span><span class="txt">${esc(r.item)}</span><span class="dots"></span></div><div class="b">${esc(r.resp)}</div></div>`;
   }).join("");
-  return `<div class="cs${s.plain?" plain":""}" style="font-size:${fs}px"><div class="bar" style="font-size:${fs+1}px">${esc(s.title)||"&nbsp;"}</div>${s.when?`<div class="when">${esc(s.when)}</div>`:""}${body}</div>`;
+  const den=+(S.density||0);
+  return `<div class="cs${s.plain?" plain":""}${den?" d"+den:""}" style="font-size:${fs}px"><div class="bar" style="font-size:${fs+1}px">${esc(s.title)||"&nbsp;"}</div>${s.when?`<div class="when">${esc(s.when)}</div>`:""}${body}</div>`;
 }
 let PLAN=null;
 function renderPreview(){
   const large=size==="large", fs=large?21.3:12, colW=large?720:345.6, colH=1056-77-60-6;
   const meas=$("measure"); meas.style.width=colW+"px";
-  const blocks=S.sections.map(s=>{meas.innerHTML=secHTML(s,fs); const h=meas.firstChild.offsetHeight+13; return {html:meas.innerHTML,h}});
-  meas.innerHTML="";
-  const ncol=large?1:2, pages=[], plan=[]; let page=null, pl=null, col=0, used=0;
+  const gapPx=[13,9,6][+(S.density||0)];
+  const html=(s,a,b,cont)=>secHTML(fragOf(s,a,b,cont),fs,itemsBefore(s,a));
+  const H=(s,a,b,cont)=>{meas.innerHTML=html(s,a,b,cont); return meas.firstChild.offsetHeight+gapPx};
+  const ncol=large?1:2, pages=[], plan=[], frags=[]; let page=null, pl=null, col=0, used=0;
   const newPage=()=>{page=Array.from({length:ncol},()=>[]); pl=Array.from({length:ncol},()=>[]); pages.push(page); plan.push(pl); col=0; used=0};
+  const nextCol=()=>{col++; used=0; if(col>=ncol) newPage()};
+  const put=(s,si,a,b,cont,h)=>{frags.push({si,a,b,cont}); page[col].push(html(s,a,b,cont)); pl[col].push(frags.length-1); used+=h};
+  // Largest b (keeping at least 3 rows here and 2 for the next part) whose part fits in the space left; -1 if none.
+  const fit=(s,a,cont,room)=>{let lo=a+3,hi=s.rows.length-2,best=-1; while(lo<=hi){const m=(lo+hi)>>1; if(H(s,a,m,cont)<=room){best=m;lo=m+1}else hi=m-1} return best};
   newPage();
-  blocks.forEach((b,bi)=>{ if(used>0&&used+b.h>colH){ col++; used=0; if(col>=ncol) newPage(); } page[col].push(b.html); pl[col].push(bi); used+=b.h; });
-  PLAN={large,pages:plan};
+  S.sections.forEach((s,si)=>{ let a=0, cont=false; const n=s.rows.length;
+    for(let guard=0;guard<200;guard++){ const h=H(s,a,n,cont);
+      if(used+h<=colH||(used===0&&n-a<5)){ put(s,si,a,n,cont,h); break; }      // fits (or too short to split)
+      const b=fit(s,a,cont,colH-used);
+      if(b>0){ put(s,si,a,b,cont,H(s,a,b,cont)); a=b; cont=true; nextCol(); continue; }   // fill this column, continue in the next
+      nextCol(); }
+  });
+  meas.innerHTML="";
+  PLAN={large,pages:plan,frags};
+  const den=+(S.density||0); [...$("denSeg").children].forEach(x=>x.classList.toggle("on",+x.dataset.d===den));
+  $("pgcount").textContent=S.sections.length?`Prints on ${pages.length} page${pages.length===1?"":"s"}`:"";
   const head=`<div class="ph"><span>${esc(S.operator)||"[OPERATOR NAME]"}</span><span>NORMAL PROCEDURES</span><span>${esc(S.aircraft)||"[AIRCRAFT TYPE]"}${S.tail?" · "+esc(S.tail):""}</span></div><div class="rev">Version ${esc(S.version)||"1.0"} · Revision: ${esc(S.revision)||"[MM/DD/YYYY]"}</div>`;
   const host=$("pages");
   host.innerHTML=S.sections.length?pages.map((p,i)=>`<div class="pagewrap"><div class="page">${head}<div class="cols">${p.map(c=>`<div class="col">${c.join("")}</div>`).join("")}</div><div class="pf"><b>BOXED ITEMS = FIRST FLIGHT OF DAY</b><span>Not FAA-approved – verify all items against the approved AFM/POH</span><span>Page ${i+1}</span></div></div></div>`).join(""):'<div class="empty">Add a section to see your checklist here.</div>';
@@ -755,10 +780,11 @@ function buildDoc(large){
   const d=window.docx; const {Document,Paragraph,TextRun,AlignmentType,TabStopType,LeaderType,BorderStyle,ShadingType,Header,Footer,PageNumber,LevelFormat,Table,TableRow,TableCell,WidthType,VerticalAlign}=d;
   const W=large?10800:5184, HALF=W/2, FS=large?32:18;
   const none={style:BorderStyle.NONE,size:0,color:"FFFFFF"}, thin={style:BorderStyle.SINGLE,size:4,color:"BFBFBF"}, out={style:BorderStyle.SINGLE,size:8,color:"000000"}, heavy={style:BorderStyle.SINGLE,size:24,color:"000000"};
-  const margins={top:50,bottom:50,left:80,right:80};
+  const den=+(S.density||0), margins={top:[50,15,0][den],bottom:[50,15,0][den],left:80,right:80};
   const cell=(children,width,o={})=>new TableCell({children,width:{size:width,type:WidthType.DXA},margins,verticalAlign:VerticalAlign.CENTER,columnSpan:o.span,shading:o.fill?{type:ShadingType.CLEAR,fill:o.fill,color:"auto"}:undefined,borders:o.borders});
   const secBlocks=[];
-  S.sections.forEach((s,i)=>{ const body=[]; secBlocks.push(body);
+  const parts=!large&&PLAN&&!PLAN.large&&PLAN.frags?PLAN.frags:S.sections.map((x,si)=>({si,a:0,b:x.rows.length,cont:false}));
+  parts.forEach(f=>{ const i=f.si, s=fragOf(S.sections[i],f.a,f.b,f.cont); const body=[]; secBlocks.push(body);
     const rows=[new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"SectionBar",text:s.title||" "})],W,{span:2,fill:"000000",borders:{top:none,left:none,right:none,bottom:none}})]})];
     if(s.when) rows.push(new TableRow({cantSplit:true,children:[cell([new Paragraph({style:"WhenLine",text:s.when})],W,{span:2,borders:{top:none,left:out,right:out,bottom:thin}})]}));
     s.rows.forEach((r,idx)=>{
@@ -772,7 +798,7 @@ function buildDoc(large){
         cell([new Paragraph({style:"Response",text:r.resp||""})],HALF,{borders:{top,bottom,left:none,right:r.ff?heavy:out}})]}));
     });
     body.push(new Table({layout:d.TableLayoutType.FIXED,width:{size:W,type:WidthType.DXA},columnWidths:[HALF,HALF],rows}));
-    body.push(new Paragraph({spacing:{before:0,after:0,line:200,lineRule:d.LineRuleType.EXACT},children:[new TextRun({text:"",size:8})]}));
+    body.push(new Paragraph({spacing:{before:0,after:0,line:[200,140,100][den],lineRule:d.LineRuleType.EXACT},children:[new TextRun({text:"",size:8})]}));
   });
   // Standard size: each printed page is one borderless table with two columns (not Word's column feature),
   // following the See & print page plan, so simple viewers such as the iPad preview show it correctly.
