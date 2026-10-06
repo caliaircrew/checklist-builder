@@ -150,7 +150,7 @@ function signIn(after, presetEmail){
 let IS_ADMIN = false;
 function showAdmin(){ const al = $("adminLink"); if (al) al.hidden = !IS_ADMIN; document.querySelectorAll(".adminbtn").forEach(b => b.hidden = !IS_ADMIN); }
 /* ---------------- one-page résumé PDF (no name: initials only if the member chose initials-only; link to the profile) ---------------- */
-function resumeHTML(p, aircraft, mod, cut){
+function resumeHTML(p, aircraft, mod, cut, photo){
   const d = p.details || {}, x = s => esc(s == null ? "" : String(s));
   const role = [lbl("role", d.role), lbl("cert", d.cert) && d.cert !== "none" ? lbl("cert", d.cert) : ""].filter(Boolean).join(" · ") || "Crew résumé";
   const types = (p.crew_types || []).map(t => TYPE_LABEL[t]).filter(Boolean).join(" · ");
@@ -165,7 +165,7 @@ function resumeHTML(p, aircraft, mod, cut){
   const avail = [lbl("status", d.status), d.travel ? "will travel: " + lbl("travel", d.travel) : "", d.passport ? "valid passport" : ""].filter(Boolean).join(" · ");
   const acShown = ac.slice(0, cut > 1 ? 8 : 14), jobShown = jobs.slice(0, cut > 1 ? 4 : 8);
   const link = location.origin + "/crew/#/p/" + p.user_id;
-  return `<div class="rpage"><div class="rband"><div>${d.initials ? `<div class="rn">${x(publicName(p))}</div>` : ""}<div class="rt">${x(role)}</div>${types ? `<div style="font-size:12px;margin-top:3px">${x(types)}</div>` : ""}</div>
+  return `<div class="rpage"><div class="rband">${photo ? `<img class="rph" src="${x(photo.url)}" data-pdfimg="${photo.n}" alt="">` : ""}<div style="flex:1">${d.initials ? `<div class="rn">${x(publicName(p))}</div>` : ""}<div class="rt">${x(role)}</div>${types ? `<div style="font-size:12px;margin-top:3px">${x(types)}</div>` : ""}</div>
     <div class="rs"><b style="font-size:15px">Cali Aircrew</b><br>Crew résumé</div></div>
   <div class="rbody">
     ${kv("Based at", base)}${kv("Flies in", (d.areas || []).map(v => lbl("region", v)).filter(Boolean).join(", "))}${kv("Flying since", d.since)}${kv("Contract day rate", rateText(d))}${kv("Availability", avail)}
@@ -193,9 +193,12 @@ document.addEventListener("click", async e => {
     const [{data:p}, {data:ac}, {data:mod}] = await Promise.all([sb.from("crew_profiles").select("*").eq("user_id", id).maybeSingle(),
       sb.from("crew_aircraft").select("*").eq("user_id", id), sb.from("moderation").select("*").eq("user_id", id).maybeSingle()]);
     if (!p) throw new Error("Profile not found");
+    const ph = (p.details || {}).resume_photo && photoApproved(p, mod) ? await photoBytes(p.photo) : null;
+    const photo = ph ? {url:ph.url, n:pdfImage(ph.bin)} : null;
     await loadAirports(); document.body.appendChild(host);
+    if (photo) await new Promise(ok => { const im = new Image(); im.onload = im.onerror = ok; im.src = photo.url; });
     // One page: drop the About text, then shorten the lists, if it doesn't fit.
-    let cut = 0; for (;;) { host.innerHTML = resumeHTML(p, ac || [], mod, cut); const pg = host.firstChild, body = pg.querySelector(".rbody"), foot = pg.querySelector(".rfoot");
+    let cut = 0; for (;;) { host.innerHTML = resumeHTML(p, ac || [], mod, cut, photo); const pg = host.firstChild, body = pg.querySelector(".rbody"), foot = pg.querySelector(".rfoot");
       if (body.getBoundingClientRect().bottom <= foot.getBoundingClientRect().top - 6 || cut >= 2) break; cut++; }
     const blob = pdfBuild([pdfPage(host.firstChild)], "Cali Aircrew crew resume");
     const d = p.details || {}, nm = ("Cali Aircrew Resume - " + (d.initials ? publicName(p) : [lbl("role", d.role), lbl("cert", d.cert)].filter(Boolean).join(" ") || "Crew")).replace(/[\\/:*?"<>|.]+/g, " ").replace(/\s+/g, " ").trim() + ".pdf";
@@ -303,6 +306,21 @@ drawBanner();
 
 /* ---------------- shared bits ---------------- */
 const initials = n => (String(n || "").trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2) || "?").toUpperCase();
+// ---------- profile photos (v1.66): private bucket; public only once approved (moderation.photo_ok = crew_profiles.photo) ----------
+const PHOTOS = "crew-photos";
+const photoApproved = (p, mod) => !!(p && p.photo && mod && mod.photo_ok === p.photo);
+async function photoUrl(path){ if (!path || !sb || !sb.storage) return "";
+  try { const {data, error} = await sb.storage.from(PHOTOS).createSignedUrl(path, 3600); return error || !data ? "" : data.signedUrl; } catch (_) { return ""; } }
+async function photoBytes(path){ const u = await photoUrl(path); if (!u) return null;
+  try { const b = new Uint8Array(await (await fetch(u)).arrayBuffer()); let s = ""; for (let i = 0; i < b.length; i += 8192) s += String.fromCharCode.apply(null, b.subarray(i, i + 8192)); return {url:u, bin:s}; } catch (_) { return null; } }
+// Any photo the browser can open → 400×400 JPEG, cropped square (slightly high, to keep the face). Redrawing drops location data.
+async function squareJpeg(file){ const url = URL.createObjectURL(file);
+  try { const img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error("That file isn't a photo we can open. Try a JPEG or PNG.")); i.src = url; });
+    const w = img.naturalWidth, h = img.naturalHeight, sz = Math.min(w, h); if (sz < 200) throw new Error("That photo is too small. Use one at least 400 pixels wide.");
+    const c = document.createElement("canvas"); c.width = c.height = 400; const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, 400, 400);
+    g.drawImage(img, (w - sz) / 2, (h - sz) * 0.25, sz, sz, 0, 0, 400, 400);
+    return await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error("Couldn't prepare the photo.")), "image/jpeg", 0.85));
+  } finally { URL.revokeObjectURL(url); } }
 const fmt = n => (n == null || n === "" || isNaN(n)) ? "" : Number(n).toLocaleString("en-US");
 function cardHTML(p, aircraft, mod, opts){
   const d = p.details || {};
@@ -337,7 +355,7 @@ function cardHTML(p, aircraft, mod, opts){
   const block = (title, html) => html ? `<section><h3>${title}</h3><div class="chips2">${html}</div></section>` : "";
   const availText = [lbl("status", d.status), d.travel ? "Will travel: " + lbl("travel", d.travel) : "", d.passport ? "Valid passport" : ""].filter(Boolean).join(" · ");
   return `<article class="pcard" aria-label="Crew profile">
-    <div class="top"><div class="avatar" aria-hidden="true">${esc(initials(p.display_name))}</div>
+    <div class="top">${opts && opts.photo ? `<img class="avatar" src="${esc(opts.photo)}" alt="Photo of ${esc(publicName(p) || "this crew member")}">` : `<div class="avatar" aria-hidden="true">${esc(initials(p.display_name))}</div>`}
       <div><h2>${esc(publicName(p)) || '<span class="empty">Your name</span>'}</h2>
       ${metaParts.length ? `<div class="meta">${esc(metaParts.join(" · "))}</div>` : opts && opts.preview ? '<div class="meta"><span class="empty">Certificate · role</span></div>' : ""}
       <div class="meta">${base ? "Based at " + esc(base) : '<span class="empty">Home base</span>'}${d.travel ? " · will travel: " + esc(lbl("travel", d.travel)) : ""}</div>
@@ -597,8 +615,8 @@ async function viewProfile(id0){
     sb.from("moderation").select("*").eq("user_id", id).maybeSingle()]);
   if (!p) { app.innerHTML = `<div class="center"><h1>Profile not found</h1><p>It may be unpublished or waiting for review.</p><a class="btn secondary" href="#/">Back to the crew directory</a></div>`; return; }
   document.title = (publicName(p) || "Crew profile") + " · Cali Aircrew";
-  await Promise.all([loadAirports(), loadFav()]);
-  app.innerHTML = `<div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px"><a href="javascript:history.length>1?history.back():location.hash='#/'">← Back</a>${cardHTML(p, ac || [], mod, {ctx:ctxSeq != null && ctxSeq !== "" ? +ctxSeq : null})}</div>`;
+  const [, , photo] = await Promise.all([loadAirports(), loadFav(), photoApproved(p, mod) ? photoUrl(p.photo) : ""]);
+  app.innerHTML = `<div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px"><a href="javascript:history.length>1?history.back():location.hash='#/'">← Back</a>${cardHTML(p, ac || [], mod, {ctx:ctxSeq != null && ctxSeq !== "" ? +ctxSeq : null, photo})}</div>`;
 }
 
 async function viewMe(){
@@ -649,6 +667,11 @@ async function viewMe(){
    <div class="formcol">
     <section class="panel strength" aria-labelledby="h1s"><h2 id="h1s">Profile strength</h2><div class="meter" aria-hidden="true"><span id="smeter"></span></div><p id="stext" style="margin:0"></p><ul id="stips" class="hint" style="margin:0;padding-left:20px"></ul></section>
     <section class="panel" aria-labelledby="h1a"><h2 id="h1a">About you</h2>
+      <div class="photorow"><div id="phbox"></div><div style="flex:1;min-width:0"><span class="lbl">Profile photo (optional)</span>
+        <small class="hint" style="display:block">A recent, professional photo of you. No text, logos or contact details. Reviewed before it appears. Shown on your profile page, not in search results.</small>
+        <div class="phbtns"><label class="btn secondary" for="phf" id="phadd" tabindex="0" role="button">Add photo</label><input type="file" id="phf" accept="image/*" hidden><button class="btn secondary" id="phrm" type="button" hidden>Remove photo</button></div>
+        <small id="phst" role="status"></small>
+        <label class="switch"><input type="checkbox" id="rph2"${D.resume_photo ? " checked" : ""}> Show my photo on my résumé PDF too</label></div></div>
       <div class="grid2"><div class="f"><label for="dn">Name shown on your profile</label><input id="dn" value="${esc(P.display_name)}" maxlength="80" placeholder="e.g. Jordan R." autocomplete="name"></div>${sel("role", "role", "Role", D.role)}</div>
       <div class="grid2">${sel("cert", "cert", "Certificate", D.cert)}${sel("med", "medical", "FAA medical", D.medical)}</div>
       ${multi("rt", "ratings", "Ratings (tap all that apply)", D.ratings)}
@@ -733,7 +756,7 @@ async function viewMe(){
     Object.assign(D, {role:$("role").value, cert:$("cert").value, medical:$("med").value, ratings:checked("rt"), region:$("reg").value, airport:$("apt").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8),
       status:$("stat").value, travel:$("trv").value, looking:checked("lk"), passport:$("pp").checked, experience:checked("xp"), languages:checked("lg")});
     P.crew_types = checked("ct");
-    D.initials = $("ini").checked;
+    D.initials = $("ini").checked; D.resume_photo = $("rph2").checked;
     const num = id => { const v = ($(id) ? $(id).value : "").replace(/[^\d]/g, ""); return v ? Math.min(100000, +v) : null; };
     Object.assign(D, {hrs_pic:num("hpic"), hrs_turbine:null, hrs_heli:null, areas:checked("ar"), since:$("since").value, rate:$("rate").value, rate_exp:$("rexp").checked, rate_neg:$("rneg").checked,
       fa_school:$("fas").value, fa_year:$("fay").value, fa_recurrent:$("far").value, cpr_until:$("cpr").value, food_safety:$("food").checked, fa_skills:checked("fsk"),
@@ -764,7 +787,13 @@ async function viewMe(){
     P.details = D;
   };
   const drawStatus = () => { const [k, t] = statusOf(); $("st").innerHTML = `<span class="status ${k}">${esc(t)}${dirty ? " · unsaved changes" : ""}</span>`; };
-  const drawPrev = () => { read(); $("prev").innerHTML = cardHTML(P, AC, mod, {preview:true}); };
+  let photo = (p0 && p0.photo) || "", photoSrc = photo ? await photoUrl(photo) : "";
+  const drawPhoto = () => { const ok = photo && mod && mod.photo_ok === photo;
+    $("phbox").innerHTML = photoSrc ? `<img class="avatar" src="${esc(photoSrc)}" alt="Your profile photo">` : `<div class="avatar" aria-hidden="true">${esc(initials(P.display_name))}</div>`;
+    $("phadd").textContent = photo ? "Change photo" : "Add photo"; $("phrm").hidden = !photo;
+    $("phst").className = ok ? "okmsg" : "hint";
+    $("phst").textContent = !photo ? "" : ok ? "✓ Approved. Shown on your profile page." : "Waiting for review. Your initials show until it's approved."; };
+  const drawPrev = () => { read(); $("prev").innerHTML = cardHTML(P, AC, mod, {preview:true, photo:photoSrc}); };
   const drawAc = () => {
     $("aclist").innerHTML = AC.length ? AC.map((a, i) => { const info = BYSEQ.get(a.acft_seq); return `<div class="acrow"><div class="achead"><span class="nm">${esc(info ? info.name : "Aircraft #" + a.acft_seq)}</span>
       <button class="iconbtn" type="button" data-rm="${i}" aria-label="Remove ${esc(info ? info.name : "aircraft")}">✕</button></div>
@@ -881,6 +910,25 @@ async function viewMe(){
       m.querySelector(".box2").innerHTML = `<h2>Thanks!</h2><p style="margin:0">We'll review it and add it to the list.</p><button class="btn primary" type="button" id="rqok">Done</button>`; m.querySelector("#rqok").onclick = () => m.remove(); }; };
   $("tp").onclick = () => { const s = $("split"); s.classList.toggle("showprev"); $("tp").textContent = s.classList.contains("showprev") ? "Edit" : "Preview"; window.scrollTo(0, 0); };
   $("so").onclick = async () => { await sb.auth.signOut(); location.hash = "#/"; };
+  drawPhoto(); if (p0 && !("photo" in p0)) app.querySelector(".photorow").style.display = "none";   // database update 019 not run yet
+  $("phadd").onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("phf").click(); } };
+  $("phf").addEventListener("change", async e => { e.stopPropagation(); const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f) return;
+    const st = $("phst"); st.className = "hint";
+    if (!p0) { st.className = "err"; st.textContent = "Save your profile once, then add a photo."; return; }
+    if (await needMfa()) { signIn(() => {}); return; }
+    st.textContent = "Uploading…";
+    try { const blob = await squareJpeg(f), path = uid + "/" + Date.now() + ".jpg";
+      const up = await sb.storage.from(PHOTOS).upload(path, blob, {contentType:"image/jpeg", upsert:false}); if (up.error) throw new Error(up.error.message);
+      const {error} = await sb.from("crew_profiles").update({photo:path}).eq("user_id", uid);
+      if (error) { await sb.storage.from(PHOTOS).remove([path]); throw new Error(error.message); }
+      const old = photo; photo = path; p0.photo = path; photoSrc = URL.createObjectURL(blob);
+      if (old && old !== path) await sb.storage.from(PHOTOS).remove([old]).catch(() => {});
+      drawPhoto(); drawPrev();
+    } catch (err) { st.className = "err"; st.textContent = err.message || "Couldn't upload the photo. Please try again."; } });
+  $("phrm").onclick = async () => { if (!confirm("Remove your profile photo?")) return;
+    if (await needMfa()) { signIn(() => {}); return; }
+    const {error} = await sb.from("crew_profiles").update({photo:""}).eq("user_id", uid); if (error) { $("phst").className = "err"; $("phst").textContent = error.message; return; }
+    await sb.storage.from(PHOTOS).remove([photo]).catch(() => {}); photo = ""; photoSrc = ""; if (p0) p0.photo = ""; drawPhoto(); drawPrev(); };
   $("save").onclick = async () => { D.jobs = (D.jobs || []).filter(x => x.kind || x.role || x.company || x.from); 
     read(); $("se").textContent = "";
     if (P.published && !P.display_name) { $("se").textContent = "Add the name shown on your profile before publishing."; $("dn").focus(); return; }
@@ -1219,10 +1267,13 @@ async function viewAccount(){
       box.innerHTML = `<p class="okmsg" style="margin:0">✓ Backup email confirmed. If you're ever locked out of your sign-in email, use "Locked out of your email?" in the sign-in box.</p>`; }; };
   $("dl").onclick = async () => { const get = (t, k) => sb.from(t).select("*").eq(k || "user_id", uid).then(r => r.error ? [] : r.data || [], () => []);
     const [cp, ca, cv, cb, op, oa, ob, ck, mi, ar] = await Promise.all(["crew_profiles", "crew_aircraft", "crew_private", "crew_bio_pending", "operator_profiles", "operator_aircraft", "operator_about_pending", "checklists", "my_items", "account_recovery"].map(t => get(t)));
-    const out = {exported_at:new Date().toISOString(), account:{id:uid, email:user.email}, crew_profile:cp, crew_aircraft:ca, crew_private:cv, crew_text_waiting_for_review:cb, operator_profile:op, operator_aircraft:oa, operator_text_waiting_for_review:ob, checklists:ck, my_items:mi, recovery_contacts:ar};
+    const phLink = cp[0] && cp[0].photo ? await photoUrl(cp[0].photo) : "";
+    const out = {exported_at:new Date().toISOString(), account:{id:uid, email:user.email}, profile_photo_link_valid_1_hour:phLink || null, crew_profile:cp, crew_aircraft:ca, crew_private:cv, crew_text_waiting_for_review:cb, operator_profile:op, operator_aircraft:oa, operator_text_waiting_for_review:ob, checklists:ck, my_items:mi, recovery_contacts:ar};
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], {type:"application/json"})); a.download = "my-cali-aircrew-data.json"; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); };
   $("del").onclick = async () => { const typed = $("de").value.trim(); if (!typed) { $("dem").textContent = "Type your sign-in email first."; return; }
     if (!confirm("Delete your Cali Aircrew account permanently? This can't be undone.")) return;
+    if (typed.toLowerCase() === String(user.email || "").toLowerCase() && !(await needMfa())) {   // photo files aren't removed by the database, so clear them first
+      try { const {data:fl} = await sb.storage.from(PHOTOS).list(uid); if (fl && fl.length) { await sb.from("crew_profiles").update({photo:""}).eq("user_id", uid); await sb.storage.from(PHOTOS).remove(fl.map(x => uid + "/" + x.name)); } } catch (_) {} }
     const {error} = await sb.rpc("delete_my_account", {p_confirm_email:typed}); if (error) { $("dem").textContent = error.message; return; }
     location.hash = "#/deleted";   // the sign-out below redraws the page; this route shows the confirmation
     try { await sb.auth.signOut(); } catch (_) {} try { localStorage.removeItem("acb-auth"); } catch (_) {} route(); };

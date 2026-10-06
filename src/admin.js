@@ -73,6 +73,9 @@ async function load(){
   const opStatus = o => { const m = mod.get(o.user_id); if (m && m.op_hidden) return "hidden"; if (!o.published) return "draft"; return m && m.op_approved ? "listed" : "waiting"; };
   D = {metrics, search, users, profiles, acBy, mod, pend, notify, acreq, privacy, partners, banner:(banner && banner.value) || {on:false, text:"", kind:"info"}, audit, email, statusOf,
        ops, opAcBy, opPend:new Map(oppend.filter(p => (p.about || "") !== ((ops.find(o => o.user_id === p.user_id) || {}).about || "")).map(p => [p.user_id, p])), opStatus, priv:new Map(priv.map(p => [p.user_id, p])), help, recov:new Map(recov.map(r => [r.user_id, r])), adminEmails, contacts};
+  // Profile photos waiting for review (database update 019): a file that isn't the approved one.
+  D.photoWait = profiles.filter(p => p.photo && p.photo !== ((mod.get(p.user_id) || {}).photo_ok || ""));
+  D.photoUrl = new Map(await Promise.all(D.photoWait.map(async p => { try { const r = await sb.storage.from("crew-photos").createSignedUrl(p.photo, 3600); return [p.user_id, r && r.data ? r.data.signedUrl : ""]; } catch (_) { return [p.user_id, ""]; } })));
 }
 
 /* ---------------- quality flags ---------------- */
@@ -224,6 +227,12 @@ function viewReview(){
   return `<div class="toolbar"><button class="btn primary" id="bulk" type="button">Approve selected</button><span class="hint">Tick profiles, then approve them together. Their new text is approved too.</span></div>
   <h2 class="sect" style="margin-top:0">Waiting for review (${waiting.length})</h2>
   <div style="display:flex;flex-direction:column;gap:16px">${waiting.map(p => itemHTML(p, "new")).join("") || '<p class="empty">Nothing waiting.</p>'}</div>
+  <h2 class="sect">Photos waiting for review (${D.photoWait.length})</h2>
+  <p class="hint" style="margin:0 0 8px">Approve only a recent, professional photo of the member: no text, logos, phone numbers, emails or QR codes, no other people as the subject.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:16px">${D.photoWait.map(p => `<article class="item" data-pid="${esc(p.user_id)}" style="width:220px;display:flex;flex-direction:column;gap:8px">
+    ${D.photoUrl.get(p.user_id) ? `<img src="${esc(D.photoUrl.get(p.user_id))}" alt="Photo from ${esc(p.display_name || "member")}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:#eee">` : `<p class="empty">Photo not found</p>`}
+    <b>${esc(p.display_name || "(no name)")}</b><span class="hint">${esc(D.email.get(p.user_id) || "")}${p.published ? "" : " · draft profile"}</span>
+    <div style="display:flex;gap:8px"><button class="btn primary small" type="button" data-ph="ok">Approve</button><button class="btn small" type="button" data-ph="rm" style="color:#8A2A20">Remove</button></div></article>`).join("") || '<p class="empty">Nothing waiting.</p>'}</div>
   <h2 class="sect">Changed free text on listed profiles (${textOnly.length})</h2>
   <div style="display:flex;flex-direction:column;gap:16px">${textOnly.map(p => itemHTML(p, "text")).join("") || '<p class="empty">Nothing waiting.</p>'}</div>
   <h2 class="sect">Operators waiting for review (${opWait.length})</h2>
@@ -235,6 +244,12 @@ function viewReview(){
   <div style="display:flex;flex-direction:column;gap:16px">${listed.map(p => itemHTML(p, "listed")).join("") || '<p class="empty">None yet.</p>'}</div>`;
 }
 function bindReview(){
+  $("body").addEventListener("click", e => {
+    const b = e.target.closest("[data-ph]"); if (!b) return; const id = b.closest("[data-pid]").dataset.pid;
+    if (b.dataset.ph === "ok") return act(() => sb.rpc("admin_photo", {p_user:id, p_ok:true}), "Photo approved.");
+    if (!confirm("Remove this photo? The member will see their initials again and can upload a new one.")) return;
+    return act(async () => { const r = await sb.rpc("admin_photo", {p_user:id, p_ok:false}); if (r.error) return r; if (r.data) await sb.storage.from("crew-photos").remove([r.data]); return r; }, "Photo removed.");
+  });
   $("body").addEventListener("click", e => {
     const b = e.target.closest("[data-oa]"); if (!b) return; const id = b.closest(".item").dataset.id, m = D.mod.get(id) || {}, a = b.dataset.oa;
     if (a === "approve") return act(() => sb.rpc("admin_moderate_operator", {p_user:id, p_approved:true, p_hidden:false, p_note:m.note || "", p_approve_text:true}), "Operator approved.");

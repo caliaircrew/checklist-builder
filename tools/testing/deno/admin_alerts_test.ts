@@ -22,3 +22,9 @@ ok(/1 reported contact request/.test(m.subject)&&/contact-volume warning/.test(m
 ok(/Charlie Ops → Dana · spam/.test(m.text),"report line names sender, pilot, reason");
 ok(/Busy Sender: 8 requests in 24 hours/.test(m.text),"volume counts 8 (failed one excluded)");
 r=await adminAlerts(admin,false); ok(r.newItems===0&&sent.length===1,"not repeated next hour");
+// 018: a photo waiting for review is announced once; an approved one is not.
+T.crew_profiles.push({user_id:"e",display_name:"Eve",published:true,updated_at:now,photo:"e/1.jpg"},{user_id:"f",display_name:"Finn",published:false,updated_at:now,photo:"f/1.jpg"});
+T.moderation.push({user_id:"e",approved:true,hidden:false,photo_ok:""},{user_id:"f",approved:false,hidden:false,photo_ok:"f/1.jpg"});
+r=await adminAlerts(admin,false); const m2=sent[sent.length-1];
+ok(r.newItems===1&&/1 photo to review/.test(m2.subject),"photo alert subject: "+m2.subject);
+ok(/Eve/.test(m2.text)&&!/Finn/.test(m2.text.split("Profile photos")[1]||""),"only the unapproved photo is listed");

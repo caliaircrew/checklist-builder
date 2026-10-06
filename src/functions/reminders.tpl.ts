@@ -166,6 +166,10 @@ async function adminAlerts(admin, dry: boolean) {
   const today = new Date().toISOString().slice(0, 10);
   for (const [sid, b] of bySender) if (b.n >= 8) items.push({ key: "volume:" + sid + ":" + today, group: "Unusual contact-request volume", text: `${b.label}: ${b.n} requests in 24 hours` });
   if (lastHour >= 30) items.push({ key: "volume:site:" + new Date().toISOString().slice(0, 13), group: "Unusual contact-request volume", text: `${lastHour} requests site-wide in the last hour` });
+  // Profile photos (database update 019). Older databases simply have none.
+  const [{ data: phs }, { data: phok }] = await Promise.all([admin.from("crew_profiles").select("user_id,display_name,photo").neq("photo", ""), admin.from("moderation").select("user_id,photo_ok")]);
+  const okOf = new Map((phok ?? []).map((m: Record<string, string>) => [m.user_id, m.photo_ok || ""]));
+  for (const p of phs ?? []) if (p.photo && p.photo !== okOf.get(p.user_id)) items.push({ key: "photo:" + p.photo, group: "Profile photos waiting for review", text: String(p.display_name || "Unnamed") });
   out.waiting = items.length;
   const before = new Set(((st && st.notified) || []) as string[]);
   const fresh = items.filter(i => !before.has(i.key)); out.newItems = fresh.length;
@@ -173,7 +177,7 @@ async function adminAlerts(admin, dry: boolean) {
   const groups = new Map<string, string[]>(); for (const i of fresh) { const l = groups.get(i.group) ?? []; l.push(i.text); groups.set(i.group, l); }
   const SHORT: Record<string, string[]> = { "Crew profiles waiting for review": ["crew profile to review", "crew profiles to review"], "Operator profiles waiting for review": ["operator profile to review", "operator profiles to review"],
     "Profile text waiting for approval": ["profile text to approve", "profile texts to approve"], "Operator text waiting for approval": ["operator text to approve", "operator texts to approve"],
-    "Sign-in help requests": ["help request", "help requests"], "Partner inquiries": ["partner inquiry", "partner inquiries"],
+    "Sign-in help requests": ["help request", "help requests"], "Profile photos waiting for review": ["photo to review", "photos to review"], "Partner inquiries": ["partner inquiry", "partner inquiries"],
     "Reported contact requests": ["reported contact request", "reported contact requests"], "Unusual contact-request volume": ["contact-volume warning", "contact-volume warnings"] };
   const subject = "Cali Aircrew admin: " + [...groups].map(([g, l]) => l.length + " " + (SHORT[g] ? SHORT[g][l.length === 1 ? 0 : 1] : g.toLowerCase())).join(", ");
   const text = "New since the last alert:\n\n" + [...groups].map(([g, l]) => `${g} (${l.length}):\n` + l.slice(0, 20).map(x => "• " + x).join("\n") + (l.length > 20 ? `\n• …and ${l.length - 20} more` : "")).join("\n\n") +

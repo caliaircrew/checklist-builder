@@ -9,6 +9,13 @@ function pdfEnc(str,kind){let o="";for(const ch of str){const cp=ch.codePointAt(
   if(kind==="S") b=PDF_SYM[cp]; else if(kind==="D") b=PDF_DING[cp]; else b=cp<128||(cp>=160&&cp<256)?cp:(PDF_WIN[cp]!==undefined?PDF_WIN[cp]:63);
   if(b===40||b===41||b===92) o+="\\"+String.fromCharCode(b); else if(b<32||b>126) o+="\\"+b.toString(8).padStart(3,"0"); else o+=String.fromCharCode(b);}return o}
 const pdfRGB=c=>{const m=(c||"").match(/rgba?\(([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)(?:[, /]+([\d.]+))?/); if(!m) return null; if(m[4]!==undefined&&+m[4]===0) return null; return [m[1],m[2],m[3]].map(v=>(+v/255).toFixed(3)).join(" ")};
+// JPEG images: pdfImage(binaryString) registers one and returns its number; mark the <img> with data-pdfimg="n".
+const PDF_IMGS = [];
+function pdfImage(bin){ let w = 0, h = 0, nc = 3;
+  for (let i = 2; i < bin.length - 9;) { if (bin.charCodeAt(i) !== 0xFF) { i++; continue; } const m = bin.charCodeAt(i + 1), len = bin.charCodeAt(i + 2) * 256 + bin.charCodeAt(i + 3);
+    if (m >= 0xC0 && m <= 0xCF && m !== 0xC4 && m !== 0xC8 && m !== 0xCC) { h = bin.charCodeAt(i + 5) * 256 + bin.charCodeAt(i + 6); w = bin.charCodeAt(i + 7) * 256 + bin.charCodeAt(i + 8); nc = bin.charCodeAt(i + 9); break; }
+    i += 2 + len; }
+  PDF_IMGS.push({bin, w:w || 400, h:h || 400, cs:nc === 1 ? "/DeviceGray" : nc === 4 ? "/DeviceCMYK" : "/DeviceRGB"}); return PDF_IMGS.length; }
 function pdfPage(page){
   const pr=page.getBoundingClientRect(), k=0.75, H=792, ops=[];
   const X=v=>((v-pr.left)*k).toFixed(2), Y=v=>(H-(v-pr.top)*k).toFixed(2);
@@ -19,6 +26,10 @@ function pdfPage(page){
   const els=[page,...page.querySelectorAll("*")];
   els.forEach(el=>{ const st=getComputedStyle(el); if(st.display==="none"||st.visibility==="hidden") return; const r=el.getBoundingClientRect(); if(!r.width||!r.height) return;
     const bg=pdfRGB(st.backgroundColor); if(bg&&bg!=="1.000 1.000 1.000") fill(r.left,r.top,r.width,r.height,bg);
+    if(el.tagName==="IMG"&&el.dataset.pdfimg&&PDF_IMGS[+el.dataset.pdfimg-1]){ const w=r.width*k, h=r.height*k, x0=+X(r.left), y0=H-(r.bottom-pr.top)*k;
+      let clip=""; if(parseFloat(st.borderTopLeftRadius)>=r.width/2-1){ const rx=w/2, ry=h/2, cx=x0+rx, cy=y0+ry, c=0.5523, f=v=>v.toFixed(2);
+        clip=`${f(cx+rx)} ${f(cy)} m ${f(cx+rx)} ${f(cy+ry*c)} ${f(cx+rx*c)} ${f(cy+ry)} ${f(cx)} ${f(cy+ry)} c ${f(cx-rx*c)} ${f(cy+ry)} ${f(cx-rx)} ${f(cy+ry*c)} ${f(cx-rx)} ${f(cy)} c ${f(cx-rx)} ${f(cy-ry*c)} ${f(cx-rx*c)} ${f(cy-ry)} ${f(cx)} ${f(cy-ry)} c ${f(cx+rx*c)} ${f(cy-ry)} ${f(cx+rx)} ${f(cy-ry*c)} ${f(cx+rx)} ${f(cy)} c W n `; }
+      ops.push(`q ${clip}${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x0.toFixed(2)} ${y0.toFixed(2)} cm /Im${el.dataset.pdfimg} Do Q`); }
     const bw=s=>st[`border${s}Style`]!=="none"?parseFloat(st[`border${s}Width`])||0:0, bc=s=>pdfRGB(st[`border${s}Color`]);
     const t=bw("Top"),bo=bw("Bottom"),l=bw("Left"),ri=bw("Right");
     if(t&&bc("Top")) fill(r.left,r.top,r.width,t,bc("Top")); if(bo&&bc("Bottom")) fill(r.left,r.bottom-bo,r.width,bo,bc("Bottom"));
@@ -45,7 +56,8 @@ function pdfBuild(pages,title){
   const font=n=>add(`<< /Type /Font /Subtype /Type1 /BaseFont /${n}${/Symbol|Dingbats/.test(n)?"":" /Encoding /WinAnsiEncoding"} >>`);
   add(""); add(""); // 1 catalog, 2 pages
   const F=["Helvetica","Helvetica-Bold","Helvetica-Oblique","Helvetica-BoldOblique","Symbol","ZapfDingbats"].map(font);
-  const res=`<< /Font << ${F.map((n,i)=>`/F${i+1} ${n} 0 R`).join(" ")} >> >>`;
+  const IM=PDF_IMGS.map(m=>add(`<< /Type /XObject /Subtype /Image /Width ${m.w} /Height ${m.h} /ColorSpace ${m.cs} /BitsPerComponent 8 /Filter /DCTDecode${m.cs==="/DeviceCMYK"?" /Decode [1 0 1 0 1 0 1 0]":""} /Length ${m.bin.length} >>\nstream\n${m.bin}\nendstream`)); PDF_IMGS.length=0;
+  const res=`<< /Font << ${F.map((n,i)=>`/F${i+1} ${n} 0 R`).join(" ")} >>${IM.length?` /XObject << ${IM.map((n,i)=>`/Im${i+1} ${n} 0 R`).join(" ")} >>`:""} >>`;
   const kids=pages.map(c=>{ const cs=add(`<< /Length ${c.length} >>\nstream\n${c}\nendstream`); return add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources ${res} /Contents ${cs} 0 R >>`) });
   objs[0]="<< /Type /Catalog /Pages 2 0 R >>"; objs[1]=`<< /Type /Pages /Kids [${kids.map(k=>k+" 0 R").join(" ")}] /Count ${kids.length} >>`;
   const info=add(`<< /Title (${pdfEnc(title,"T")}) /Producer (Cali Aircrew) >>`);

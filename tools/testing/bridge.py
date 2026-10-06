@@ -24,6 +24,7 @@ def jsonable(o):
     if isinstance(o,decimal.Decimal): return float(o)
     if isinstance(o,uuid.UUID): return str(o)
     return str(o)
+BLOBS={}
 IDENT=re.compile(r'^[a-z_][a-z0-9_]*$')
 def op(name, payload):
     p=json.loads(payload); s=p.get("session"); uid=s["user"]["id"] if s else None; role="authenticated" if s else "anon"; aal=(s or {}).get("aal","aal1")
@@ -44,6 +45,20 @@ def op(name, payload):
         if name=="factors":
             r=sql("select id,status from auth.mfa_factors where user_id=%s",(uid,)) if uid else []
             return json.dumps({"factors":[{"id":str(x["id"]),"status":x["status"]} for x in r]})
+        if name in ("st_upload","st_remove","st_list","st_sign"):   # Supabase Storage stand-in: rows in storage.objects (policies apply), bytes in BLOBS
+            b=p["bucket"]
+            if name=="st_upload":
+                run("insert into storage.objects(bucket_id,name) values(%s,%s)",(b,p["path"])); BLOBS[(b,p["path"])]=p["b64"]; return json.dumps({"data":{"path":p["path"]}})
+            if name=="st_remove":
+                r=run("delete from storage.objects where bucket_id=%s and name = any(%s) returning name",(b,p["paths"]))
+                for x in r: BLOBS.pop((b,x["name"]),None)
+                return json.dumps({"data":[{"name":x["name"]} for x in r]})
+            if name=="st_list":
+                r=run("select name from storage.objects where bucket_id=%s and name like %s",(b,p["prefix"].rstrip("/")+"/%"))
+                return json.dumps({"data":[{"name":x["name"].split("/")[-1]} for x in r]})
+            r=run("select name from storage.objects where bucket_id=%s and name=%s",(b,p["path"]))
+            if not r or (b,p["path"]) not in BLOBS: return json.dumps({"error":{"message":"Object not found"}})
+            return json.dumps({"data":{"signedUrl":"data:image/jpeg;base64,"+BLOBS[(b,p["path"])]}})
         if name=="rpc":
             fn=p["fn"]; assert IDENT.match(fn); args=p.get("args") or {}
             for k in args: assert IDENT.match(k)
@@ -112,7 +127,13 @@ MOCK=r'''window.supabase={createClient(url,key,opts){
  const rpc=(fn,args)=>call("rpc",{fn,args:args||{}}).then(r=>({data:r.error?null:r.data,error:r.error||null}));
  const functions={async invoke(name,{body}){ if(!window.__fn) return {data:null,error:{message:"Failed to send a request to the Edge Function",context:{json:async()=>{throw new Error("no body")}}}};
    const r=JSON.parse(await window.__fn(JSON.stringify(Object.assign({},body,{session:getS()})))); if(r.ok) return {data:r,error:null}; return {data:null,error:{message:"non-2xx",context:{json:async()=>r}}}; }};
- return {auth,from,rpc,functions}; }};'''
+ const b64=blob=>new Promise(r=>{const f=new FileReader(); f.onload=()=>r(String(f.result).split(",")[1]); f.readAsDataURL(blob)});
+ const storage={from(bucket){return {
+   async upload(path,blob,o){const r=await call("st_upload",{bucket,path,b64:await b64(blob)}); return {data:r.data||null,error:r.error||null}},
+   async remove(paths){const r=await call("st_remove",{bucket,paths}); return {data:r.data||null,error:r.error||null}},
+   async list(prefix){const r=await call("st_list",{bucket,prefix:prefix||""}); return {data:r.data||null,error:r.error||null}},
+   async createSignedUrl(path,ttl){const r=await call("st_sign",{bucket,path}); return {data:r.data||null,error:r.error||null}}}}};
+ return {auth,from,rpc,functions,storage}; }};'''
 def make_test_page(src, dst):
     s=open(src,encoding='utf-8').read(); i=s.index('var supabase=(function(e){'); j=s.index('</script>',i)
     open(dst,'w',encoding='utf-8').write(s[:i]+MOCK+s[j:])

@@ -7,7 +7,7 @@ Nothing here touches production. The only password is the throwaway local Postgr
 ```bash
 apt-get install -y postgresql-16 && pg_ctlcluster 16 main start      # restart after idle: pg_ctlcluster 16 main start
 su postgres -c "psql -c \"alter user postgres password 'pg'\"" && su postgres -c "createdb sb"
-su postgres -c "psql -d sb -f tools/testing/sql/sb_stub.sql"          # auth schema, auth.uid()/auth.jwt(), roles anon/authenticated/service_role
+su postgres -c "psql -d sb -f tools/testing/sql/sb_stub.sql" && su postgres -c "psql -d sb -f tools/testing/sql/storage_stub.sql"   # + storage schema stand-in (018)          # auth schema, auth.uid()/auth.jwt(), roles anon/authenticated/service_role
 for f in supabase/0*.sql; do                                          # apply updates in order; local has no pg_cron/pg_net/vault:
   sed '/^select cron/,$d;/^create extension if not exists pg_cron/d;/^create extension if not exists pg_net/d' "$f" > /tmp/x.sql
   su postgres -c "psql -q -v ON_ERROR_STOP=1 -d sb -f /tmp/x.sql" || echo "FAILED $f"; done

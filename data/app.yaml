@@ -1,7 +1,7 @@
 # App settings and the What's New list (newest first; the top entry must equal app_version).
 # Part of checklist-builder. Edit, then open a pull request. See docs/CHANGE_MANAGEMENT.md
 app_name: Aircraft Checklist Builder
-app_version: '1.65'
+app_version: '1.66'
 show_drafts: true
 docx:
   version: 9.6.1
@@ -14,6 +14,9 @@ cloud:                       # optional sign-in & sync (Supabase). Only the PUBL
   url: https://egpfdyvksqierfdkogwe.supabase.co
   publishable_key: sb_publishable_tQh4omSsHDxsiwJjpG808Q_WOJ940Z-
 changelog:
+  - version: '1.66'
+    notes:
+      - "Optional profile photo: reviewed before it appears, shown on your profile page (not in search results), and on your résumé PDF if you choose"
   - version: '1.65'
     notes:
       - "Checklists: choose Normal, Compact or Tight rows to fit more on each page, and long sections now continue in the next column, so checklists print on fewer pages"

@@ -123,7 +123,9 @@ search_log, site_settings, partners, aircraft_requests, privacy_requests, crew_b
 (legal name + FAA city/state) · 011 account_recovery, help_requests, delete_my_account() · 012 recovery_codes,
 recovery_lookup() · 013 member_settings (currency_emails), reminder_log, reminder_candidates() · 014 cron
 schedule (daily) · 015 favorites, saved_searches (seen uuid[], max 10), search_alert_owners() · 016
-member_settings.admin_emails, admin_alert_state, admin_alert_recipients(), hourly cron.
+member_settings.admin_emails, admin_alert_state, admin_alert_recipients(), hourly cron · 017 contact_requests ·
+018 checklist sync fix (two-step rule on checklists/my_items uses mfa_ok(); auth.mfa_factors is no longer readable) ·
+019 profile photos (crew_profiles.photo, moderation.photo_ok, private bucket crew-photos, admin_photo/_queue).
 
 All tables RLS-on. Audit query (expect "no rows") is in the old chat and docs/ROADMAP 3k — re-create it by
 listing expected tables/columns and checking information_schema.
@@ -134,7 +136,7 @@ medical, region, airport, status, looking, travel, passport, experience, languag
 training[], tr_des{seq}, tr_sp{seq}, jobs[], initials, fa_* , mx_*, heli_ops, sfar73. Hours by engine type
 (turbine/jet/turboprop/piston/multi/helicopter) are CALCULATED from per-aircraft hours, not typed.
 
-**Queued for the next database update (018):** see "Next database update (018)" at the top of docs/ROADMAP.md (currently one item: authenticator wording in `delete_my_account`).
+**Queued for the next database update (020):** see "Next database update" at the top of docs/ROADMAP.md.
 
 ## 5. What's built (versions 1.19 → 1.49, highlights)
 

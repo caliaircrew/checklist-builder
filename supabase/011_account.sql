@@ -64,7 +64,7 @@ language plpgsql security definer set search_path = '' as $$
 declare uid uuid := (select auth.uid()); em text;
 begin
   if uid is null then raise exception 'Sign in first'; end if;
-  if not public.mfa_ok() then raise exception 'Enter your Microsoft Authenticator code first'; end if;
+  if not public.mfa_ok() then raise exception 'Enter the code from your authenticator app first'; end if;   -- wording updated in 018
   select u.email into em from auth.users u where u.id = uid;
   if lower(trim(coalesce(p_confirm_email, ''))) <> lower(coalesce(em, '')) then raise exception 'Type your sign-in email exactly to confirm'; end if;
   if exists (select 1 from public.admins where user_id = uid) then raise exception 'Admins: ask another admin to remove your admin access first'; end if;
